@@ -1,0 +1,51 @@
+{
+  "appTitle": "Hệ Thống Quản Lý Nhân Sự (HRM)",
+  "nav": {
+    "dashboard": "Tổng quan",
+    "employees": "Danh sách Nhân viên",
+    "departments": "Phòng ban",
+    "attendance": "Chấm công",
+    "payroll": "Bảng lương",
+    "settings": "Cài đặt"
+  },
+  "header": {
+    "searchPlaceholder": "Tìm kiếm nhân viên, phòng ban...",
+    "language": "Ngôn ngữ",
+    "admin": "Quản trị viên"
+  },
+  "stats": {
+    "totalEmployees": "Tổng số nhân viên",
+    "activeEmployees": "Nhân viên đang làm",
+    "onLeave": "Nghỉ phép hôm nay",
+    "newHires": "Tuyển dụng mới (tháng)"
+  },
+  "employeeTable": {
+    "title": "Danh sách Nhân viên",
+    "addEmployee": "Thêm Nhân viên",
+    "id": "Mã NV",
+    "name": "Họ và Tên",
+    "department": "Phòng ban",
+    "position": "Chức vụ",
+    "status": "Trạng thái",
+    "actions": "Thao tác",
+    "active": "Đang làm việc",
+    "onLeave": "Nghỉ phép",
+    "terminated": "Đã nghỉ việc",
+    "edit": "Sửa",
+    "delete": "Xóa"
+  },
+  "modal": {
+    "titleAdd": "Thêm Nhân Viên Mới",
+    "titleEdit": "Chỉnh Sửa Thông Tin Nhân Viên",
+    "save": "Lưu thông tin",
+    "cancel": "Hủy bỏ",
+    "fields": {
+      "name": "Họ và Tên",
+      "email": "Email",
+      "phone": "Số điện thoại",
+      "department": "Phòng ban",
+      "position": "Chức vụ",
+      "status": "Trạng thái"
+    }
+  }
+}
