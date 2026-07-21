@@ -47,5 +47,29 @@
       "position": "Chức vụ",
       "status": "Trạng thái"
     }
+  },
+  "error": {
+    "auth": {
+      "invalidCredentials": "Tên đăng nhập hoặc mật khẩu không chính xác.",
+      "accessDenied": "Bạn không có quyền truy cập vào tài nguyên này."
+    },
+    "employee": {
+      "codeOrEmailExists": "Mã nhân viên hoặc Email đã tồn tại trong hệ thống.",
+      "cannotTransferNoticePeriod": "Nhân viên đang trong thời gian báo trước nghỉ việc, không thể điều chuyển."
+    },
+    "leave": {
+      "insufficientBalance": "Số ngày phép còn lại không đủ để đăng ký.",
+      "invalidDateRange": "Ngày bắt đầu nghỉ phải nhỏ hơn hoặc bằng ngày kết thúc."
+    },
+    "approval": {
+      "unauthorizedLevel": "Bạn không có thẩm quyền phê duyệt ở cấp hiện tại.",
+      "alreadyRejected": "Phiếu yêu cầu đã bị từ chối trước đó, không thể duyệt tiếp."
+    },
+    "timesheet": {
+      "alreadyApproved": "Bảng Timesheet tuần đã được phê duyệt, không thể chỉnh sửa."
+    },
+    "payroll": {
+      "alreadyFinalized": "Bảng lương tháng đã chốt phê duyệt, không thể tính toán lại."
+    }
   }
 }

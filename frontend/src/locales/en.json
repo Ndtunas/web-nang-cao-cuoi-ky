@@ -47,5 +47,29 @@
       "position": "Position",
       "status": "Status"
     }
+  },
+  "error": {
+    "auth": {
+      "invalidCredentials": "Invalid email or password.",
+      "accessDenied": "You do not have permission to access this resource."
+    },
+    "employee": {
+      "codeOrEmailExists": "Employee Code or Email already exists in the system.",
+      "cannotTransferNoticePeriod": "Employee is currently in notice period and cannot be transferred."
+    },
+    "leave": {
+      "insufficientBalance": "Insufficient leave balance for this request.",
+      "invalidDateRange": "Start date must be less than or equal to end date."
+    },
+    "approval": {
+      "unauthorizedLevel": "You are not authorized to approve at the current level.",
+      "alreadyRejected": "Request was already rejected and cannot be approved further."
+    },
+    "timesheet": {
+      "alreadyApproved": "Weekly timesheet has already been approved and cannot be edited."
+    },
+    "payroll": {
+      "alreadyFinalized": "Monthly payroll has been finalized and cannot be recalculated."
+    }
   }
 }
