@@ -1,6 +1,11 @@
-# Dependencies
+# Dependencies & Package Manager Locks
 node_modules/
 .pnpm-store/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+bun.lockb
+bun.lock
 
 # Production builds
 dist/
