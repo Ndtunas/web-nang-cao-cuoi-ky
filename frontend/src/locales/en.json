@@ -1,0 +1,51 @@
+{
+  "appTitle": "Human Resource Management (HRM)",
+  "nav": {
+    "dashboard": "Dashboard",
+    "employees": "Employees",
+    "departments": "Departments",
+    "attendance": "Attendance",
+    "payroll": "Payroll",
+    "settings": "Settings"
+  },
+  "header": {
+    "searchPlaceholder": "Search employees, departments...",
+    "language": "Language",
+    "admin": "Administrator"
+  },
+  "stats": {
+    "totalEmployees": "Total Employees",
+    "activeEmployees": "Active Staff",
+    "onLeave": "On Leave Today",
+    "newHires": "New Hires (Month)"
+  },
+  "employeeTable": {
+    "title": "Employee Directory",
+    "addEmployee": "Add Employee",
+    "id": "EMP ID",
+    "name": "Full Name",
+    "department": "Department",
+    "position": "Position",
+    "status": "Status",
+    "actions": "Actions",
+    "active": "Active",
+    "onLeave": "On Leave",
+    "terminated": "Terminated",
+    "edit": "Edit",
+    "delete": "Delete"
+  },
+  "modal": {
+    "titleAdd": "Add New Employee",
+    "titleEdit": "Edit Employee Info",
+    "save": "Save Details",
+    "cancel": "Cancel",
+    "fields": {
+      "name": "Full Name",
+      "email": "Email",
+      "phone": "Phone Number",
+      "department": "Department",
+      "position": "Position",
+      "status": "Status"
+    }
+  }
+}
