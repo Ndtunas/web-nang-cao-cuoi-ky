@@ -137,7 +137,7 @@ const FILTERED_LOGGER_PROVIDER = {
 
         // 4. Custom error message với đầy đủ thông tin
         customErrorMessage: (req, res, err) => {
-          return `${req.method} ${req.url} ${res.statusCode} - ${(err as Error)?.message || 'Unknown error'}`;
+          return `${req.method} ${req.url} ${res.statusCode} - ${err?.message || 'Unknown error'}`;
         },
 
         // 5. Log request body + response body (đã redact ở LoggingInterceptor)

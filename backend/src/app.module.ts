@@ -33,18 +33,18 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
     DatabaseModule,
 
     // 8 Mô-đun Nghiệp Vụ
-    AuditLogsModule,        // Mô-đun 1: Nhật Ký Lưu Vết
-    AuthModule,             // Mô-đun 2: Xác thực
-    UsersModule,            // Mô-đun 2: Quản lý Users
-    WorkRateConfigModule,   // Mô-đun 2: Cấu hình Tham số Động
-    TimesheetsModule,       // Mô-đun 3: Timesheet
-    ApprovalModule,         // Mô-đun 4: Phê Duyệt Đa Cấp
-    OnboardingModule,       // Mô-đun 5: Onboarding
-    OffboardingModule,      // Mô-đun 6: Offboarding
-    EmployeesModule,        // Mô-đun 7: Thay Đổi Nhân Sự
-    AttendanceModule,       // Mô-đun 8: Chấm công
-    LeaveRequestsModule,    // Mô-đun 8: Nghỉ phép
-    PayrollModule,          // Mô-đun 8: Bảng lương
+    AuditLogsModule, // Mô-đun 1: Nhật Ký Lưu Vết
+    AuthModule, // Mô-đun 2: Xác thực
+    UsersModule, // Mô-đun 2: Quản lý Users
+    WorkRateConfigModule, // Mô-đun 2: Cấu hình Tham số Động
+    TimesheetsModule, // Mô-đun 3: Timesheet
+    ApprovalModule, // Mô-đun 4: Phê Duyệt Đa Cấp
+    OnboardingModule, // Mô-đun 5: Onboarding
+    OffboardingModule, // Mô-đun 6: Offboarding
+    EmployeesModule, // Mô-đun 7: Thay Đổi Nhân Sự
+    AttendanceModule, // Mô-đun 8: Chấm công
+    LeaveRequestsModule, // Mô-đun 8: Nghỉ phép
+    PayrollModule, // Mô-đun 8: Bảng lương
 
     // Supporting Modules
     DepartmentsModule,

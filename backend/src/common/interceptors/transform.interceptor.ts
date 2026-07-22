@@ -17,7 +17,11 @@ export class TransformInterceptor<T> implements NestInterceptor<T, any> {
     return next.handle().pipe(
       map((responseData) => {
         // If response already has 'data' and 'meta' (PaginatedResponseDto), pass through
-        if (responseData && responseData.data !== undefined && responseData.meta !== undefined) {
+        if (
+          responseData &&
+          responseData.data !== undefined &&
+          responseData.meta !== undefined
+        ) {
           return {
             success: true,
             data: responseData.data,

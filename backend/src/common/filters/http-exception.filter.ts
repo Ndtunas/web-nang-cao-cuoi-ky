@@ -32,9 +32,7 @@ import { BusinessException } from '../exceptions/business.exception.js';
  */
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
-  constructor(
-    private readonly logger: PinoLogger,
-  ) {}
+  constructor(private readonly logger: PinoLogger) {}
 
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
@@ -81,7 +79,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
           : (exceptionResponse as any).message || exception.message;
 
       const isClientError = status >= 400 && status < 500;
-      const logFn = isClientError ? this.logger.warn.bind(this.logger) : this.logger.error.bind(this.logger);
+      const logFn = isClientError
+        ? this.logger.warn.bind(this.logger)
+        : this.logger.error.bind(this.logger);
 
       logFn(
         {
@@ -115,7 +115,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
     // ─────────────────────────────────────────────────────────
     // CASE 3: Unhandled exception — bug nghiêm trọng (5xx)
     // ─────────────────────────────────────────────────────────
-    const message = exception instanceof Error ? exception.message : String(exception);
+    const message =
+      exception instanceof Error ? exception.message : String(exception);
 
     this.logger.error(
       {
@@ -127,7 +128,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
         query: request.query,
         params: request.params,
         err: {
-          name: exception instanceof Error ? exception.constructor.name : 'Unknown',
+          name:
+            exception instanceof Error ? exception.constructor.name : 'Unknown',
           message,
           stack: exception instanceof Error ? exception.stack : undefined,
         },

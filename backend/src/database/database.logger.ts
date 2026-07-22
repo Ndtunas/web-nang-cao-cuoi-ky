@@ -63,13 +63,19 @@ export class DatabaseLogger implements TypeOrmLogger {
   /**
    * Log khi query lỗi
    */
-  logQueryError(error: string, query: string, parameters?: any[], queryRunner?: any) {
+  logQueryError(
+    error: string,
+    query: string,
+    parameters?: any[],
+    queryRunner?: any,
+  ) {
     const ctx = this.parseContext(queryRunner);
     const funcName = ctx?.funcName ?? 'unknown';
     const table = ctx?.table ?? 'unknown';
 
     // Xác định loại lỗi để log mức độ phù hợp
-    const isConstraintViolation = /duplicate|unique|foreign key|not null|check constraint/i.test(error);
+    const isConstraintViolation =
+      /duplicate|unique|foreign key|not null|check constraint/i.test(error);
     const level = isConstraintViolation ? 'warn' : 'error';
 
     const sqlSnippet = this.snippet(query, 80);
@@ -92,7 +98,12 @@ export class DatabaseLogger implements TypeOrmLogger {
   /**
    * Log khi query chậm (> threshold)
    */
-  logQuerySlow(time: number, query: string, parameters?: any[], queryRunner?: any) {
+  logQuerySlow(
+    time: number,
+    query: string,
+    parameters?: any[],
+    queryRunner?: any,
+  ) {
     const ctx = this.parseContext(queryRunner);
     const funcName = ctx?.funcName ?? 'unknown';
     const table = ctx?.table ?? 'unknown';
@@ -136,10 +147,7 @@ export class DatabaseLogger implements TypeOrmLogger {
    */
   log(level: 'log' | 'info' | 'warn', message: any, queryRunner?: any) {
     const fn = level === 'warn' ? 'warn' : 'info';
-    this.logger[fn](
-      { type: 'typeorm:log', message },
-      `📋 ${message}`,
-    );
+    this.logger[fn]({ type: 'typeorm:log', message }, `📋 ${message}`);
   }
 
   // ────────────────────────────────────────────────
@@ -164,7 +172,9 @@ export class DatabaseLogger implements TypeOrmLogger {
    */
   private snippet(query: string, maxLen = 120): string {
     const compact = query.replace(/\s+/g, ' ').trim();
-    return compact.length > maxLen ? compact.substring(0, maxLen) + '…' : compact;
+    return compact.length > maxLen
+      ? compact.substring(0, maxLen) + '…'
+      : compact;
   }
 
   /**
@@ -175,7 +185,8 @@ export class DatabaseLogger implements TypeOrmLogger {
 
     return parameters.map((p) => {
       if (p === null || p === undefined) return p;
-      if (typeof p === 'string') return p.length > 50 ? `"${p.substring(0, 50)}…"` : `"${p}"`;
+      if (typeof p === 'string')
+        return p.length > 50 ? `"${p.substring(0, 50)}…"` : `"${p}"`;
       if (typeof p === 'number' || typeof p === 'boolean') return p;
       if (p instanceof Date) return p.toISOString();
       if (Array.isArray(p)) return `[Array(${p.length})]`;
@@ -196,7 +207,7 @@ export class DatabaseLogger implements TypeOrmLogger {
     if (match) return match[1];
     if (/duplicate/i.test(error)) return '23505'; // unique_violation
     if (/foreign key/i.test(error)) return '23503'; // foreign_key_violation
-    if (/not null/i.test(error)) return '23502';   // not_null_violation
+    if (/not null/i.test(error)) return '23502'; // not_null_violation
     if (/check constraint/i.test(error)) return '23514';
     return 'UNKNOWN';
   }
@@ -207,7 +218,9 @@ export class DatabaseLogger implements TypeOrmLogger {
   private extractErrorMessage(error: string): string {
     // Bỏ qua phần stack trace, chỉ lấy message
     const firstLine = error.split('\n')[0].trim();
-    return firstLine.length > 200 ? firstLine.substring(0, 200) + '…' : firstLine;
+    return firstLine.length > 200
+      ? firstLine.substring(0, 200) + '…'
+      : firstLine;
   }
 
   /**
@@ -225,7 +238,10 @@ export class DatabaseLogger implements TypeOrmLogger {
 
     const data = queryRunner.data;
     return {
-      funcName: data.callSite?.functionName ?? data.entityName ? `${data.entityName}.${data.action}` : data.action,
+      funcName:
+        (data.callSite?.functionName ?? data.entityName)
+          ? `${data.entityName}.${data.action}`
+          : data.action,
       table: data.entityName ?? this.extractTableFromQuery(data.query ?? ''),
       rowCount: data.resultCount,
     };

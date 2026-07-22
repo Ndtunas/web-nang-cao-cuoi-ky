@@ -31,9 +31,7 @@ interface UserContext {
 export class LoggingInterceptor implements NestInterceptor {
   private readonly MAX_BODY_SIZE = 10_240; // 10KB
 
-  constructor(
-    private readonly logger: PinoLogger,
-  ) {}
+  constructor(private readonly logger: PinoLogger) {}
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const startTime = Date.now();
@@ -98,7 +96,8 @@ export class LoggingInterceptor implements NestInterceptor {
             err: {
               name: err?.constructor?.name,
               message: err?.message,
-              stack: process.env.NODE_ENV !== 'production' ? err?.stack : undefined,
+              stack:
+                process.env.NODE_ENV !== 'production' ? err?.stack : undefined,
             },
           },
           `✗ ${req.method} ${req.url} ${statusCode} (${duration}ms)`,
