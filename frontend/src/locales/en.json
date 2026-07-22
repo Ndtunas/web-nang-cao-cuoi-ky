@@ -7,6 +7,7 @@
     "attendance": "Attendance",
     "payroll": "Payroll",
     "settings": "Settings",
+    "projects": "Projects",
     "logout": "Log Out"
   },
   "header": {
@@ -286,6 +287,92 @@
     "oldState": "Old Record State (OLD)",
     "newState": "New Record State (NEW)",
     "btnClose": "Close"
+  },
+  "projects": {
+    "cardTitle": "Project & Task Management",
+    "btn": {
+      "addProject": "Add Project",
+      "addTask": "Add Task",
+      "refresh": "Refresh"
+    },
+    "cols": {
+      "name": "Project Name",
+      "status": "Status",
+      "tasks": "Tasks",
+      "actions": "Actions",
+      "taskName": "Task Name",
+      "estimatedHours": "Estimated Hours"
+    },
+    "statusLabels": {
+      "PLANNING": "PLANNING",
+      "ACTIVE": "ACTIVE",
+      "COMPLETED": "COMPLETED",
+      "SUSPENDED": "SUSPENDED"
+    },
+    "tooltips": {
+      "edit": "Edit",
+      "delete": "Delete",
+      "taskCount": "{{count}} tasks"
+    },
+    "detail": {
+      "pm": "Project Manager",
+      "unassigned": "Unassigned",
+      "totalLabor": "Total Labor Logged",
+      "entries": "Timesheet Entries",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "ongoing": "Ongoing",
+      "estimatedVsActual": "Labor Progress (Actual / Estimated)",
+      "tasksTitle": "Tasks List"
+    },
+    "empty": {
+      "projects": "No projects yet. Click 'Add Project' to begin.",
+      "tasks": "This project has no tasks yet.",
+      "selectProject": "Select a project from the list on the left to see details."
+    },
+    "confirm": {
+      "deleteProject": "Delete this project? All its tasks and related timesheet entries will be affected.",
+      "deleteTask": "Delete this task?"
+    },
+    "msg": {
+      "created": "Project created!",
+      "updated": "Project updated!",
+      "deleted": "Project deleted!",
+      "taskCreated": "Task added!",
+      "taskUpdated": "Task updated!",
+      "taskDeleted": "Task deleted!"
+    },
+    "modal": {
+      "titleAddProject": "Create New Project",
+      "titleEditProject": "Edit Project",
+      "titleAddTask": "Add New Task",
+      "titleEditTask": "Edit Task",
+      "ok": "Save",
+      "cancel": "Cancel",
+      "fields": {
+        "name": "Project Name",
+        "startDate": "Start Date",
+        "endDate": "End Date (optional)",
+        "pm": "Project Manager (PM)",
+        "status": "Status",
+        "taskName": "Task Name",
+        "description": "Detailed Description",
+        "estimatedHours": "Estimated Hours"
+      },
+      "placeholders": {
+        "name": "Enter project name (2-150 chars)...",
+        "pm": "Choose a PM...",
+        "taskName": "Enter task name...",
+        "description": "Detailed description of the task..."
+      },
+      "validation": {
+        "nameRequired": "Project name is required",
+        "nameMin": "Name must be at least 2 characters",
+        "nameMax": "Name must not exceed 150 characters",
+        "startDateRequired": "Start date is required",
+        "taskNameRequired": "Task name is required"
+      }
+    }
   },
   "login": {
     "subtitle": "Please log in to start your work session",

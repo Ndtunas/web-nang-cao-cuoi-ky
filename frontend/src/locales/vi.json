@@ -7,6 +7,7 @@
     "attendance": "Chấm công",
     "payroll": "Bảng lương",
     "settings": "Cài đặt",
+    "projects": "Dự án",
     "logout": "Đăng xuất"
   },
   "header": {
@@ -286,6 +287,92 @@
     "oldState": "Trạng thái TRƯỚC thay đổi (OLD STATE)",
     "newState": "Trạng thái SAU thay đổi (NEW STATE)",
     "btnClose": "Đóng"
+  },
+  "projects": {
+    "cardTitle": "Quản lý Dự án & Công việc",
+    "btn": {
+      "addProject": "Thêm Dự án",
+      "addTask": "Thêm Công việc",
+      "refresh": "Tải lại"
+    },
+    "cols": {
+      "name": "Tên dự án",
+      "status": "Trạng thái",
+      "tasks": "Công việc",
+      "actions": "Thao tác",
+      "taskName": "Tên công việc",
+      "estimatedHours": "Giờ ước lượng"
+    },
+    "statusLabels": {
+      "PLANNING": "LÊN KẾ HOẠCH",
+      "ACTIVE": "ĐANG CHẠY",
+      "COMPLETED": "HOÀN THÀNH",
+      "SUSPENDED": "TẠM DỪNG"
+    },
+    "tooltips": {
+      "edit": "Sửa",
+      "delete": "Xóa",
+      "taskCount": "{{count}} công việc"
+    },
+    "detail": {
+      "pm": "Project Manager",
+      "unassigned": "Chưa phân công",
+      "totalLabor": "Tổng giờ đã khai",
+      "entries": "Số dòng timesheet",
+      "startDate": "Ngày bắt đầu",
+      "endDate": "Ngày kết thúc",
+      "ongoing": "Đang triển khai",
+      "estimatedVsActual": "Tiến độ giờ công (Thực tế / Ước lượng)",
+      "tasksTitle": "Danh sách công việc"
+    },
+    "empty": {
+      "projects": "Chưa có dự án nào. Nhấn 'Thêm Dự án' để bắt đầu.",
+      "tasks": "Dự án này chưa có công việc nào.",
+      "selectProject": "Chọn một dự án ở danh sách bên trái để xem chi tiết."
+    },
+    "confirm": {
+      "deleteProject": "Xóa dự án này? Toàn bộ công việc thuộc dự án và timesheet liên quan sẽ bị ảnh hưởng.",
+      "deleteTask": "Xóa công việc này?"
+    },
+    "msg": {
+      "created": "Đã tạo dự án!",
+      "updated": "Đã cập nhật dự án!",
+      "deleted": "Đã xóa dự án!",
+      "taskCreated": "Đã thêm công việc!",
+      "taskUpdated": "Đã cập nhật công việc!",
+      "taskDeleted": "Đã xóa công việc!"
+    },
+    "modal": {
+      "titleAddProject": "Tạo Dự án Mới",
+      "titleEditProject": "Chỉnh Sửa Dự Án",
+      "titleAddTask": "Thêm Công Việc Mới",
+      "titleEditTask": "Chỉnh Sửa Công Việc",
+      "ok": "Lưu",
+      "cancel": "Hủy",
+      "fields": {
+        "name": "Tên dự án",
+        "startDate": "Ngày bắt đầu",
+        "endDate": "Ngày kết thúc (tùy chọn)",
+        "pm": "Project Manager (PM)",
+        "status": "Trạng thái",
+        "taskName": "Tên công việc",
+        "description": "Mô tả chi tiết",
+        "estimatedHours": "Giờ ước lượng"
+      },
+      "placeholders": {
+        "name": "Nhập tên dự án (2-150 ký tự)...",
+        "pm": "Chọn PM phụ trách...",
+        "taskName": "Nhập tên công việc...",
+        "description": "Mô tả chi tiết về công việc..."
+      },
+      "validation": {
+        "nameRequired": "Vui lòng nhập tên dự án",
+        "nameMin": "Tên phải có ít nhất 2 ký tự",
+        "nameMax": "Tên không quá 150 ký tự",
+        "startDateRequired": "Vui lòng chọn ngày bắt đầu",
+        "taskNameRequired": "Vui lòng nhập tên công việc"
+      }
+    }
   },
   "login": {
     "subtitle": "Vui lòng đăng nhập để bắt đầu phiên làm việc",
