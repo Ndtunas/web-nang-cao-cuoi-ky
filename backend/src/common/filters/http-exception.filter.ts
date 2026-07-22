@@ -53,11 +53,15 @@ export class HttpExceptionFilter implements ExceptionFilter {
     }
 
     // Unhandled exception
+    console.error('[UnhandledException]', exception);
+    if (exception instanceof Error) {
+      console.error('[Stack]', exception.stack);
+    }
     response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
       statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
       errorCode: 'ERR_INTERNAL',
       i18nKey: 'error.internal.serverError',
-      params: {},
+      params: { detail: exception instanceof Error ? exception.message : String(exception) },
       timestamp: new Date().toISOString(),
     });
   }
