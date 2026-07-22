@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Card, Button, InputNumber, Select, Tag, Typography, Space, Badge, Tooltip, Empty, Progress, Row, Col, Statistic, Alert } from 'antd';
+import { Card, Button, InputNumber, Select, Tag, Typography, Space, Badge, Tooltip, Empty, Progress, Row, Col, Statistic, Alert, Spin } from 'antd';
 import { PlusOutlined, SaveOutlined, SendOutlined, ClockCircleOutlined, FireOutlined, BulbOutlined, CalendarOutlined, HomeOutlined, DeleteOutlined, WarningOutlined } from '@ant-design/icons';
 
 const { Text, Title } = Typography;
@@ -34,6 +34,8 @@ export default function Timesheets({
   setSelectedYear,
   onSaveTimesheetDraft,
   onSubmitTimesheet,
+  loading = false,
+  loadingActions = {},
   t
 }) {
   const [entries, setEntries] = useState([]);
@@ -154,6 +156,7 @@ export default function Timesheets({
   const currentStatus = timesheetData?.status ? statusConfig[timesheetData.status] : { color: '#94a3b8', text: t('timesheets.notCreated'), bg: 'rgba(148, 163, 184, 0.1)' };
 
   return (
+    <Spin spinning={loading} tip={t('common.loading') || 'Loading...'} size="large">
     <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
       {/* Header với tuần/năm và thống kê */}
       <Card style={{ background: 'rgba(30, 41, 59, 0.6)', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
@@ -369,11 +372,24 @@ export default function Timesheets({
           </Space>
           <Space>
             <Badge dot={hasUnsavedChanges}>
-              <Button icon={<SaveOutlined />} onClick={() => onSaveTimesheetDraft(entries)} style={{ background: '#374151' }}>
+              <Button
+                icon={<SaveOutlined />}
+                onClick={() => onSaveTimesheetDraft(entries)}
+                loading={loadingActions.saveDraft}
+                disabled={loadingActions.saveDraft || loadingActions.submit}
+                style={{ background: '#374151' }}
+              >
                 {t('timesheets.saveDraftBtn')}
               </Button>
             </Badge>
-            <Button type="primary" icon={<SendOutlined />} onClick={() => onSubmitTimesheet(entries)} style={{ background: '#10b981', border: 'none' }}>
+            <Button
+              type="primary"
+              icon={<SendOutlined />}
+              onClick={() => onSubmitTimesheet(entries)}
+              loading={loadingActions.submit}
+              disabled={loadingActions.saveDraft || loadingActions.submit}
+              style={{ background: '#10b981', border: 'none' }}
+            >
               {t('timesheets.submitApprovalBtn')}
             </Button>
           </Space>
@@ -629,5 +645,6 @@ export default function Timesheets({
         )}
       </Card>
     </div>
+    </Spin>
   );
 }
