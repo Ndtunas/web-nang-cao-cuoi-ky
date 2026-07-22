@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { PinoLogger } from 'nestjs-pino';
 import { Timesheet } from '../../entities/timesheet.entity.js';
 import { TimesheetEntry } from '../../entities/timesheet-entry.entity.js';
 import { Employee } from '../../entities/employee.entity.js';
@@ -12,6 +13,7 @@ import { BusinessException } from '../../common/exceptions/business.exception.js
 @Injectable()
 export class TimesheetsService {
   constructor(
+    private readonly logger: PinoLogger,
     @InjectRepository(Timesheet)
     private readonly timesheetRepository: Repository<Timesheet>,
     @InjectRepository(TimesheetEntry)
@@ -82,11 +84,25 @@ export class TimesheetsService {
   async saveEntries(userId: string, dto: any): Promise<any> {
     try {
       const employee = await this.employeeRepository.findOne({ where: { userId } });
-      if (!employee) throw new BusinessException('ERR_TIMESHEET_002'); // Không tìm thấy hồ sơ nhân viên
+      if (!employee) throw new BusinessException('ERR_TIMESHEET_002');
 
-      console.log('[saveEntries] dto.entries length:', dto?.entries?.length);
+      const entriesCount = dto?.entries?.length ?? 0;
+      this.logger.info(
+        {
+          userId,
+          empCode: employee.empCode,
+          entriesCount,
+          timesheetId: dto.entries?.[0]?.timesheetId,
+          action: 'saveEntries:start',
+        },
+        `Saving ${entriesCount} timesheet entries for user ${userId}`,
+      );
+
       const firstEntry = dto.entries?.[0];
-      if (!firstEntry) return { success: true };
+      if (!firstEntry) {
+        this.logger.warn({ userId }, 'saveEntries called with empty entries array');
+        return { success: true };
+      }
 
       const timesheet = await this.timesheetRepository.findOne({
         where: { id: firstEntry.timesheetId },
@@ -95,6 +111,14 @@ export class TimesheetsService {
 
       // Rule: Cannot update if already approved or pending (ERR_TIMESHEET_001)
       if (timesheet.status !== 'DRAFT' && timesheet.status !== 'REJECTED') {
+        this.logger.warn(
+          {
+            userId,
+            timesheetId: timesheet.id,
+            currentStatus: timesheet.status,
+          },
+          `Cannot update timesheet in status ${timesheet.status}`,
+        );
         throw new BusinessException('ERR_TIMESHEET_001');
       }
 
@@ -140,9 +164,32 @@ export class TimesheetsService {
         relations: { project: true, task: true },
       });
 
+      this.logger.info(
+        {
+          userId,
+          timesheetId: timesheet.id,
+          totalNormal,
+          totalOt,
+          entriesSaved: savedEntries.length,
+          action: 'saveEntries:success',
+        },
+        `Saved ${savedEntries.length} entries for timesheet ${timesheet.id}`,
+      );
+
       return { timesheet, entries: savedEntries };
     } catch (e) {
-      console.error('[saveEntries] Error:', e);
+      this.logger.error(
+        {
+          userId,
+          err: {
+            name: (e as Error).constructor?.name,
+            message: (e as Error).message,
+            stack: (e as Error).stack,
+          },
+          action: 'saveEntries:error',
+        },
+        `Failed to save entries: ${(e as Error).message}`,
+      );
       throw e;
     }
   }

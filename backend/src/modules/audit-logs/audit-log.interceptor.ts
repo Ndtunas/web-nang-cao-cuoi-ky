@@ -7,6 +7,7 @@ import {
 import { Observable, tap } from 'rxjs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { PinoLogger } from 'nestjs-pino';
 import { SystemAuditLog } from '../../entities/system-audit-log.entity.js';
 
 /**
@@ -17,6 +18,7 @@ import { SystemAuditLog } from '../../entities/system-audit-log.entity.js';
 @Injectable()
 export class AuditLogInterceptor implements NestInterceptor {
   constructor(
+    private readonly logger: PinoLogger,
     @InjectRepository(SystemAuditLog)
     private readonly auditLogRepository: Repository<SystemAuditLog>,
   ) {}
@@ -117,7 +119,20 @@ export class AuditLogInterceptor implements NestInterceptor {
               userAgent,
             });
           } catch (e) {
-            console.error('Failed to save audit log:', e);
+            this.logger.error(
+              {
+                requestId: (request as any).requestId,
+                url,
+                method,
+                err: {
+                  name: (e as Error).constructor?.name,
+                  message: (e as Error).message,
+                  stack: (e as Error).stack,
+                },
+                action: 'auditLog:save:failed',
+              },
+              `Failed to save audit log for ${method} ${url}: ${(e as Error).message}`,
+            );
           }
         },
       }),

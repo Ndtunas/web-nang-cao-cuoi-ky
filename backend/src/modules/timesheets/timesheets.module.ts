@@ -8,6 +8,7 @@ import { Employee } from '../../entities/employee.entity.js';
 import { ApprovalRequest } from '../../entities/approval-request.entity.js';
 import { Project } from '../../entities/project.entity.js';
 import { ProjectTask } from '../../entities/project-task.entity.js';
+import { LoggerModule } from '../../common/logger/logger.module.js';
 
 @Module({
   imports: [
@@ -18,7 +19,8 @@ import { ProjectTask } from '../../entities/project-task.entity.js';
       ApprovalRequest,
       Project,
       ProjectTask
-    ])
+    ]),
+    LoggerModule,
   ],
   controllers: [TimesheetsController],
   providers: [TimesheetsService],

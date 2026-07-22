@@ -37,3 +37,4 @@ Thumbs.db
 target/
 .gradle/
 build/
+backend/pnpm-workspace.yaml

@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { DatabaseModule } from './database/database.module.js';
+import { LoggerModule } from './common/logger/logger.module.js';
 
 // 8 Mô-đun Nghiệp Vụ (theo 04_architecture.md)
 import { AuditLogsModule } from './modules/audit-logs/audit-logs.module.js';
@@ -28,6 +29,7 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
   imports: [
     // Global Config
     ConfigModule.forRoot({ isGlobal: true }),
+    LoggerModule, // Logging chuẩn Pino (Global)
     DatabaseModule,
 
     // 8 Mô-đun Nghiệp Vụ
