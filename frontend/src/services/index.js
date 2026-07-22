@@ -9,6 +9,10 @@ import { projectsService } from './projects.service.js';
 import { leaveService } from './leave-requests.service.js';
 import { offboardingService } from './offboarding.service.js';
 import { onboardingService } from './onboarding.service.js';
+import { notificationsService } from './notifications.service.js';
+import { attendanceService } from './notifications.service.js';
+import { departmentsService } from './notifications.service.js';
+import { positionsService } from './notifications.service.js';
 
 export {
   authService,
@@ -22,6 +26,10 @@ export {
   leaveService,
   offboardingService,
   onboardingService,
+  notificationsService,
+  attendanceService,
+  departmentsService,
+  positionsService,
 };
 
 /**
@@ -42,4 +50,8 @@ export const api = {
   leave: leaveService,
   offboarding: offboardingService,
   onboarding: onboardingService,
+  notifications: notificationsService,
+  attendance: attendanceService,
+  departments: departmentsService,
+  positions: positionsService,
 };
