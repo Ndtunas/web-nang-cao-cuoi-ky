@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Card, Button, InputNumber, Select, Tag, Typography, Space, Badge, Tooltip, Empty, Progress, Row, Col, Statistic, Alert, Spin } from 'antd';
+import { Card, Button, InputNumber, Select, Tag, Typography, Space, Badge, Tooltip, Empty, Progress, Row, Col, Statistic, Alert, Spin, message } from 'antd';
 import { PlusOutlined, SaveOutlined, SendOutlined, ClockCircleOutlined, FireOutlined, BulbOutlined, CalendarOutlined, HomeOutlined, DeleteOutlined, WarningOutlined } from '@ant-design/icons';
 
 const { Text, Title } = Typography;
@@ -27,6 +27,8 @@ const getStatusConfig = (t) => ({
 export default function Timesheets({
   timesheetData,
   timesheetEntries: initialEntries,
+  suggestedEntries = [],
+  reconciliation = null,
   projectsList,
   tasksList,
   selectedWeek,
@@ -42,6 +44,7 @@ export default function Timesheets({
   const [entries, setEntries] = useState([]);
   const [originalEntries, setOriginalEntries] = useState([]);
   const [editingCell, setEditingCell] = useState(null);
+  const [prefillAccepted, setPrefillAccepted] = useState(false);
 
   useEffect(() => {
     // Assign rowId to entries if not present (entries from API don't have rowId)
@@ -51,7 +54,27 @@ export default function Timesheets({
     }));
     setEntries(processedEntries);
     setOriginalEntries(processedEntries);
+    setPrefillAccepted(false);
   }, [initialEntries]);
+
+  /**
+   * When server sends suggestedEntries (timesheet empty), allow user to accept pre-fill.
+   */
+  const handleAcceptPrefill = () => {
+    if (!suggestedEntries.length) return;
+    const merged = suggestedEntries.map(s => ({
+      ...s,
+      id: s.id || `temp-prefill-${s.entryDate}`,
+      rowId: s.rowId || `prefill-${s.entryDate}`,
+    }));
+    setEntries(prev => [...prev, ...merged]);
+    setPrefillAccepted(true);
+    message.success(t('timesheets.prefillAccepted'));
+  };
+
+  const handleDismissPrefill = () => {
+    setPrefillAccepted(true);
+  };
 
   const hasUnsavedChanges = useMemo(() => {
     return JSON.stringify(entries) !== JSON.stringify(originalEntries);
@@ -359,6 +382,60 @@ export default function Timesheets({
           icon={<WarningOutlined />}
           message={<Text strong>{t('timesheets.unsavedChangesBanner')}</Text>}
           description={t('timesheets.unsavedChangesHint')}
+          style={{ borderRadius: 12 }}
+        />
+      )}
+
+      {/* Prefill suggestion banner */}
+      {isEditable && !prefillAccepted && suggestedEntries && suggestedEntries.length > 0 && (
+        <Alert
+          type="info"
+          showIcon
+          icon={<BulbOutlined />}
+          message={t('timesheets.prefillTitle')}
+          description={
+            <Space direction="vertical" style={{ width: '100%' }}>
+              <Text>{t('timesheets.prefillDesc', { count: suggestedEntries.length })}</Text>
+              <Space>
+                <Button type="primary" size="small" onClick={handleAcceptPrefill}>
+                  {t('timesheets.prefillAccept')}
+                </Button>
+                <Button size="small" onClick={handleDismissPrefill}>
+                  {t('common.cancel')}
+                </Button>
+              </Space>
+            </Space>
+          }
+          style={{ borderRadius: 12 }}
+        />
+      )}
+
+      {/* Reconciliation warnings */}
+      {reconciliation && reconciliation.warnings && reconciliation.warnings.length > 0 && (
+        <Alert
+          type="warning"
+          showIcon
+          icon={<WarningOutlined />}
+          message={
+            <Text strong>
+              {t('timesheets.reconciliationTitle', {
+                target: reconciliation.targetTotalHours,
+                declared: reconciliation.declaredTotalHours,
+              })}
+            </Text>
+          }
+          description={
+            <ul style={{ marginBottom: 0, paddingLeft: 20 }}>
+              {reconciliation.warnings.slice(0, 8).map((w, idx) => (
+                <li key={idx} style={{ color: w.severity === 'error' ? '#f87171' : w.severity === 'warn' ? '#fbbf24' : '#94a3b8' }}>
+                  {w.message}
+                </li>
+              ))}
+              {reconciliation.warnings.length > 8 && (
+                <li>+ {reconciliation.warnings.length - 8} ...</li>
+              )}
+            </ul>
+          }
           style={{ borderRadius: 12 }}
         />
       )}
