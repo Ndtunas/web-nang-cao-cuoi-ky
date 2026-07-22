@@ -12,7 +12,8 @@ import {
   message,
   theme,
   Result,
-  Avatar
+  Avatar,
+  Dropdown
 } from 'antd';
 import viVN from 'antd/locale/vi_VN';
 import enUS from 'antd/locale/en_US';
@@ -47,7 +48,7 @@ const { Header, Content, Sider } = Layout;
 
 // Role permissions mapping to tabs
 const ROLE_PERMISSIONS = {
-  ADMIN: ['DASHBOARD', 'EMPLOYEES', 'TIMESHEETS', 'APPROVALS', 'PAYROLL', 'CONFIG', 'AUDIT_LOGS'],
+  ADMIN: ['DASHBOARD', 'EMPLOYEES', 'APPROVALS', 'PAYROLL', 'CONFIG', 'AUDIT_LOGS'],
   HR_LEAD: ['DASHBOARD', 'EMPLOYEES', 'TIMESHEETS', 'APPROVALS', 'PAYROLL', 'CONFIG'],
   DIRECTOR: ['DASHBOARD', 'APPROVALS', 'PAYROLL'],
   CHAIRMAN: ['DASHBOARD', 'APPROVALS', 'PAYROLL'],
@@ -294,11 +295,19 @@ function App() {
     try {
       const validEntries = entries.filter(e => Number(e.hoursSpent) > 0);
       if (validEntries.length === 0) {
-        message.warning('Không có dòng chấm công hợp lệ (giờ > 0)');
+        message.warning(t('timesheets.msgNoValidEntries'));
         return;
       }
-      await api.timesheets.saveEntries({ entries: validEntries });
-      message.success('Lưu nháp timesheet thành công!');
+      await api.timesheets.saveEntries(validEntries.map(e => ({
+        timesheetId: e.timesheetId || timesheetData.id,
+        projectId: e.projectId,
+        taskId: e.taskId,
+        entryDate: e.entryDate,
+        hoursSpent: e.hoursSpent,
+        workType: e.workType,
+        description: e.description || '',
+      })));
+      message.success(t('timesheets.msgDraftSaved'));
       loadTimesheetData();
     } catch (e) {
       const msg = e.i18nKey ? t(e.i18nKey) : 'Error saving timesheet';
@@ -306,10 +315,24 @@ function App() {
     }
   };
 
-  const handleSubmitTimesheet = async () => {
+  const handleSubmitTimesheet = async (currentEntries) => {
     try {
+      const entriesToSave = currentEntries || timesheetEntries;
+      // Auto-save entries before submitting - only send entries with hours > 0
+      const validEntries = entriesToSave.filter(e => Number(e.hoursSpent) > 0);
+      if (validEntries.length > 0) {
+        await api.timesheets.saveEntries(validEntries.map(e => ({
+          timesheetId: timesheetData.id,
+          projectId: e.projectId,
+          taskId: e.taskId,
+          entryDate: e.entryDate,
+          hoursSpent: e.hoursSpent,
+          workType: e.workType,
+          description: e.description || '',
+        })));
+      }
       await api.timesheets.submit(timesheetData.id);
-      message.success('Đã nộp bảng chấm công tuần lên quản lý duyệt!');
+      message.success(t('timesheets.msgSubmitted'));
       loadTimesheetData();
     } catch (e) {
       const msg = e.i18nKey ? t(e.i18nKey) : 'Error submitting timesheet';
@@ -474,6 +497,7 @@ function App() {
           {/* Header */}
           <Header style={{
             height: 70,
+            lineHeight: 'normal',
             background: 'rgba(15, 23, 42, 0.7)',
             backdropFilter: 'blur(10px)',
             borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
@@ -495,22 +519,76 @@ function App() {
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
-              <Button icon={<GlobalOutlined />} onClick={toggleLanguage} size="small">
+              <Button
+                type="text"
+                icon={<GlobalOutlined style={{ color: '#94a3b8' }} />}
+                onClick={toggleLanguage}
+                style={{
+                  color: '#cbd5e1',
+                  borderRadius: 8,
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  fontWeight: 500
+                }}
+              >
                 {i18n.language === 'vi' ? 'EN' : 'VI'}
               </Button>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                <Avatar style={{ backgroundColor: '#6366f1', verticalAlign: 'middle', fontWeight: 600 }} size="default">
-                  {user.username.charAt(0).toUpperCase()}
-                </Avatar>
-                <div style={{ textAlign: 'left' }}>
-                  <div style={{ fontWeight: 600, fontSize: 13, color: '#f1f5f9' }}>{user.username}</div>
-                  <Tag color="indigo" style={{ margin: 0, fontSize: 10 }}>{user.role}</Tag>
+              <Dropdown
+                menu={{
+                  items: [
+                    {
+                      key: 'profile',
+                      label: (
+                        <div style={{ padding: '8px 12px', minWidth: 160 }}>
+                          <div style={{ fontWeight: 600, color: '#f1f5f9', fontSize: 14 }}>{user.username}</div>
+                          <div style={{ color: '#94a3b8', fontSize: 12, marginTop: 2 }}>
+                            {user.role}
+                          </div>
+                        </div>
+                      ),
+                      disabled: true,
+                    },
+                    {
+                      type: 'divider',
+                    },
+                    {
+                      key: 'logout',
+                      danger: true,
+                      icon: <LogoutOutlined />,
+                      label: t('nav.logout') || 'Đăng xuất',
+                      onClick: handleLogout,
+                    },
+                  ],
+                }}
+                trigger={['click']}
+                placement="bottomRight"
+              >
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 10,
+                  cursor: 'pointer',
+                  padding: '4px 8px',
+                  borderRadius: 8,
+                  transition: 'all 0.2s',
+                }}>
+                  <Avatar
+                    style={{
+                      background: 'linear-gradient(135deg, #6366f1 0%, #a855f7 100%)',
+                      fontWeight: 600,
+                      boxShadow: '0 2px 8px rgba(99, 102, 241, 0.3)'
+                    }}
+                    size="default"
+                  >
+                    {user.username.charAt(0).toUpperCase()}
+                  </Avatar>
+                  <div style={{ textAlign: 'left', display: 'flex', flexDirection: 'column', lineHeight: 1.1 }}>
+                    <span style={{ fontWeight: 600, fontSize: 13, color: '#f1f5f9' }}>{user.username}</span>
+                    <span style={{ fontSize: 10, color: '#94a3b8', marginTop: 2 }}>{user.role}</span>
+                  </div>
                 </div>
-                <Popconfirm title="Đăng xuất khỏi hệ thống?" onConfirm={handleLogout} okText="OK" cancelText="Hủy">
-                  <Button type="text" icon={<LogoutOutlined />} danger />
-                </Popconfirm>
-              </div>
+              </Dropdown>
             </div>
           </Header>
 
