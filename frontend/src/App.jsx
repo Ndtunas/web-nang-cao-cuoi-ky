@@ -11,7 +11,8 @@ import {
   Popconfirm,
   message,
   theme,
-  Result
+  Result,
+  Avatar
 } from 'antd';
 import viVN from 'antd/locale/vi_VN';
 import enUS from 'antd/locale/en_US';
@@ -498,9 +499,12 @@ function App() {
                 {i18n.language === 'vi' ? 'EN' : 'VI'}
               </Button>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontWeight: 600, fontSize: 13 }}>{user.username}</div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <Avatar style={{ backgroundColor: '#6366f1', verticalAlign: 'middle', fontWeight: 600 }} size="default">
+                  {user.username.charAt(0).toUpperCase()}
+                </Avatar>
+                <div style={{ textAlign: 'left' }}>
+                  <div style={{ fontWeight: 600, fontSize: 13, color: '#f1f5f9' }}>{user.username}</div>
                   <Tag color="indigo" style={{ margin: 0, fontSize: 10 }}>{user.role}</Tag>
                 </div>
                 <Popconfirm title="Đăng xuất khỏi hệ thống?" onConfirm={handleLogout} okText="OK" cancelText="Hủy">
