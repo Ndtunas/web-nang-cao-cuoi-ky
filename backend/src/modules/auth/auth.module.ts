@@ -13,7 +13,12 @@ import { JwtStrategy } from './strategies/jwt.strategy.js';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Employee, ApprovalRequest, ApprovalStepHistory]),
+    TypeOrmModule.forFeature([
+      User,
+      Employee,
+      ApprovalRequest,
+      ApprovalStepHistory,
+    ]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
       imports: [ConfigModule],

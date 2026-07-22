@@ -17,12 +17,17 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: configService.get<string>('JWT_SECRET', 'hrm-secret-key-2026'),
+      secretOrKey: configService.get<string>(
+        'JWT_SECRET',
+        'hrm-secret-key-2026',
+      ),
     });
   }
 
   async validate(payload: { sub: string; username: string }) {
-    const user = await this.userRepository.findOne({ where: { id: payload.sub } });
+    const user = await this.userRepository.findOne({
+      where: { id: payload.sub },
+    });
     if (!user) {
       throw new BusinessException('ERR_AUTH_001');
     }

@@ -1,5 +1,8 @@
 import { IsNotEmpty, IsString, Matches } from 'class-validator';
-import { PASSWORD_REGEX, PASSWORD_MESSAGE } from '../../../common/validators/validation-rules.js';
+import {
+  PASSWORD_REGEX,
+  PASSWORD_MESSAGE,
+} from '../../../common/validators/validation-rules.js';
 
 export class ResetPasswordRequestDto {
   @IsNotEmpty({ message: 'User ID không được để trống' })

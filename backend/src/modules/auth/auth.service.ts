@@ -55,7 +55,10 @@ export class AuthService {
     // 4. Tạo JWT Tokens (Access Token hết hạn sau 15 phút, Refresh Token hết hạn sau 7 ngày)
     const payload = { sub: user.id, username: user.username, role: user.role };
     const accessToken = this.jwtService.sign(payload, { expiresIn: '15m' });
-    const refreshToken = this.jwtService.sign({ sub: user.id, rnd: Math.random() }, { expiresIn: '7d' });
+    const refreshToken = this.jwtService.sign(
+      { sub: user.id, rnd: Math.random() },
+      { expiresIn: '7d' },
+    );
 
     user.refreshToken = refreshToken;
     await this.userRepository.save(user);
@@ -83,7 +86,10 @@ export class AuthService {
     }
 
     const oldPlainText = await this.getPlaintextBlockForUser(user, oldPassword);
-    const isOldPasswordValid = await bcrypt.compare(oldPlainText, user.passwordHash);
+    const isOldPasswordValid = await bcrypt.compare(
+      oldPlainText,
+      user.passwordHash,
+    );
     if (!isOldPasswordValid) {
       throw new BusinessException('ERR_AUTH_001'); // Mật khẩu cũ không đúng
     }
@@ -98,14 +104,22 @@ export class AuthService {
   /**
    * Yêu cầu reset mật khẩu (HR Lead gửi yêu cầu cần Admin duyệt, Admin reset trực tiếp)
    */
-  async requestPasswordReset(requestingUser: User, resetDto: ResetPasswordRequestDto) {
-    const targetUser = await this.userRepository.findOne({ where: { id: resetDto.targetUserId } });
+  async requestPasswordReset(
+    requestingUser: User,
+    resetDto: ResetPasswordRequestDto,
+  ) {
+    const targetUser = await this.userRepository.findOne({
+      where: { id: resetDto.targetUserId },
+    });
     if (!targetUser) {
       throw new BusinessException('ERR_AUTH_003');
     }
 
     // Tính toán password hash mới
-    const targetPlainText = await this.getPlaintextBlockForUser(targetUser, resetDto.newPassword);
+    const targetPlainText = await this.getPlaintextBlockForUser(
+      targetUser,
+      resetDto.newPassword,
+    );
     const newPasswordHash = await bcrypt.hash(targetPlainText, 10);
 
     // TH 1: Admin reset trực tiếp
@@ -125,7 +139,11 @@ export class AuthService {
         relations: { department: true },
       });
 
-      if (!employee || !employee.department || employee.department.deptCode !== 'HR') {
+      if (
+        !employee ||
+        !employee.department ||
+        employee.department.deptCode !== 'HR'
+      ) {
         throw new BusinessException('ERR_AUTH_002'); // Không có quyền
       }
 
@@ -143,7 +161,8 @@ export class AuthService {
 
       return {
         success: true,
-        message: 'Yêu cầu reset mật khẩu đã được tạo và gửi tới Admin phê duyệt',
+        message:
+          'Yêu cầu reset mật khẩu đã được tạo và gửi tới Admin phê duyệt',
       };
     }
 
@@ -158,7 +177,9 @@ export class AuthService {
       throw new BusinessException('ERR_AUTH_002');
     }
 
-    const request = await this.approvalRequestRepository.findOne({ where: { id: requestId } });
+    const request = await this.approvalRequestRepository.findOne({
+      where: { id: requestId },
+    });
     if (!request) {
       throw new BusinessException('ERR_APPROVAL_003');
     }
@@ -179,7 +200,9 @@ export class AuthService {
     const [targetUserId, newPasswordHash] = parts;
 
     // Cập nhật mật khẩu cho user đích
-    const targetUser = await this.userRepository.findOne({ where: { id: targetUserId } });
+    const targetUser = await this.userRepository.findOne({
+      where: { id: targetUserId },
+    });
     if (!targetUser) {
       throw new BusinessException('ERR_AUTH_003');
     }
@@ -211,8 +234,13 @@ export class AuthService {
   /**
    * Sinh chuỗi tổ hợp plaintext password cho User tương ứng
    */
-  private async getPlaintextBlockForUser(user: User, password: string): Promise<string> {
-    const employee = await this.employeeRepository.findOne({ where: { userId: user.id } });
+  private async getPlaintextBlockForUser(
+    user: User,
+    password: string,
+  ): Promise<string> {
+    const employee = await this.employeeRepository.findOne({
+      where: { userId: user.id },
+    });
     if (employee && employee.empCode && employee.dob) {
       const dobStr = this.formatDate(employee.dob);
       return `${employee.empCode}${password}${dobStr}`;
@@ -243,13 +271,26 @@ export class AuthService {
       const userId = payload.sub;
 
       const user = await this.userRepository.findOne({ where: { id: userId } });
-      if (!user || user.status !== 'ACTIVE' || user.refreshToken !== refreshToken) {
+      if (
+        !user ||
+        user.status !== 'ACTIVE' ||
+        user.refreshToken !== refreshToken
+      ) {
         throw new BusinessException('ERR_AUTH_001');
       }
 
-      const newPayload = { sub: user.id, username: user.username, role: user.role };
-      const newAccessToken = this.jwtService.sign(newPayload, { expiresIn: '15m' });
-      const newRefreshToken = this.jwtService.sign({ sub: user.id, rnd: Math.random() }, { expiresIn: '7d' });
+      const newPayload = {
+        sub: user.id,
+        username: user.username,
+        role: user.role,
+      };
+      const newAccessToken = this.jwtService.sign(newPayload, {
+        expiresIn: '15m',
+      });
+      const newRefreshToken = this.jwtService.sign(
+        { sub: user.id, rnd: Math.random() },
+        { expiresIn: '7d' },
+      );
 
       user.refreshToken = newRefreshToken;
       await this.userRepository.save(user);
