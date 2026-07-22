@@ -69,14 +69,27 @@ export class AuditLogInterceptor implements NestInterceptor {
                 entityId = request.user.id;
               }
             } else {
-              actionType = method === 'POST' ? 'CREATE' : method === 'DELETE' ? 'DELETE' : 'UPDATE';
-              
+              actionType =
+                method === 'POST'
+                  ? 'CREATE'
+                  : method === 'DELETE'
+                    ? 'DELETE'
+                    : 'UPDATE';
+
               // Tách tên bảng/entity từ URL
               const parts = url.split('?')[0].split('/');
               const v1Index = parts.indexOf('v1');
               if (v1Index !== -1 && parts[v1Index + 1]) {
                 entityName = parts[v1Index + 1];
-                if (parts[v1Index + 2] && !['entries', 'job-transfers', 'salary-adjustments', 'discipline-rewards'].includes(parts[v1Index + 2])) {
+                if (
+                  parts[v1Index + 2] &&
+                  ![
+                    'entries',
+                    'job-transfers',
+                    'salary-adjustments',
+                    'discipline-rewards',
+                  ].includes(parts[v1Index + 2])
+                ) {
                   entityId = parts[v1Index + 2];
                 }
               }
