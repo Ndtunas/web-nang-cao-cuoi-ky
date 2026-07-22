@@ -81,7 +81,8 @@ enum TransactionType {
   SALARY_ADJUSTMENT = 'SALARY_ADJUSTMENT',       // Tăng lương & Phụ cấp Group C (3 Cấp)
   DISCIPLINE_REWARD = 'DISCIPLINE_REWARD',       // Khen thưởng / Kỷ luật Group D (3 Cấp)
   OFFBOARDING = 'OFFBOARDING',                   // Thôi việc & Offboarding (3 Cấp)
-  PAYROLL_MONTHLY = 'PAYROLL_MONTHLY'            // Chốt Bảng lương tháng (2 Cấp)
+  PAYROLL_MONTHLY = 'PAYROLL_MONTHLY',           // Chốt Bảng lương tháng (2 Cấp)
+  RESET_PASSWORD = 'RESET_PASSWORD'              // Yêu cầu reset mật khẩu bởi HR Lead (1 Cấp - Admin duyệt)
 }
 ```
 
@@ -165,12 +166,15 @@ enum SystemActionType {
 | :--- | :---: | :--- | :--- |
 | `ERR_AUTH_001` | 401 | `error.auth.invalidCredentials` | Email hoặc mật khẩu không chính xác |
 | `ERR_AUTH_002` | 403 | `error.auth.accessDenied` | Không có quyền truy cập |
+| `ERR_AUTH_003` | 404 | `error.auth.userNotFound` | Không tìm thấy tài khoản/người dùng |
 | `ERR_EMP_001` | 400 | `error.employee.codeOrEmailExists` | Mã nhân viên hoặc Email đã tồn tại |
 | `ERR_EMP_002` | 400 | `error.employee.cannotTransferNoticePeriod` | Nhân viên đang trong thời gian báo trước nghỉ việc |
 | `ERR_LEAVE_001` | 400 | `error.leave.insufficientBalance` | Quỹ ngày phép năm không đủ |
 | `ERR_LEAVE_002` | 400 | `error.leave.invalidDateRange` | Ngày bắt đầu nghỉ phải nhỏ hơn hoặc bằng ngày kết thúc |
 | `ERR_APPROVAL_001` | 403 | `error.approval.unauthorizedLevel` | Không có thẩm quyền duyệt ở cấp hiện tại |
 | `ERR_APPROVAL_002` | 400 | `error.approval.alreadyRejected` | Phiếu yêu cầu đã bị từ chối trước đó |
+| `ERR_APPROVAL_003` | 404 | `error.approval.requestNotFound` | Không tìm thấy yêu cầu phê duyệt |
+| `ERR_APPROVAL_004` | 400 | `error.approval.invalidRequestData` | Dữ liệu yêu cầu phê duyệt không hợp lệ |
 | `ERR_TIMESHEET_001` | 400 | `error.timesheet.alreadyApproved` | Timesheet đã duyệt, không thể sửa |
 | `ERR_PAYROLL_001` | 400 | `error.payroll.alreadyFinalized` | Bảng lương tháng đã chốt, không thể tính lại |
 
@@ -180,8 +184,63 @@ enum SystemActionType {
 
 | Hạng Mục Kiểm Tra | Danh Sách Thành Phần Định Nghĩa | Trạng Thái Phủ Khớp |
 | :--- | :--- | :---: |
-| **System Enums** | `UserRole` (5), `EmployeeStatus` (6), `Gender` (3), `ContractType` (4), `LeaveType` (5), `WorkType` (5), `TransactionType` (9), `ApprovalStatus` (4), `PayrollStatus` (4), `SystemActionType` (8) | ✅ Đầy đủ 10/10 |
+| **System Enums** | `UserRole` (5), `EmployeeStatus` (6), `Gender` (3), `ContractType` (4), `LeaveType` (5), `WorkType` (5), `TransactionType` (10), `ApprovalStatus` (4), `PayrollStatus` (4), `SystemActionType` (8) | ✅ Đầy đủ 10/10 |
 | **Config Parameters** | `OT_RATE_WEEKDAY`, `OT_RATE_WEEKEND`, `OT_RATE_HOLIDAY`, `NIGHT_SHIFT_BONUS`, `STANDARD_WORK_DAYS_MONTH`, `STANDARD_WORK_HOURS_DAY` | ✅ Đầy đủ 7/7 |
 | **Validation Rules** | `empCode`, `email`, `phone`, `password`, `hoursSpent`, `taxCode` | ✅ Đầy đủ 6/6 |
 | **Error Codes & i18n** | `ERR_AUTH_001..002`, `ERR_EMP_001..002`, `ERR_LEAVE_001..002`, `ERR_APPROVAL_001..002`, `ERR_TIMESHEET_001`, `ERR_PAYROLL_001` | ✅ Đầy đủ 10/10 |
 | **DB Constraints** | Unique Index (`empCode`, `email`), Foreign Key Constraints (Cascade & Restrict) | ✅ Đầy đủ 100% |
+
+---
+
+## 🔒 6. Quy Định Mã Hóa Mật Khẩu (Password Hashing Specification)
+
+### 6.1 Chuỗi nguồn trước khi băm (Plaintext block):
+* **Đối với tài khoản liên kết Nhân viên (Employee):**
+  $$\text{Plaintext Block} = \text{emp\_code} + \text{password} + \text{dob}$$
+  * Trong đó:
+    * `emp_code`: Mã nhân viên (ví dụ: `DocLMG`, `VienTTN`).
+    * `password`: Mật khẩu do người dùng nhập.
+    * `dob`: Ngày sinh của nhân viên dưới định dạng `YYYY-MM-DD` (ví dụ: `1995-11-30`).
+  * Ví dụ: Mã NV `VienTTN`, ngày sinh `1995-11-30`, mật khẩu `Vien@123` $\rightarrow$ Chuỗi băm: `VienTTNVien@1231995-11-30`.
+* **Đối với tài khoản hệ thống không có hồ sơ Nhân viên (Ví dụ: `admin`):**
+  $$\text{Plaintext Block} = \text{username} + \text{password}$$
+  * Ví dụ: Username `admin`, mật khẩu `Admin@123` $\rightarrow$ Chuỗi băm: `adminAdmin@123`.
+
+### 6.2 Thuật toán băm:
+* Sử dụng **Bcrypt** với số vòng băm (salt rounds) mặc định là `10`.
+* *Lợi ích:* Đảm bảo tính riêng tư dữ liệu cao, Admin hệ thống khi truy cập DB cũng không thể đoán hoặc tự băm để đổi mật khẩu cho nhân sự nếu thiếu thông tin Ngày sinh hoặc Mã nhân viên của họ.
+
+---
+
+## 🔑 7. Quy trình Phê Duyệt Reset Mật Khẩu (Password Reset Workflow)
+
+1. **Thẩm quyền Reset:**
+   * **Admin:** Được phép reset mật khẩu trực tiếp cho bất kỳ tài khoản nào mà không cần qua phê duyệt.
+   * **HR Lead (Trưởng phòng Nhân sự):** Được phép tạo yêu cầu reset mật khẩu cho nhân viên.
+2. **Cơ chế Phê Duyệt:**
+   * Khi HR Lead khởi tạo yêu cầu reset mật khẩu của một nhân viên qua API, hệ thống sẽ **không cập nhật trực tiếp** vào bảng `users`.
+   * Thay vào đó, hệ thống tạo một **Approval Request** mới:
+     * `transaction_type`: `RESET_PASSWORD`
+     * `reference_entity_id`: ID của User cần reset mật khẩu.
+     * Cấp phê duyệt: **1 Cấp duyệt duy nhất bởi `ADMIN`**.
+   * Khi Admin nhấn duyệt (`APPROVE`) yêu cầu reset này, hệ thống sẽ thực hiện cập nhật password mới (mật khẩu tạm thời đã mã hóa theo quy tắc băm ở Mục 6) vào bảng `users`, đồng thời gửi thông báo.
+
+---
+
+## 🔑 8. Quy Định Bảo Mật Xác Thực (Authentication Security Specification)
+
+### 8.1 Thời gian sống của JWT (Token Lifetimes)
+* **Access Token**: Hết hạn sau **15 phút** (`expiresIn: '15m'`) nhằm hạn chế rủi ro nếu token bị đánh cắp.
+* **Refresh Token**: Hết hạn sau **7 ngày** (`expiresIn: '7d'`), dùng để xin cấp mới Access Token mà không cần đăng nhập lại.
+
+### 8.2 Cơ chế Làm mới & Xoay vòng Token (Sliding Window Rotation)
+* Khi gọi API `POST /api/v1/auth/refresh` kèm một Refresh Token hợp lệ:
+  * Hệ thống xác minh tính hợp lệ của Refresh Token.
+  * Sinh một Access Token mới và một Refresh Token mới (được ký kèm mã entropy ngẫu nhiên `rnd: Math.random()` để đảm bảo tính độc nhất).
+  * Cập nhật Refresh Token mới này vào database của user (`users.refresh_token`), vô hiệu hóa hoàn toàn Refresh Token cũ.
+* Cơ chế này giúp phát hiện hành vi tái sử dụng Refresh Token trái phép (Refresh Token Reuse Detection).
+
+### 8.3 Đăng xuất (Logout)
+* Khi người dùng thực hiện gọi API `POST /api/v1/auth/logout`, hệ thống sẽ cập nhật trường `refresh_token` trong bảng `users` về `NULL`, chấm dứt phiên làm việc và hủy hiệu lực của Refresh Token trên thiết bị.
+
+

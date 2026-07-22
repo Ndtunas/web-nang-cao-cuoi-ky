@@ -39,7 +39,9 @@ Hệ thống được thiết kế theo mô hình 3 lớp tiêu chuẩn:
 - `GET /api/v1/audit-logs/:id/diff` - Xem chi tiết so sánh khác biệt dữ liệu Trước vs. Sau (`oldData` vs. `newData`).
 
 ### 🔹 2.2 Mô-đun 2: Xác thực & Cấu hình Tham số Động (Auth & Dynamic Config - US-04 đến US-06)
-- `POST /api/v1/auth/login` - Đăng nhập tài khoản, nhận JWT Access Token.
+- `POST /api/v1/auth/login` - Đăng nhập tài khoản, nhận JWT Access Token và Refresh Token.
+- `POST /api/v1/auth/refresh` - Làm mới JWT Access Token sử dụng Refresh Token (Sliding Window Rotation).
+- `POST /api/v1/auth/logout` - Đăng xuất khỏi hệ thống, thu hồi/vô hiệu hóa hoàn toàn Refresh Token.
 - `GET /api/v1/auth/profile` - Lấy thông tin tài khoản đang đăng nhập.
 - `POST /api/v1/auth/change-password` - Đổi mật khẩu cá nhân.
 - `PATCH /api/v1/users/:id/role` - Phân quyền vai trò người dùng (Admin).
