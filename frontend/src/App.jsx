@@ -1,363 +1,605 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   ConfigProvider,
   Layout,
   Menu,
-  Table,
+  Input,
   Tag,
   Button,
-  Modal,
-  Form,
-  Input,
-  Select,
-  Row,
-  Col,
-  Card,
-  Statistic,
   Space,
   Popconfirm,
   message,
-  theme
+  theme,
+  Result
 } from 'antd';
 import viVN from 'antd/locale/vi_VN';
 import enUS from 'antd/locale/en_US';
 import {
   TeamOutlined,
-  BankOutlined,
   CalendarOutlined,
   DollarOutlined,
   SettingOutlined,
-  PlusOutlined,
-  EditOutlined,
-  DeleteOutlined,
   GlobalOutlined,
   SearchOutlined,
   CheckCircleOutlined,
-  ClockCircleOutlined,
-  UserAddOutlined,
-  DashboardOutlined
+  DashboardOutlined,
+  AuditOutlined,
+  LogoutOutlined
 } from '@ant-design/icons';
+import dayjs from 'dayjs';
+import weekOfYear from 'dayjs/plugin/weekOfYear.js';
+
+import { api } from './api.js';
+import Login from './components/Login.jsx';
+import Dashboard from './components/Dashboard.jsx';
+import EmployeeDirectory from './components/EmployeeDirectory.jsx';
+import Timesheets from './components/Timesheets.jsx';
+import ApprovalCenter from './components/ApprovalCenter.jsx';
+import Payroll from './components/Payroll.jsx';
+import SystemConfig from './components/SystemConfig.jsx';
+import AuditLogs from './components/AuditLogs.jsx';
+
+dayjs.extend(weekOfYear);
 
 const { Header, Content, Sider } = Layout;
 
-const initialEmployees = [
-  { key: '1', id: 'NV001', name: 'Nguyễn Văn An', email: 'an.nguyen@company.com', phone: '0901234567', department: 'Công nghệ thông tin', position: 'Kỹ sư Phần mềm', status: 'active' },
-  { key: '2', id: 'NV002', name: 'Trần Thị Bình', email: 'binh.tran@company.com', phone: '0912345678', department: 'Nhân sự', position: 'Trưởng phòng HR', status: 'active' },
-  { key: '3', id: 'NV003', name: 'Lê Hoàng Cường', email: 'cuong.le@company.com', phone: '0923456789', department: 'Kế toán', position: 'Chuyên viên Kế toán', status: 'onLeave' },
-  { key: '4', id: 'NV004', name: 'Phạm Minh Đức', email: 'duc.pham@company.com', phone: '0934567890', department: 'Marketing', position: 'Quản lý Marketing', status: 'active' },
-  { key: '5', id: 'NV005', name: 'Vũ Thị Giang', email: 'giang.vu@company.com', phone: '0945678901', department: 'Công nghệ thông tin', position: 'DevOps Engineer', status: 'terminated' }
-];
+// Role permissions mapping to tabs
+const ROLE_PERMISSIONS = {
+  ADMIN: ['DASHBOARD', 'EMPLOYEES', 'TIMESHEETS', 'APPROVALS', 'PAYROLL', 'CONFIG', 'AUDIT_LOGS'],
+  HR_LEAD: ['DASHBOARD', 'EMPLOYEES', 'TIMESHEETS', 'APPROVALS', 'PAYROLL', 'CONFIG'],
+  DIRECTOR: ['DASHBOARD', 'APPROVALS', 'PAYROLL'],
+  CHAIRMAN: ['DASHBOARD', 'APPROVALS', 'PAYROLL'],
+  DEPT_LEAD: ['DASHBOARD', 'TIMESHEETS', 'APPROVALS'],
+  EMPLOYEE: ['DASHBOARD', 'TIMESHEETS']
+};
 
 function App() {
   const { t, i18n } = useTranslation();
-  const [employees, setEmployees] = useState(initialEmployees);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingEmployee, setEditingEmployee] = useState(null);
-  const [form] = Form.useForm();
+  const [token, setToken] = useState(localStorage.getItem('token'));
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem('user') || 'null'));
+  const [activeTab, setActiveTab] = useState('DASHBOARD');
 
-  // Switch Antd Locale according to i18next
+  // Master lists
+  const [employees, setEmployees] = useState([]);
+  const [departments, setDepartments] = useState([]);
+  const [positions, setPositions] = useState([]);
+  const [workRates, setWorkRates] = useState([]);
+  const [approvalConfigs, setApprovalConfigs] = useState([]);
+
+  // Search filter
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // Timesheets variables
+  const [timesheetData, setTimesheetData] = useState(null);
+  const [timesheetEntries, setTimesheetEntries] = useState([]);
+  const [projectsList, setProjectsList] = useState([]);
+  const [tasksList, setTasksList] = useState([]);
+  const [selectedWeek, setSelectedWeek] = useState(dayjs().week());
+  const [selectedYear, setSelectedYear] = useState(dayjs().year());
+
+  // Approvals variables
+  const [pendingApprovals, setPendingApprovals] = useState([]);
+  const [mySubmittedApprovals, setMySubmittedApprovals] = useState([]);
+
+  // Audit Logs variables
+  const [auditLogs, setAuditLogs] = useState([]);
+  const [auditActionFilter, setAuditActionFilter] = useState('');
+  const [auditEntityFilter, setAuditEntityFilter] = useState('');
+
+  // Payroll variables
+  const [payrollMonth, setPayrollMonth] = useState(dayjs().month() + 1);
+  const [payrollYear, setPayrollYear] = useState(dayjs().year());
+  const [payrollSalaries, setPayrollSalaries] = useState([]);
+  const [calculatingPayroll, setCalculatingPayroll] = useState(false);
+
   const antdLocale = i18n.language === 'vi' ? viVN : enUS;
+
+  useEffect(() => {
+    if (token) {
+      api.auth.getProfile()
+        .then(profile => {
+          setUser(profile);
+          const allowed = ROLE_PERMISSIONS[profile.role] || ['DASHBOARD'];
+          if (!allowed.includes(activeTab)) {
+            setActiveTab(allowed[0]);
+          }
+        })
+        .catch(() => {
+          handleLogout();
+        });
+    }
+  }, [token]);
+
+  useEffect(() => {
+    if (!token || !user) return;
+    
+    const allowed = ROLE_PERMISSIONS[user.role] || [];
+    if (!allowed.includes(activeTab)) return;
+
+    if (activeTab === 'EMPLOYEES') {
+      loadEmployeesData();
+    } else if (activeTab === 'TIMESHEETS') {
+      loadTimesheetData();
+    } else if (activeTab === 'APPROVALS') {
+      loadApprovalsData();
+    } else if (activeTab === 'PAYROLL') {
+      loadPayrollData();
+    } else if (activeTab === 'CONFIG') {
+      loadConfigData();
+    } else if (activeTab === 'AUDIT_LOGS') {
+      loadAuditLogs();
+    } else if (activeTab === 'DASHBOARD') {
+      loadDashboardData();
+    }
+  }, [activeTab, token, user, selectedWeek, selectedYear, payrollMonth, payrollYear, auditActionFilter, auditEntityFilter]);
+
+  const loadDashboardData = async () => {
+    try {
+      const emps = await api.employees.getAll();
+      setEmployees(emps);
+      if (['ADMIN', 'DIRECTOR', 'CHAIRMAN', 'DEPT_LEAD'].includes(user.role)) {
+        const pending = await api.approvals.getPendingMyLevel();
+        setPendingApprovals(pending);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const loadEmployeesData = async () => {
+    try {
+      const [emps, depts, posts] = await Promise.all([
+        api.employees.getAll(),
+        fetch('/api/v1/departments', { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.json()),
+        fetch('/api/v1/positions', { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.json())
+      ]);
+      setEmployees(emps);
+      setDepartments(depts.data || depts);
+      setPositions(posts.data || posts);
+    } catch (e) {
+      message.error('Failed to load employee master lists');
+    }
+  };
+
+  const loadTimesheetData = async () => {
+    try {
+      const data = await api.timesheets.getMyWeekly(selectedWeek, selectedYear);
+      setTimesheetData(data.timesheet);
+      setTimesheetEntries(data.entries);
+      setProjectsList(data.projects);
+      setTasksList(data.tasks);
+    } catch (e) {
+      message.error('Failed to load weekly timesheets');
+    }
+  };
+
+  const loadApprovalsData = async () => {
+    try {
+      const [pending, submitted] = await Promise.all([
+        api.approvals.getPendingMyLevel(),
+        api.approvals.getMySubmitted()
+      ]);
+      setPendingApprovals(pending);
+      setMySubmittedApprovals(submitted);
+    } catch (e) {
+      message.error('Failed to load approvals lists');
+    }
+  };
+
+  const loadPayrollData = async () => {
+    try {
+      const salaries = await api.payroll.getSalaries(payrollMonth, payrollYear);
+      setPayrollSalaries(salaries);
+    } catch (e) {
+      setPayrollSalaries([]);
+    }
+  };
+
+  const loadConfigData = async () => {
+    try {
+      const [rates, configs] = await Promise.all([
+        api.configs.getWorkRates(),
+        api.configs.getApprovalConfigs()
+      ]);
+      setWorkRates(rates);
+      setApprovalConfigs(configs);
+    } catch (e) {
+      message.error('Failed to load configurations');
+    }
+  };
+
+  const loadAuditLogs = async () => {
+    try {
+      const logs = await api.auditLogs.getAll({
+        actionType: auditActionFilter,
+        entityName: auditEntityFilter
+      });
+      setAuditLogs(logs);
+    } catch (e) {
+      message.error('Failed to load system audit logs');
+    }
+  };
+
+  const handleLogin = async (values) => {
+    try {
+      const response = await api.auth.login(values.username, values.password);
+      setToken(response.accessToken);
+      setUser(response.user);
+      message.success(i18n.language === 'vi' ? 'Đăng nhập thành công!' : 'Logged in successfully!');
+      
+      const allowed = ROLE_PERMISSIONS[response.user.role] || ['DASHBOARD'];
+      setActiveTab(allowed[0]);
+    } catch (error) {
+      const msg = error.i18nKey ? t(error.i18nKey) : (error.message || 'Login failed');
+      message.error(msg);
+    }
+  };
+
+  const handleLogout = async () => {
+    await api.auth.logout();
+    setToken(null);
+    setUser(null);
+    setActiveTab('DASHBOARD');
+  };
+
+  const handleSaveEmployee = async (values) => {
+    try {
+      if (values.id) {
+        await api.employees.updatePersonalInfo(values.id, values);
+        message.success(t('modal.titleEdit') + ' thành công!');
+      } else {
+        await api.employees.create(values);
+        message.success(t('modal.titleAdd') + ' thành công!');
+      }
+      loadEmployeesData();
+    } catch (error) {
+      const msg = error.i18nKey ? t(error.i18nKey) : 'Error saving employee profile';
+      message.error(msg);
+    }
+  };
+
+  const handleTransfer = async (values) => {
+    try {
+      await api.employees.submitJobTransfer(values);
+      message.success('Đã gửi yêu cầu điều chuyển công tác lên ma trận duyệt!');
+      loadEmployeesData();
+    } catch (error) {
+      const msg = error.i18nKey ? t(error.i18nKey) : 'Error submitting transfer';
+      message.error(msg);
+    }
+  };
+
+  const handleAdjustSalary = async (values) => {
+    try {
+      await api.employees.submitSalaryAdjustment(values);
+      message.success('Đã gửi yêu cầu điều chỉnh lương lên ma trận duyệt!');
+      loadEmployeesData();
+    } catch (error) {
+      message.error('Error submitting salary adjustments');
+    }
+  };
+
+  const handleDiscipline = async (values) => {
+    try {
+      await api.employees.submitDisciplineReward(values);
+      message.success('Ghi nhận khen thưởng/kỷ luật thành công!');
+    } catch (error) {
+      message.error('Error submitting discipline/reward');
+    }
+  };
+
+  const handleSaveTimesheetDraft = async (entries) => {
+    try {
+      const validEntries = entries.filter(e => Number(e.hoursSpent) > 0);
+      if (validEntries.length === 0) {
+        message.warning('Không có dòng chấm công hợp lệ (giờ > 0)');
+        return;
+      }
+      await api.timesheets.saveEntries({ entries: validEntries });
+      message.success('Lưu nháp timesheet thành công!');
+      loadTimesheetData();
+    } catch (e) {
+      const msg = e.i18nKey ? t(e.i18nKey) : 'Error saving timesheet';
+      message.error(msg);
+    }
+  };
+
+  const handleSubmitTimesheet = async () => {
+    try {
+      await api.timesheets.submit(timesheetData.id);
+      message.success('Đã nộp bảng chấm công tuần lên quản lý duyệt!');
+      loadTimesheetData();
+    } catch (e) {
+      const msg = e.i18nKey ? t(e.i18nKey) : 'Error submitting timesheet';
+      message.error(msg);
+    }
+  };
+
+  const handleApprove = async (id, comment) => {
+    try {
+      await api.approvals.approve(id, comment);
+      message.success('Đã duyệt phiếu yêu cầu thành công!');
+      loadApprovalsData();
+    } catch (error) {
+      const msg = error.i18nKey ? t(error.i18nKey) : 'Error approving request';
+      message.error(msg);
+    }
+  };
+
+  const handleReject = async (id, comment) => {
+    try {
+      await api.approvals.reject(id, comment);
+      message.success('Đã từ chối phiếu yêu cầu!');
+      loadApprovalsData();
+    } catch (error) {
+      const msg = error.i18nKey ? t(error.i18nKey) : 'Error rejecting request';
+      message.error(msg);
+    }
+  };
+
+  const handleUpdateWorkRate = async (key, value) => {
+    try {
+      await api.configs.updateWorkRate(key, value);
+      message.success('Cập nhật hệ số công thành công!');
+      loadConfigData();
+    } catch (e) {
+      message.error('Failed to update config key');
+    }
+  };
+
+  const handleUpdateApprovalConfig = async (type, levels) => {
+    try {
+      await api.configs.updateApprovalConfig(type, levels);
+      message.success('Cập nhật ma trận duyệt thành công!');
+      loadConfigData();
+    } catch (e) {
+      message.error('Failed to update approval levels');
+    }
+  };
+
+  const handleCalculatePayroll = async () => {
+    setCalculatingPayroll(true);
+    try {
+      const salaries = await api.payroll.calculate(payrollMonth, payrollYear);
+      setPayrollSalaries(salaries);
+      message.success(`Đã tính toán xong bảng lương tháng ${payrollMonth}/${payrollYear}!`);
+    } catch (error) {
+      const msg = error.i18nKey ? t(error.i18nKey) : 'Error calculating payroll';
+      message.error(msg);
+    } finally {
+      setCalculatingPayroll(false);
+    }
+  };
 
   const toggleLanguage = () => {
     const nextLang = i18n.language === 'vi' ? 'en' : 'vi';
     i18n.changeLanguage(nextLang);
   };
 
-  const handleAddOrEdit = (values) => {
-    if (editingEmployee) {
-      setEmployees(employees.map(emp => emp.key === editingEmployee.key ? { ...emp, ...values } : emp));
-      message.success(t('modal.titleEdit') + ' thành công!');
-    } else {
-      const newEmp = {
-        key: Date.now().toString(),
-        id: `NV00${employees.length + 1}`,
-        ...values
-      };
-      setEmployees([...employees, newEmp]);
-      message.success(t('modal.titleAdd') + ' thành công!');
+  const checkAccess = (tab) => {
+    if (!user) return false;
+    const allowed = ROLE_PERMISSIONS[user.role] || [];
+    return allowed.includes(tab);
+  };
+
+  const renderWithGuard = (tab, element) => {
+    if (!checkAccess(tab)) {
+      return (
+        <Result
+          status="403"
+          title="403"
+          subTitle={t('error.auth.accessDenied')}
+          extra={<Button type="primary" onClick={() => setActiveTab('DASHBOARD')}>Back to Dashboard</Button>}
+        />
+      );
     }
-    setIsModalOpen(false);
-    form.resetFields();
-    setEditingEmployee(null);
+    return element;
   };
 
-  const handleDelete = (key) => {
-    setEmployees(employees.filter(emp => emp.key !== key));
-    message.success(t('employeeTable.delete') + ' thành công!');
-  };
-
-  const openAddModal = () => {
-    setEditingEmployee(null);
-    form.resetFields();
-    setIsModalOpen(true);
-  };
-
-  const openEditModal = (record) => {
-    setEditingEmployee(record);
-    form.setFieldsValue(record);
-    setIsModalOpen(true);
-  };
-
-  const filteredEmployees = employees.filter(emp =>
-    emp.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    emp.department.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    emp.id.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  const columns = [
-    {
-      title: t('employeeTable.id'),
-      dataIndex: 'id',
-      key: 'id',
-      render: (text) => <strong>{text}</strong>
-    },
-    {
-      title: t('employeeTable.name'),
-      dataIndex: 'name',
-      key: 'name',
-      render: (text, record) => (
-        <div>
-          <div style={{ fontWeight: 600 }}>{text}</div>
-          <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.45)' }}>{record.email}</div>
-        </div>
-      )
-    },
-    {
-      title: t('employeeTable.department'),
-      dataIndex: 'department',
-      key: 'department'
-    },
-    {
-      title: t('employeeTable.position'),
-      dataIndex: 'position',
-      key: 'position'
-    },
-    {
-      title: t('employeeTable.status'),
-      dataIndex: 'status',
-      key: 'status',
-      render: (status) => {
-        let color = 'green';
-        if (status === 'onLeave') color = 'gold';
-        if (status === 'terminated') color = 'red';
-        return (
-          <Tag color={color} key={status}>
-            {t(`employeeTable.${status}`)}
-          </Tag>
-        );
-      }
-    },
-    {
-      title: t('employeeTable.actions'),
-      key: 'actions',
-      render: (_, record) => (
-        <Space size="middle">
-          <Button
-            type="text"
-            icon={<EditOutlined style={{ color: '#6366f1' }} />}
-            onClick={() => openEditModal(record)}
-          />
-          <Popconfirm
-            title="Xác nhận xóa"
-            description="Bạn có chắc chắn muốn xóa nhân viên này không?"
-            onConfirm={() => handleDelete(record.key)}
-            okText="Xóa"
-            cancelText="Hủy"
-          >
-            <Button type="text" danger icon={<DeleteOutlined />} />
-          </Popconfirm>
-        </Space>
-      )
-    }
-  ];
+  if (!token || !user) {
+    return <Login onLogin={handleLogin} />;
+  }
 
   return (
     <ConfigProvider
-      locale={antdLocale}
       theme={{
         algorithm: theme.darkAlgorithm,
         token: {
           colorPrimary: '#6366f1',
-          borderRadius: 8
+          borderRadius: 12,
+          fontFamily: 'Plus Jakarta Sans, sans-serif'
         }
       }}
+      locale={antdLocale}
     >
-      <Layout style={{ minHeight: '100vh' }}>
-        {/* Sidebar */}
-        <Sider width={250} style={{ background: '#0f172a', borderRight: '1px solid rgba(255,255,255,0.1)' }}>
-          <div style={{ padding: '20px 16px', display: 'flex', alignItems: 'center', gap: 12, borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-            <div style={{ width: 36, height: 36, background: 'linear-gradient(135deg, #6366f1 0%, #a855f7 100%)', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 18 }}>
-              <TeamOutlined />
+      <Layout style={{ minHeight: '100vh', backgroundColor: '#0f172a' }}>
+        {/* Sider Sidebar Navigation */}
+        <Sider width={260} style={{
+          background: 'rgba(15, 23, 42, 0.9)',
+          backdropFilter: 'blur(12px)',
+          borderRight: '1px solid rgba(255, 255, 255, 0.1)'
+        }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 12,
+            padding: '24px 20px',
+            borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
+          }}>
+            <div style={{
+              width: 36,
+              height: 36,
+              background: 'linear-gradient(135deg, #6366f1 0%, #a855f7 100%)',
+              borderRadius: 10,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'white',
+              fontWeight: 'bold',
+              boxShadow: '0 4px 10px rgba(99, 102, 241, 0.4)'
+            }}>
+              H
             </div>
-            <span style={{ fontSize: 18, fontWeight: 700, color: '#fff' }}>Phenikaa HRM</span>
+            <span style={{
+              fontWeight: 800,
+              fontSize: '1.1rem',
+              letterSpacing: '0.05em',
+              background: 'linear-gradient(135deg, #fff 0%, #cbd5e1 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent'
+            }}>HRM SYSTEM</span>
           </div>
 
           <Menu
             theme="dark"
             mode="inline"
-            defaultSelectedKeys={['employees']}
-            style={{ background: 'transparent', marginTop: 16 }}
+            selectedKeys={[activeTab]}
+            onClick={({ key }) => setActiveTab(key)}
+            style={{ background: 'transparent', padding: '16px 8px' }}
             items={[
-              { key: 'dashboard', icon: <DashboardOutlined />, label: t('nav.dashboard') },
-              { key: 'employees', icon: <TeamOutlined />, label: t('nav.employees') },
-              { key: 'departments', icon: <BankOutlined />, label: t('nav.departments') },
-              { key: 'attendance', icon: <CalendarOutlined />, label: t('nav.attendance') },
-              { key: 'payroll', icon: <DollarOutlined />, label: t('nav.payroll') },
-              { key: 'settings', icon: <SettingOutlined />, label: t('nav.settings') }
-            ]}
+              checkAccess('DASHBOARD') && { key: 'DASHBOARD', icon: <DashboardOutlined />, label: t('nav.dashboard') },
+              checkAccess('EMPLOYEES') && { key: 'EMPLOYEES', icon: <TeamOutlined />, label: t('nav.employees') },
+              checkAccess('TIMESHEETS') && { key: 'TIMESHEETS', icon: <CalendarOutlined />, label: t('nav.attendance') },
+              checkAccess('APPROVALS') && { key: 'APPROVALS', icon: <CheckCircleOutlined />, label: 'Phê duyệt' },
+              checkAccess('PAYROLL') && { key: 'PAYROLL', icon: <DollarOutlined />, label: t('nav.payroll') },
+              checkAccess('CONFIG') && { key: 'CONFIG', icon: <SettingOutlined />, label: t('nav.settings') },
+              checkAccess('AUDIT_LOGS') && { key: 'AUDIT_LOGS', icon: <AuditOutlined />, label: 'Audit Logs' }
+            ].filter(Boolean)}
           />
         </Sider>
 
-        <Layout>
+        <Layout style={{ background: 'transparent' }}>
           {/* Header */}
-          <Header style={{ background: '#1e293b', padding: '0 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-            <Input
-              prefix={<SearchOutlined />}
-              placeholder={t('header.searchPlaceholder')}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              style={{ width: 300 }}
-            />
+          <Header style={{
+            height: 70,
+            background: 'rgba(15, 23, 42, 0.7)',
+            backdropFilter: 'blur(10px)',
+            borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+            padding: '0 32px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+              {activeTab === 'EMPLOYEES' && (
+                <Input
+                  prefix={<SearchOutlined />}
+                  placeholder={t('header.searchPlaceholder')}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  style={{ width: 280, borderRadius: 20, background: 'rgba(30, 41, 59, 0.6)' }}
+                />
+              )}
+            </div>
 
-            <Button icon={<GlobalOutlined />} onClick={toggleLanguage}>
-              {i18n.language === 'vi' ? 'VI (Tiếng Việt)' : 'EN (English)'}
-            </Button>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
+              <Button icon={<GlobalOutlined />} onClick={toggleLanguage} size="small">
+                {i18n.language === 'vi' ? 'EN' : 'VI'}
+              </Button>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontWeight: 600, fontSize: 13 }}>{user.username}</div>
+                  <Tag color="indigo" style={{ margin: 0, fontSize: 10 }}>{user.role}</Tag>
+                </div>
+                <Popconfirm title="Đăng xuất khỏi hệ thống?" onConfirm={handleLogout} okText="OK" cancelText="Hủy">
+                  <Button type="text" icon={<LogoutOutlined />} danger />
+                </Popconfirm>
+              </div>
+            </div>
           </Header>
 
-          {/* Content Body */}
-          <Content style={{ margin: '24px', display: 'flex', flexDirection: 'column', gap: 24 }}>
-            {/* Stats Cards */}
-            <Row gutter={[16, 16]}>
-              <Col xs={24} sm={12} md={6}>
-                <Card style={{ background: '#1e293b' }}>
-                  <Statistic
-                    title={t('stats.totalEmployees')}
-                    value={employees.length}
-                    prefix={<TeamOutlined style={{ color: '#6366f1' }} />}
-                  />
-                </Card>
-              </Col>
-              <Col xs={24} sm={12} md={6}>
-                <Card style={{ background: '#1e293b' }}>
-                  <Statistic
-                    title={t('stats.activeEmployees')}
-                    value={employees.filter(e => e.status === 'active').length}
-                    prefix={<CheckCircleOutlined style={{ color: '#10b981' }} />}
-                  />
-                </Card>
-              </Col>
-              <Col xs={24} sm={12} md={6}>
-                <Card style={{ background: '#1e293b' }}>
-                  <Statistic
-                    title={t('stats.onLeave')}
-                    value={employees.filter(e => e.status === 'onLeave').length}
-                    prefix={<ClockCircleOutlined style={{ color: '#f59e0b' }} />}
-                  />
-                </Card>
-              </Col>
-              <Col xs={24} sm={12} md={6}>
-                <Card style={{ background: '#1e293b' }}>
-                  <Statistic
-                    title={t('stats.newHires')}
-                    value={3}
-                    prefix={<UserAddOutlined style={{ color: '#a855f7' }} />}
-                  />
-                </Card>
-              </Col>
-            </Row>
-
-            {/* Employee Directory Section */}
-            <Card
-              title={t('employeeTable.title')}
-              extra={
-                <Button type="primary" icon={<PlusOutlined />} onClick={openAddModal}>
-                  {t('employeeTable.addEmployee')}
-                </Button>
-              }
-              style={{ background: '#1e293b' }}
-            >
-              <Table
-                columns={columns}
-                dataSource={filteredEmployees}
-                pagination={{ pageSize: 5 }}
+          {/* Render Active View */}
+          <Content style={{ padding: 32, overflowY: 'auto' }}>
+            {activeTab === 'DASHBOARD' && renderWithGuard('DASHBOARD', (
+              <Dashboard
+                employees={employees}
+                pendingApprovals={pendingApprovals}
+                onOpenDecisionModal={(record) => {
+                  // Delegate opening approval decision modal directly
+                  setActiveTab('APPROVALS');
+                }}
+                onNavigate={setActiveTab}
+                t={t}
               />
-            </Card>
+            ))}
 
-            {/* Modal Add/Edit */}
-            <Modal
-              title={editingEmployee ? t('modal.titleEdit') : t('modal.titleAdd')}
-              open={isModalOpen}
-              onCancel={() => setIsModalOpen(false)}
-              onOk={() => form.submit()}
-              okText={t('modal.save')}
-              cancelText={t('modal.cancel')}
-            >
-              <Form
-                form={form}
-                layout="vertical"
-                onFinish={handleAddOrEdit}
-                initialValues={{ status: 'active' }}
-              >
-                <Form.Item
-                  name="name"
-                  label={t('modal.fields.name')}
-                  rules={[{ required: true, message: 'Vui lòng nhập họ và tên!' }]}
-                >
-                  <Input placeholder="Nhập họ và tên" />
-                </Form.Item>
+            {activeTab === 'EMPLOYEES' && renderWithGuard('EMPLOYEES', (
+              <EmployeeDirectory
+                employees={employees}
+                departments={departments}
+                positions={positions}
+                searchQuery={searchQuery}
+                onSaveEmployee={handleSaveEmployee}
+                onTransfer={handleTransfer}
+                onAdjustSalary={handleAdjustSalary}
+                onDiscipline={handleDiscipline}
+                t={t}
+              />
+            ))}
 
-                <Form.Item
-                  name="email"
-                  label={t('modal.fields.email')}
-                  rules={[{ required: true, type: 'email', message: 'Vui lòng nhập email hợp lệ!' }]}
-                >
-                  <Input placeholder="email@company.com" />
-                </Form.Item>
+            {activeTab === 'TIMESHEETS' && renderWithGuard('TIMESHEETS', (
+              <Timesheets
+                timesheetData={timesheetData}
+                timesheetEntries={timesheetEntries}
+                projectsList={projectsList}
+                tasksList={tasksList}
+                selectedWeek={selectedWeek}
+                setSelectedWeek={setSelectedWeek}
+                selectedYear={selectedYear}
+                setSelectedYear={setSelectedYear}
+                onSaveTimesheetDraft={handleSaveTimesheetDraft}
+                onSubmitTimesheet={handleSubmitTimesheet}
+                t={t}
+              />
+            ))}
 
-                <Form.Item
-                  name="phone"
-                  label={t('modal.fields.phone')}
-                  rules={[{ required: true, message: 'Vui lòng nhập số điện thoại!' }]}
-                >
-                  <Input placeholder="0901234567" />
-                </Form.Item>
+            {activeTab === 'APPROVALS' && renderWithGuard('APPROVALS', (
+              <ApprovalCenter
+                pendingApprovals={pendingApprovals}
+                mySubmittedApprovals={mySubmittedApprovals}
+                onApprove={handleApprove}
+                onReject={handleReject}
+                onGetHistory={api.approvals.getHistory}
+                t={t}
+              />
+            ))}
 
-                <Form.Item
-                  name="department"
-                  label={t('modal.fields.department')}
-                  rules={[{ required: true, message: 'Vui lòng chọn phòng ban!' }]}
-                >
-                  <Select placeholder="Chọn phòng ban">
-                    <Select.Option value="Công nghệ thông tin">Công nghệ thông tin</Select.Option>
-                    <Select.Option value="Nhân sự">Nhân sự</Select.Option>
-                    <Select.Option value="Kế toán">Kế toán</Select.Option>
-                    <Select.Option value="Marketing">Marketing</Select.Option>
-                  </Select>
-                </Form.Item>
+            {activeTab === 'PAYROLL' && renderWithGuard('PAYROLL', (
+              <Payroll
+                payrollMonth={payrollMonth}
+                setPayrollMonth={setPayrollMonth}
+                payrollYear={payrollYear}
+                setPayrollYear={setPayrollYear}
+                payrollSalaries={payrollSalaries}
+                calculatingPayroll={calculatingPayroll}
+                onCalculatePayroll={handleCalculatePayroll}
+                t={t}
+              />
+            ))}
 
-                <Form.Item
-                  name="position"
-                  label={t('modal.fields.position')}
-                  rules={[{ required: true, message: 'Vui lòng nhập chức vụ!' }]}
-                >
-                  <Input placeholder="Nhập chức vụ" />
-                </Form.Item>
+            {activeTab === 'CONFIG' && renderWithGuard('CONFIG', (
+              <SystemConfig
+                workRates={workRates}
+                approvalConfigs={approvalConfigs}
+                onUpdateWorkRate={handleUpdateWorkRate}
+                onUpdateApprovalConfig={handleUpdateApprovalConfig}
+                t={t}
+              />
+            ))}
 
-                <Form.Item
-                  name="status"
-                  label={t('modal.fields.status')}
-                  rules={[{ required: true }]}
-                >
-                  <Select>
-                    <Select.Option value="active">{t('employeeTable.active')}</Select.Option>
-                    <Select.Option value="onLeave">{t('employeeTable.onLeave')}</Select.Option>
-                    <Select.Option value="terminated">{t('employeeTable.terminated')}</Select.Option>
-                  </Select>
-                </Form.Item>
-              </Form>
-            </Modal>
+            {activeTab === 'AUDIT_LOGS' && renderWithGuard('AUDIT_LOGS', (
+              <AuditLogs
+                auditLogs={auditLogs}
+                auditActionFilter={auditActionFilter}
+                setAuditActionFilter={setAuditActionFilter}
+                auditEntityFilter={auditEntityFilter}
+                setAuditEntityFilter={setAuditEntityFilter}
+                onGetDiff={api.auditLogs.getDiff}
+                t={t}
+              />
+            ))}
           </Content>
         </Layout>
       </Layout>
