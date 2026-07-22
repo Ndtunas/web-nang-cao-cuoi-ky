@@ -238,15 +238,15 @@ npm test
 | approval | ✅ 100% | Engine + DB-driven levels + final actions |
 | employees | ✅ 100% | 4 groups + history + promote |
 | payroll | ⚠️ 95% | + calculate + salaries + approve + my-payslip (US-25/26) |
-| departments | ⚠️ 90% | thiếu POST/PATCH/DELETE (chỉ GET) |
-| positions | ⚠️ 90% | thiếu POST/PATCH/DELETE |
-| **projects** | ✅ 100% | CRUD + tasks + labor-hours |
-| attendance | ❌ 0% | Module TRỐNG (chưa làm) |
-| **leave-requests** | ✅ 95% | submit + my-requests + cancel; auto-route 1-or-2 level theo số ngày (US-24a/b) |
-| **onboarding** | ✅ 95% | initiate + tasks cho HR/IT/Admin + promote (US-15..18) |
-| **offboarding** | ✅ 95% | resignation-request + tasks queue + auto create khi APPROVED (US-19..22) |
-| notifications | ❌ 0% | Module TRỐNG (chưa làm) |
-| **Frontend** | ⚠️ 95% | + Dashboard live stats; + Leave / Onboarding / Offboarding tabs; + Payroll approve + my-payslip |
+| departments | ✅ 100% | + CRUD (GET/POST/PATCH/DELETE) |
+| positions | ✅ 100% | + CRUD (GET/POST/PATCH/DELETE) |
+| projects | ✅ 100% | CRUD + tasks + labor-hours |
+| attendance | ✅ 100% | check-in/out + today + history + stats + all (US chấm công) |
+| leave-requests | ✅ 95% | submit + my-requests + cancel; auto-route 1-or-2 level theo số ngày (US-24a/b) |
+| onboarding | ✅ 95% | initiate + tasks cho HR/IT/Admin + promote (US-15..18) |
+| offboarding | ✅ 95% | resignation-request + tasks queue + auto create khi APPROVED (US-19..22) |
+| **notifications** | ✅ 100% | CRUD + bell dropdown + polling 5s (US-14) |
+| **Frontend** | ⚠️ 95% | + Dashboard live stats; + Leave / Onboarding / Offboarding / Attendance tabs; + Payroll approve + my-payslip; + NotificationBell
 
 ---
 
@@ -263,13 +263,24 @@ npm test
 6. **`feat(offboarding)`**: resignation flow + task queue + auto-Terminated khi duyệt (US-19..22).
 7. **`feat(onboarding)`**: initiate + tasks cho HR/IT/Admin + promotion OFFICIAL (US-15..18).
 
-**Coverage hiện tại: 23/26 USR end-to-end (88%)**
+**Coverage hiện tại: 26/26 USR end-to-end (100%)**
 - US-01..14 ✅
-- US-15..22 ✅ (mới P2)
+- US-15..22 ✅
 - US-23a..d ✅
-- US-24a..b ✅ (mới P2)
-- US-25..26 ✅ (mới P1)
-- ❌ Còn: notifications (US-14 đã có logic noti mức ApprovalService, thiếu bell icon/panel UI).
+- US-24a..b ✅
+- US-25..26 ✅
+- ✅ Notifications end-to-end (bell dropdown + polling 5s + mark-read) — US-14
+- ✅ Attendance end-to-end (check-in/out + lịch sử + thống kê) — US chấm công
+- ✅ Department + Position CRUD (Admin) — bổ sung master data
+
+### P3 (7 commits) — bổ sung nghiệp vụ còn thiếu → 100% USR
+8. **`feat(notifications)`**: backend service/controller + Notification entity wire + bell dropdown polling 5s (US-14).
+9. **`feat(approval)`**: notify next-level approvers + notify requester of approve/reject (US-14).
+10. **`feat(attendance)`**: check-in/out + today + history + stats-month + admin list (US chấm công).
+11. **`feat(attendance-ui)`**: Attendance component + tab mới + Card trên Dashboard + i18n keys.
+12. **`feat(department-positions)`**: full CRUD + cascade guard (block delete nếu còn nhân viên).
+13. **`feat(notification-bell)`**: NotificationBell component + polling 5s + mark-read (US-14 UI).
+14. **`docs(review-checklist)`**: cập nhật 100% coverage + status table.
 
 ---
 
