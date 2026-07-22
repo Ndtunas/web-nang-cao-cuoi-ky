@@ -38,7 +38,7 @@ export default function Login({ onLogin }) {
             <LockOutlined />
           </div>
           <Title level={3} style={{ margin: 0, fontWeight: 700 }}>{t('appTitle')}</Title>
-          <Text type="secondary">Vui lòng đăng nhập để bắt đầu phiên làm việc</Text>
+          <Text type="secondary">{t('login.subtitle')}</Text>
         </div>
 
         <Card style={{
@@ -49,19 +49,19 @@ export default function Login({ onLogin }) {
         }}>
           <Form layout="vertical" onFinish={onLogin}>
             <Form.Item
-              label="Tên đăng nhập / Email"
+              label={t('login.username')}
               name="username"
-              rules={[{ required: true, message: 'Nhập tên đăng nhập hoặc email' }]}
+              rules={[{ required: true, message: t('login.usernameRequired') }]}
             >
               <Input prefix={<UserOutlined />} placeholder="Ví dụ: admin, employee" />
             </Form.Item>
 
             <Form.Item
-              label="Mật khẩu"
+              label={t('login.password')}
               name="password"
-              rules={[{ required: true, message: 'Nhập mật khẩu' }]}
+              rules={[{ required: true, message: t('login.passwordRequired') }]}
             >
-              <Input.Password prefix={<LockOutlined />} placeholder="Mật khẩu" />
+              <Input.Password prefix={<LockOutlined />} placeholder="••••••" />
             </Form.Item>
 
             <Form.Item>
@@ -71,7 +71,7 @@ export default function Login({ onLogin }) {
                 fontWeight: 600,
                 boxShadow: '0 4px 12px rgba(99, 102, 241, 0.4)'
               }}>
-                Đăng nhập
+                {t('login.submitButton')}
               </Button>
             </Form.Item>
           </Form>
@@ -85,10 +85,10 @@ export default function Login({ onLogin }) {
             fontSize: 12
           }}>
             <Text type="warning" strong style={{ display: 'block', marginBottom: 4 }}>
-              <ExclamationCircleOutlined /> Rule mật khẩu:
+              <ExclamationCircleOutlined /> {t('login.rulesTitle')}
             </Text>
             <Text type="secondary" style={{ fontSize: 11 }}>
-              Mã nhân viên + mật khẩu + ngày tháng năm sinh (Bcrypted). Mật khẩu mặc định hệ thống: <strong>[username]123456[YYYYMMDD]</strong> (e.g. employee12345619950101)
+              {t('login.rulesText')}
             </Text>
           </div>
         </Card>

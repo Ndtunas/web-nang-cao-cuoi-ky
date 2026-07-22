@@ -71,5 +71,189 @@
     "payroll": {
       "alreadyFinalized": "Bảng lương tháng đã chốt phê duyệt, không thể tính toán lại."
     }
+  },
+  "dashboard": {
+    "recruitmentChart": "Tuyển dụng mới & Cơ cấu nhân sự (Tháng)",
+    "pendingQuick": "Yêu cầu cần duyệt nhanh",
+    "viewAll": "Xem tất cả",
+    "noPending": "Không có yêu cầu chờ duyệt nào",
+    "submittedBy": "bởi"
+  },
+  "directory": {
+    "tabs": {
+      "profiles": "Hồ sơ nhân viên",
+      "onboarding": "Onboarding Checklist",
+      "offboarding": "Offboarding Checklist"
+    },
+    "actions": {
+      "transfer": "Điều chuyển công tác",
+      "salary": "Điều chỉnh lương",
+      "discipline": "Khen thưởng/Kỷ luật"
+    },
+    "onboardingCols": {
+      "contract": "Nộp hợp đồng lao động",
+      "device": "Bàn giao thiết bị IT",
+      "account": "Tạo tài khoản nghiệp vụ",
+      "done": "Đã hoàn thành",
+      "pendingDevice": "Chờ bàn giao",
+      "pendingAccount": "Chờ kích hoạt"
+    },
+    "offboardingCols": {
+      "assets": "Thu hồi tài sản công",
+      "handover": "Bàn giao công việc",
+      "settlement": "Tất toán lương & BHXH",
+      "refused": "Chưa thực hiện",
+      "returning": "Đang thu hồi",
+      "handingOver": "Đang bàn giao"
+    },
+    "modals": {
+      "dob": "Ngày sinh",
+      "address": "Địa chỉ liên hệ",
+      "taxCode": "Mã số thuế cá nhân",
+      "bankAccount": "Tài khoản ngân hàng",
+      "transferTitle": "Đề xuất điều chuyển công tác",
+      "transferEmp": "Nhân viên đề xuất điều chuyển",
+      "newDept": "Phòng ban mới",
+      "newPos": "Chức danh/vị trí mới",
+      "effectiveDate": "Ngày có hiệu lực",
+      "salaryTitle": "Đề xuất điều chỉnh lương",
+      "salaryEmp": "Nhân viên đề xuất thay đổi lương",
+      "newSalary": "Mức lương cơ bản mới (VND)",
+      "newRatio": "Hệ số lương chức danh mới (Ratio)",
+      "applyDate": "Ngày áp dụng hiệu lực",
+      "disciplineTitle": "Ghi nhận khen thưởng hoặc kỷ luật",
+      "disciplineType": "Phân loại",
+      "amount": "Giá trị số tiền phạt/thưởng (VND)",
+      "reason": "Lý do chi tiết",
+      "reward": "KHEN THƯỞNG (REWARD)",
+      "discipline": "KỶ LUẬT (DISCIPLINE)"
+    }
+  },
+  "timesheets": {
+    "weeklyCard": "Ghi nhận chấm công tuần",
+    "week": "Tuần:",
+    "year": "Năm:",
+    "status": "Trạng thái timesheet:",
+    "notCreated": "Chưa tạo",
+    "addRow": "Thêm dòng chấm công",
+    "saveDraft": "Lưu nháp",
+    "submit": "Nộp phê duyệt",
+    "cols": {
+      "project": "Dự án",
+      "task": "Tác vụ",
+      "date": "Ngày làm việc",
+      "hours": "Số giờ",
+      "type": "Loại công",
+      "note": "Ghi chú công việc",
+      "delete": "Xóa"
+    }
+  },
+  "approvals": {
+    "tabs": {
+      "pending": "Cần tôi duyệt",
+      "submitted": "Yêu cầu tôi đã gửi"
+    },
+    "cols": {
+      "code": "Mã yêu cầu",
+      "type": "Loại giao dịch",
+      "requester": "Người đề xuất",
+      "currentLevel": "Cấp duyệt hiện tại",
+      "requiredRole": "Vai trò cần duyệt",
+      "actions": "Thao tác",
+      "status": "Trạng thái phiếu",
+      "history": "Chi tiết cấp duyệt"
+    },
+    "actions": {
+      "approve": "Phê duyệt",
+      "reject": "Từ chối",
+      "history": "Lịch sử duyệt"
+    },
+    "modal": {
+      "historyTitle": "Lịch sử cấp duyệt phiếu",
+      "commentTitle": "Nhập ý kiến phê duyệt",
+      "progress": "Tiến trình phê duyệt:",
+      "approver": "Người duyệt",
+      "noProgress": "Chưa có tiến trình duyệt nào được ghi nhận tại các cấp dưới.",
+      "commentLabel": "Ý kiến của bạn (Comment)",
+      "commentPlaceholder": "Nhập ý kiến phê duyệt hoặc lý do từ chối..."
+    }
+  },
+  "payroll": {
+    "cardTitle": "Tính toán và kết chuyển bảng lương",
+    "month": "Tháng lương:",
+    "year": "Năm:",
+    "btnCalculate": "Tính bảng lương tháng",
+    "cols": {
+      "code": "Mã nhân viên",
+      "name": "Họ và tên",
+      "baseSalary": "Lương cơ bản",
+      "workDays": "Công thực tế (ngày)",
+      "netSalary": "Lương thực lĩnh",
+      "status": "Trạng thái",
+      "action": "Chi tiết phiếu lương"
+    },
+    "viewPayslip": "Xem Phiếu lương",
+    "modalTitle": "Phiếu Lương Chi Tiết Nhân Viên",
+    "btnPrint": "In Phiếu Lương",
+    "btnClose": "Đóng",
+    "payslipHeader": "PHIẾU THANH TOÁN LƯƠNG",
+    "payslipMonth": "Tháng",
+    "fullName": "Họ và tên:",
+    "empCode": "Mã nhân viên:",
+    "department": "Phòng ban:",
+    "position": "Chức vụ:",
+    "baseSalaryLabel": "Lương cơ bản chức danh:",
+    "workDaysLabel": "Số ngày công thực tế:",
+    "otPayLabel": "Tổng tiền làm thêm giờ (Overtime):",
+    "allowanceLabel": "Các khoản phụ cấp phúc lợi:",
+    "deductionLabel": "Các khoản khấu trừ & BHXH:",
+    "netLabel": "THỰC LĨNH CHUYỂN KHOẢN (NET):"
+  },
+  "config": {
+    "cardTitle": "Cấu hình hệ thống",
+    "ratesCard": "Hệ số làm việc & Đơn giá công",
+    "matrixCard": "Ma trận phê duyệt (Cấp phê duyệt)",
+    "ratesCols": {
+      "key": "Khóa cấu hình",
+      "name": "Mô tả",
+      "multiplier": "Hệ số multiplier"
+    },
+    "matrixCols": {
+      "type": "Loại nghiệp vụ",
+      "levels": "Số cấp duyệt yêu cầu",
+      "sequence": "Luồng vai trò duyệt"
+    },
+    "levelsSelect": "cấp"
+  },
+  "audit": {
+    "cardTitle": "Nhật ký tác động hệ thống (System Audit Logs)",
+    "actionFilterAll": "Tất cả thao tác",
+    "actionFilterInsert": "Thêm mới (INSERT)",
+    "actionFilterUpdate": "Cập nhật (UPDATE)",
+    "actionFilterDelete": "Xóa (DELETE)",
+    "entityFilterPlaceholder": "Tên bảng dữ liệu (e.g. employees, users)",
+    "cols": {
+      "time": "Thời gian",
+      "action": "Thao tác",
+      "table": "Bảng chịu tác động",
+      "recordId": "ID bản ghi",
+      "actor": "Người thực hiện",
+      "diff": "So sánh thay đổi"
+    },
+    "viewDiff": "Xem thay đổi",
+    "modalTitle": "Chi tiết Thay đổi Trạng thái Dữ liệu (State Diff)",
+    "oldState": "Trạng thái TRƯỚC thay đổi (OLD STATE)",
+    "newState": "Trạng thái SAU thay đổi (NEW STATE)",
+    "btnClose": "Đóng"
+  },
+  "login": {
+    "subtitle": "Vui lòng đăng nhập để bắt đầu phiên làm việc",
+    "username": "Tên đăng nhập / Email",
+    "usernameRequired": "Nhập tên đăng nhập hoặc email",
+    "password": "Mật khẩu",
+    "passwordRequired": "Nhập mật khẩu",
+    "submitButton": "Đăng nhập",
+    "rulesTitle": "Rule mật khẩu:",
+    "rulesText": "Mã nhân viên + mật khẩu + ngày tháng năm sinh (Bcrypted). Mật khẩu mặc định hệ thống: [username]123456[YYYYMMDD] (e.g. employee12345619950101)"
   }
 }

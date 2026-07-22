@@ -30,17 +30,17 @@ export default function AuditLogs({
   };
 
   return (
-    <Card title="Nhật ký tác động hệ thống (System Audit Logs)" style={{ background: 'rgba(30, 41, 59, 0.6)', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
+    <Card title={t('audit.cardTitle')} style={{ background: 'rgba(30, 41, 59, 0.6)', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
       <div style={{ display: 'flex', gap: 16, marginBottom: 20 }}>
         <Select value={auditActionFilter} onChange={setAuditActionFilter} style={{ width: 180 }} placeholder="Bộ lọc thao tác">
-          <Select.Option value="">Tất cả thao tác</Select.Option>
-          <Select.Option value="INSERT">Thêm mới (INSERT)</Select.Option>
-          <Select.Option value="UPDATE">Cập nhật (UPDATE)</Select.Option>
-          <Select.Option value="DELETE">Xóa (DELETE)</Select.Option>
+          <Select.Option value="">{t('audit.actionFilterAll')}</Select.Option>
+          <Select.Option value="INSERT">{t('audit.actionFilterInsert')}</Select.Option>
+          <Select.Option value="UPDATE">{t('audit.actionFilterUpdate')}</Select.Option>
+          <Select.Option value="DELETE">{t('audit.actionFilterDelete')}</Select.Option>
         </Select>
 
         <Input
-          placeholder="Tên bảng dữ liệu (e.g. employees, users)"
+          placeholder={t('audit.entityFilterPlaceholder')}
           value={auditEntityFilter}
           onChange={(e) => setAuditEntityFilter(e.target.value)}
           style={{ width: 240 }}
@@ -50,16 +50,16 @@ export default function AuditLogs({
       <Table
         dataSource={auditLogs}
         columns={[
-          { title: 'Thời gian', dataIndex: 'timestamp', key: 'timestamp', render: (t) => dayjs(t).format('YYYY-MM-DD HH:mm:ss') },
-          { title: 'Thao tác', dataIndex: 'actionType', key: 'actionType', render: (t) => <Tag color={t === 'INSERT' ? 'green' : t === 'UPDATE' ? 'blue' : 'red'}>{t}</Tag> },
-          { title: 'Bảng chịu tác động', dataIndex: 'entityName', key: 'entityName' },
-          { title: 'ID bản ghi', dataIndex: 'entityId', key: 'entityId' },
-          { title: 'Người thực hiện', dataIndex: ['actor', 'username'], key: 'actor' },
+          { title: t('audit.cols.time'), dataIndex: 'timestamp', key: 'timestamp', render: (t) => dayjs(t).format('YYYY-MM-DD HH:mm:ss') },
+          { title: t('audit.cols.action'), dataIndex: 'actionType', key: 'actionType', render: (t) => <Tag color={t === 'INSERT' ? 'green' : t === 'UPDATE' ? 'blue' : 'red'}>{t}</Tag> },
+          { title: t('audit.cols.table'), dataIndex: 'entityName', key: 'entityName' },
+          { title: t('audit.cols.recordId'), dataIndex: 'entityId', key: 'entityId' },
+          { title: t('audit.cols.actor'), dataIndex: ['actor', 'username'], key: 'actor' },
           {
-            title: 'So sánh thay đổi',
+            title: t('audit.cols.diff'),
             key: 'actions',
             render: (_, record) => (
-              <Button size="small" icon={<EyeOutlined />} onClick={() => handleViewAuditDiff(record)}>Xem thay đổi</Button>
+              <Button size="small" icon={<EyeOutlined />} onClick={() => handleViewAuditDiff(record)}>{t('audit.viewDiff')}</Button>
             )
           }
         ]}
@@ -68,16 +68,16 @@ export default function AuditLogs({
 
       {/* MODAL: Side-by-side JSON Diff Viewer */}
       <Modal
-        title="Chi tiết Thay đổi Trạng thái Dữ liệu (State Diff)"
+        title={t('audit.modalTitle')}
         open={isDiffModalOpen}
         onCancel={() => setIsDiffModalOpen(false)}
         width={850}
-        footer={[<Button key="close" onClick={() => setIsDiffModalOpen(false)}>Đóng</Button>]}
+        footer={[<Button key="close" onClick={() => setIsDiffModalOpen(false)}>{t('audit.btnClose')}</Button>]}
       >
         {selectedLogDiff && (
           <Row gutter={16}>
             <Col span={12}>
-              <Card title="Trạng thái TRƯỚC thay đổi (OLD STATE)" type="inner" bodyStyle={{ padding: 12 }}>
+              <Card title={t('audit.oldState')} type="inner" bodyStyle={{ padding: 12 }}>
                 <pre style={{
                   maxHeight: 380,
                   overflowY: 'auto',
@@ -92,7 +92,7 @@ export default function AuditLogs({
             </Col>
 
             <Col span={12}>
-              <Card title="Trạng thái SAU thay đổi (NEW STATE)" type="inner" bodyStyle={{ padding: 12 }}>
+              <Card title={t('audit.newState')} type="inner" bodyStyle={{ padding: 12 }}>
                 <pre style={{
                   maxHeight: 380,
                   overflowY: 'auto',

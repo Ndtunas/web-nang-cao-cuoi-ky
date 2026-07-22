@@ -9,18 +9,18 @@ export default function SystemConfig({
   t
 }) {
   return (
-    <Card title="Cấu hình hệ thống" style={{ background: 'rgba(30, 41, 59, 0.6)', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
+    <Card title={t('config.cardTitle')} style={{ background: 'rgba(30, 41, 59, 0.6)', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
       <Row gutter={[24, 24]}>
         <Col xs={24} lg={12}>
-          <Card type="inner" title="Hệ số làm việc & Đơn giá công">
+          <Card type="inner" title={t('config.ratesCard')}>
             <Table
               dataSource={workRates}
               pagination={false}
               columns={[
-                { title: 'Khóa cấu hình', dataIndex: 'configKey', key: 'configKey' },
-                { title: 'Mô tả', dataIndex: 'configName', key: 'configName' },
+                { title: t('config.ratesCols.key'), dataIndex: 'configKey', key: 'configKey' },
+                { title: t('config.ratesCols.name'), dataIndex: 'configName', key: 'configName' },
                 {
-                  title: 'Hệ số multiplier',
+                  title: t('config.ratesCols.multiplier'),
                   dataIndex: 'valueMultiplier',
                   key: 'valueMultiplier',
                   render: (val, record) => (
@@ -41,30 +41,30 @@ export default function SystemConfig({
         </Col>
 
         <Col xs={24} lg={12}>
-          <Card type="inner" title="Ma trận phê duyệt (Cấp phê duyệt)">
+          <Card type="inner" title={t('config.matrixCard')}>
             <Table
               dataSource={approvalConfigs}
               pagination={false}
               columns={[
-                { title: 'Loại nghiệp vụ', dataIndex: 'transactionType', key: 'transactionType' },
+                { title: t('config.matrixCols.type'), dataIndex: 'transactionType', key: 'transactionType' },
                 {
-                  title: 'Số cấp duyệt yêu cầu',
+                  title: t('config.matrixCols.levels'),
                   dataIndex: 'requiredLevels',
                   key: 'requiredLevels',
                   render: (val, record) => (
                     <Select
                       defaultValue={val}
-                      style={{ width: 100 }}
+                      style={{ width: 110 }}
                       onChange={(v) => onUpdateApprovalConfig(record.transactionType, v)}
                     >
-                      <Select.Option value={1}>1 cấp</Select.Option>
-                      <Select.Option value={2}>2 cấp</Select.Option>
-                      <Select.Option value={3}>3 cấp</Select.Option>
+                      <Select.Option value={1}>1 {t('config.levelsSelect')}</Select.Option>
+                      <Select.Option value={2}>2 {t('config.levelsSelect')}</Select.Option>
+                      <Select.Option value={3}>3 {t('config.levelsSelect')}</Select.Option>
                     </Select>
                   )
                 },
                 {
-                  title: 'Luồng vai trò duyệt',
+                  title: t('config.matrixCols.sequence'),
                   dataIndex: 'approverRolesSequence',
                   key: 'approverRolesSequence',
                   render: (val) => (

@@ -25,31 +25,31 @@ export default function Payroll({
   };
 
   return (
-    <Card title="Tính toán và kết chuyển bảng lương" style={{ background: 'rgba(30, 41, 59, 0.6)', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
+    <Card title={t('payroll.cardTitle')} style={{ background: 'rgba(30, 41, 59, 0.6)', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20 }}>
         <Space>
-          <Text>Tháng lương:</Text>
+          <Text>{t('payroll.month')}</Text>
           <InputNumber min={1} max={12} value={payrollMonth} onChange={setPayrollMonth} />
-          <Text>Năm:</Text>
+          <Text>{t('payroll.year')}</Text>
           <InputNumber min={2026} max={2030} value={payrollYear} onChange={setPayrollYear} />
-          <Button type="primary" icon={<CalculatorOutlined />} loading={calculatingPayroll} onClick={onCalculatePayroll}>Tính bảng lương tháng</Button>
+          <Button type="primary" icon={<CalculatorOutlined />} loading={calculatingPayroll} onClick={onCalculatePayroll}>{t('payroll.btnCalculate')}</Button>
         </Space>
       </div>
 
       <Table
         dataSource={payrollSalaries}
         columns={[
-          { title: 'Mã nhân viên', dataIndex: ['employee', 'empCode'], key: 'empCode' },
-          { title: 'Họ và tên', dataIndex: ['employee', 'fullName'], key: 'fullName' },
-          { title: 'Lương cơ bản', dataIndex: 'baseSalary', key: 'baseSalary', render: (v) => `${Number(v).toLocaleString()} VND` },
-          { title: 'Công thực tế (ngày)', dataIndex: 'workDays', key: 'workDays' },
-          { title: 'Lương thực lĩnh', dataIndex: 'netSalary', key: 'netSalary', render: (v) => <Text strong style={{ color: '#10b981' }}>{`${Number(v).toLocaleString()} VND`}</Text> },
-          { title: 'Trạng thái', dataIndex: 'status', key: 'status', render: (s) => <Tag color={s === 'APPROVED' ? 'green' : 'orange'}>{s}</Tag> },
+          { title: t('payroll.cols.code'), dataIndex: ['employee', 'empCode'], key: 'empCode' },
+          { title: t('payroll.cols.name'), dataIndex: ['employee', 'fullName'], key: 'fullName' },
+          { title: t('payroll.cols.baseSalary'), dataIndex: 'baseSalary', key: 'baseSalary', render: (v) => `${Number(v).toLocaleString()} VND` },
+          { title: t('payroll.cols.workDays'), dataIndex: 'workDays', key: 'workDays' },
+          { title: t('payroll.cols.netSalary'), dataIndex: 'netSalary', key: 'netSalary', render: (v) => <Text strong style={{ color: '#10b981' }}>{`${Number(v).toLocaleString()} VND`}</Text> },
+          { title: t('payroll.cols.status'), dataIndex: 'status', key: 'status', render: (s) => <Tag color={s === 'APPROVED' ? 'green' : 'orange'}>{s}</Tag> },
           {
-            title: 'Chi tiết phiếu lương',
+            title: t('payroll.cols.action'),
             key: 'actions',
             render: (_, record) => (
-              <Button size="small" icon={<EyeOutlined />} onClick={() => handleOpenPayslip(record)}>Xem Phiếu lương</Button>
+              <Button size="small" icon={<EyeOutlined />} onClick={() => handleOpenPayslip(record)}>{t('payroll.viewPayslip')}</Button>
             )
           }
         ]}
@@ -58,53 +58,53 @@ export default function Payroll({
 
       {/* MODAL: Detailed Payslip */}
       <Modal
-        title="Phiếu Lương Chi Tiết Nhân Viên"
+        title={t('payroll.modalTitle')}
         open={isPayslipModalOpen}
         onCancel={() => setIsPayslipModalOpen(false)}
         footer={[
-          <Button key="print" onClick={() => window.print()} icon={<FilePdfOutlined />}>In Phiếu Lương</Button>,
-          <Button key="close" onClick={() => setIsPayslipModalOpen(false)}>Đóng</Button>
+          <Button key="print" onClick={() => window.print()} icon={<FilePdfOutlined />}>{t('payroll.btnPrint')}</Button>,
+          <Button key="close" onClick={() => setIsPayslipModalOpen(false)}>{t('payroll.btnClose')}</Button>
         ]}
       >
         {selectedPayslip && (
           <div style={{ padding: '16px 8px', color: '#cbd5e1' }}>
             <div style={{ textAlign: 'center', marginBottom: 20 }}>
-              <Title level={4} style={{ margin: 0 }}>PHIẾU THANH TOÁN LƯƠNG</Title>
-              <Text type="secondary">Tháng {selectedPayslip.month}/{selectedPayslip.year}</Text>
+              <Title level={4} style={{ margin: 0 }}>{t('payroll.payslipHeader')}</Title>
+              <Text type="secondary">{t('payroll.payslipMonth')} {selectedPayslip.month}/{selectedPayslip.year}</Text>
             </div>
 
             <Row style={{ marginBottom: 12 }}>
-              <Col span={12}><strong>Họ và tên:</strong> {selectedPayslip.employee?.fullName}</Col>
-              <Col span={12}><strong>Mã nhân viên:</strong> {selectedPayslip.employee?.empCode}</Col>
+              <Col span={12}><strong>{t('payroll.fullName')}</strong> {selectedPayslip.employee?.fullName}</Col>
+              <Col span={12}><strong>{t('payroll.empCode')}</strong> {selectedPayslip.employee?.empCode}</Col>
             </Row>
             <Row style={{ marginBottom: 24 }}>
-              <Col span={12}><strong>Phòng ban:</strong> {selectedPayslip.employee?.department?.name}</Col>
-              <Col span={12}><strong>Chức vụ:</strong> {selectedPayslip.employee?.position?.title}</Col>
+              <Col span={12}><strong>{t('payroll.department')}</strong> {selectedPayslip.employee?.department?.name}</Col>
+              <Col span={12}><strong>{t('payroll.position')}</strong> {selectedPayslip.employee?.position?.title}</Col>
             </Row>
 
             <div style={{ borderTop: '1px solid rgba(255, 255, 255, 0.1)', paddingTop: 16 }}>
               <Row style={{ marginBottom: 8 }}>
-                <Col span={16}>Lương cơ bản chức danh:</Col>
+                <Col span={16}>{t('payroll.baseSalaryLabel')}</Col>
                 <Col span={8} style={{ textAlign: 'right' }}>{Number(selectedPayslip.baseSalary).toLocaleString()} VND</Col>
               </Row>
 
               <Row style={{ marginBottom: 8 }}>
-                <Col span={16}>Số ngày công thực tế:</Col>
+                <Col span={16}>{t('payroll.workDaysLabel')}</Col>
                 <Col span={8} style={{ textAlign: 'right' }}>{selectedPayslip.workDays} ngày</Col>
               </Row>
 
               <Row style={{ marginBottom: 8 }}>
-                <Col span={16}>Tổng tiền làm thêm giờ (Overtime):</Col>
+                <Col span={16}>{t('payroll.otPayLabel')}</Col>
                 <Col span={8} style={{ textAlign: 'right' }}>{Number(selectedPayslip.otPayAmount).toLocaleString()} VND</Col>
               </Row>
 
               <Row style={{ marginBottom: 8 }}>
-                <Col span={16}>Các khoản phụ cấp phúc lợi:</Col>
+                <Col span={16}>{t('payroll.allowanceLabel')}</Col>
                 <Col span={8} style={{ textAlign: 'right' }}>{Number(selectedPayslip.allowance).toLocaleString()} VND</Col>
               </Row>
 
               <Row style={{ marginBottom: 8, color: '#ef4444' }}>
-                <Col span={16}>Các khoản khấu trừ & BHXH:</Col>
+                <Col span={16}>{t('payroll.deductionLabel')}</Col>
                 <Col span={8} style={{ textAlign: 'right' }}>-{Number(selectedPayslip.deduction).toLocaleString()} VND</Col>
               </Row>
             </div>
@@ -118,7 +118,7 @@ export default function Payroll({
               color: '#10b981'
             }}>
               <Row>
-                <Col span={16}>THỰC LĨNH CHUYỂN KHOẢN (NET):</Col>
+                <Col span={16}>{t('payroll.netLabel')}</Col>
                 <Col span={8} style={{ textAlign: 'right' }}>{Number(selectedPayslip.netSalary).toLocaleString()} VND</Col>
               </Row>
             </div>

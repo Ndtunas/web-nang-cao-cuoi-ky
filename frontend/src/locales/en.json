@@ -71,5 +71,189 @@
     "payroll": {
       "alreadyFinalized": "Monthly payroll has been finalized and cannot be recalculated."
     }
+  },
+  "dashboard": {
+    "recruitmentChart": "New Hires & Department Structure (Monthly)",
+    "pendingQuick": "Quick Action Required",
+    "viewAll": "View All",
+    "noPending": "No pending approval requests",
+    "submittedBy": "by"
+  },
+  "directory": {
+    "tabs": {
+      "profiles": "Employee Profiles",
+      "onboarding": "Onboarding Checklist",
+      "offboarding": "Offboarding Checklist"
+    },
+    "actions": {
+      "transfer": "Job Transfer Request",
+      "salary": "Salary Adjustment",
+      "discipline": "Discipline/Reward"
+    },
+    "onboardingCols": {
+      "contract": "Submit Labor Contract",
+      "device": "Deliver IT Devices",
+      "account": "Create Enterprise Account",
+      "done": "Completed",
+      "pendingDevice": "Awaiting handover",
+      "pendingAccount": "Awaiting activation"
+    },
+    "offboardingCols": {
+      "assets": "Return Public Assets",
+      "handover": "Handover Workflow",
+      "settlement": "Settle Salary & Insurance",
+      "refused": "Not started",
+      "returning": "Recovering assets",
+      "handingOver": "Banding handover"
+    },
+    "modals": {
+      "dob": "Date of Birth",
+      "address": "Contact Address",
+      "taxCode": "Personal Tax Code",
+      "bankAccount": "Bank Account Number",
+      "transferTitle": "Propose Job Transfer",
+      "transferEmp": "Select target employee",
+      "newDept": "New Department",
+      "newPos": "New Position",
+      "effectiveDate": "Effective Date",
+      "salaryTitle": "Propose Salary Adjustment",
+      "salaryEmp": "Select target employee",
+      "newSalary": "New Base Salary (VND)",
+      "newRatio": "New Position Ratio",
+      "applyDate": "Apply Date",
+      "disciplineTitle": "Record Reward or Discipline",
+      "disciplineType": "Type",
+      "amount": "Fine/Reward Value (VND)",
+      "reason": "Detailed Reason",
+      "reward": "REWARD",
+      "discipline": "DISCIPLINE"
+    }
+  },
+  "timesheets": {
+    "weeklyCard": "Log Weekly Attendance",
+    "week": "Week:",
+    "year": "Year:",
+    "status": "Timesheet Status:",
+    "notCreated": "Not Created",
+    "addRow": "Add Attendance Row",
+    "saveDraft": "Save Draft",
+    "submit": "Submit For Approval",
+    "cols": {
+      "project": "Project",
+      "task": "Task",
+      "date": "Working Date",
+      "hours": "Hours Spent",
+      "type": "Work Type",
+      "note": "Work Details",
+      "delete": "Remove"
+    }
+  },
+  "approvals": {
+    "tabs": {
+      "pending": "Pending My Actions",
+      "submitted": "My Submitted Requests"
+    },
+    "cols": {
+      "code": "Req Code",
+      "type": "Transaction Type",
+      "requester": "Requester",
+      "currentLevel": "Current Level",
+      "requiredRole": "Required Approver Role",
+      "actions": "Actions",
+      "status": "Request Status",
+      "history": "Approval Levels"
+    },
+    "actions": {
+      "approve": "Approve",
+      "reject": "Reject",
+      "history": "View History"
+    },
+    "modal": {
+      "historyTitle": "Approval Level History",
+      "commentTitle": "Enter Decision Remarks",
+      "progress": "Approval Progress:",
+      "approver": "Approver",
+      "noProgress": "No prior levels approved yet.",
+      "commentLabel": "Your comment",
+      "commentPlaceholder": "Enter decision comment or rejection explanation..."
+    }
+  },
+  "payroll": {
+    "cardTitle": "Payroll Calculation and Ledger",
+    "month": "Payroll Month:",
+    "year": "Year:",
+    "btnCalculate": "Calculate Salary",
+    "cols": {
+      "code": "Emp Code",
+      "name": "Full Name",
+      "baseSalary": "Base Salary",
+      "workDays": "Work Days",
+      "netSalary": "Net Salary",
+      "status": "Status",
+      "action": "Payslip Details"
+    },
+    "viewPayslip": "View Payslip",
+    "modalTitle": "Employee Monthly Payslip Details",
+    "btnPrint": "Print Payslip",
+    "btnClose": "Close",
+    "payslipHeader": "MONTHLY PAYSLIP RECORD",
+    "payslipMonth": "Month",
+    "fullName": "Full Name:",
+    "empCode": "Emp Code:",
+    "department": "Department:",
+    "position": "Position:",
+    "baseSalaryLabel": "Base Position Salary:",
+    "workDaysLabel": "Actual Work Days:",
+    "otPayLabel": "Total Overtime Compensation:",
+    "allowanceLabel": "Welfare & Allowance Benefits:",
+    "deductionLabel": "Tax Deductions & Insurance:",
+    "netLabel": "NET TRANSFERRED SALARY:"
+  },
+  "config": {
+    "cardTitle": "System Configurations",
+    "ratesCard": "Work Rates & Coefficients",
+    "matrixCard": "Approval Request Levels Routing Matrix",
+    "ratesCols": {
+      "key": "Config Key",
+      "name": "Description",
+      "multiplier": "Value Multiplier"
+    },
+    "matrixCols": {
+      "type": "Business Type",
+      "levels": "Required Levels count",
+      "sequence": "Approver Roles Flow"
+    },
+    "levelsSelect": "level"
+  },
+  "audit": {
+    "cardTitle": "System Audit Activity logs",
+    "actionFilterAll": "All Actions",
+    "actionFilterInsert": "Insertions (INSERT)",
+    "actionFilterUpdate": "Updates (UPDATE)",
+    "actionFilterDelete": "Deletes (DELETE)",
+    "entityFilterPlaceholder": "Target data table (e.g. employees, users)",
+    "cols": {
+      "time": "Timestamp",
+      "action": "Action",
+      "table": "Impacted Table",
+      "recordId": "Record Primary Key",
+      "actor": "Executed By",
+      "diff": "State Differences"
+    },
+    "viewDiff": "View Diff",
+    "modalTitle": "State Change Detailed View (State Diff)",
+    "oldState": "Old Record State (OLD)",
+    "newState": "New Record State (NEW)",
+    "btnClose": "Close"
+  },
+  "login": {
+    "subtitle": "Please log in to start your work session",
+    "username": "Username / Email",
+    "usernameRequired": "Please enter your username or email",
+    "password": "Password",
+    "passwordRequired": "Please enter your password",
+    "submitButton": "Login",
+    "rulesTitle": "Password Rules:",
+    "rulesText": "Employee Code + password + date of birth (Bcrypted). System default password: [username]123456[YYYYMMDD] (e.g. employee12345619950101)"
   }
 }

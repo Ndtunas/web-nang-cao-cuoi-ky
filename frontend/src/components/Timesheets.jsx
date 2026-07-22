@@ -64,22 +64,22 @@ export default function Timesheets({
   };
 
   return (
-    <Card title="Ghi nhận chấm công tuần" style={{ background: 'rgba(30, 41, 59, 0.6)', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
+    <Card title={t('timesheets.weeklyCard')} style={{ background: 'rgba(30, 41, 59, 0.6)', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20 }}>
         <Space>
-          <Text>Tuần:</Text>
+          <Text>{t('timesheets.week')}</Text>
           <InputNumber min={1} max={53} value={selectedWeek} onChange={setSelectedWeek} />
-          <Text>Năm:</Text>
+          <Text>{t('timesheets.year')}</Text>
           <InputNumber min={2026} max={2030} value={selectedYear} onChange={setSelectedYear} />
-          <Tag color="indigo">Trạng thái timesheet: {timesheetData?.status || 'Chưa tạo'}</Tag>
+          <Tag color="indigo">{t('timesheets.status')} {timesheetData?.status || t('timesheets.notCreated')}</Tag>
         </Space>
 
         <Space>
           {(!timesheetData || timesheetData.status === 'DRAFT' || timesheetData.status === 'REJECTED') && (
             <>
-              <Button icon={<PlusOutlined />} onClick={handleAddTimesheetRow}>Thêm dòng chấm công</Button>
-              <Button type="primary" onClick={handleSave}>Lưu nháp</Button>
-              <Button type="primary" style={{ background: '#10b981', border: 'none' }} onClick={onSubmitTimesheet}>Nộp phê duyệt</Button>
+              <Button icon={<PlusOutlined />} onClick={handleAddTimesheetRow}>{t('timesheets.addRow')}</Button>
+              <Button type="primary" onClick={handleSave}>{t('timesheets.saveDraft')}</Button>
+              <Button type="primary" style={{ background: '#10b981', border: 'none' }} onClick={onSubmitTimesheet}>{t('timesheets.submit')}</Button>
             </>
           )}
         </Space>
@@ -90,7 +90,7 @@ export default function Timesheets({
         pagination={false}
         columns={[
           {
-            title: 'Dự án',
+            title: t('timesheets.cols.project'),
             dataIndex: 'projectId',
             key: 'projectId',
             render: (val, record, idx) => (
@@ -100,7 +100,7 @@ export default function Timesheets({
             )
           },
           {
-            title: 'Tác vụ',
+            title: t('timesheets.cols.task'),
             dataIndex: 'taskId',
             key: 'taskId',
             render: (val, record, idx) => (
@@ -110,13 +110,13 @@ export default function Timesheets({
             )
           },
           {
-            title: 'Ngày làm việc',
+            title: t('timesheets.cols.date'),
             dataIndex: 'entryDate',
             key: 'entryDate',
             render: (val) => val
           },
           {
-            title: 'Số giờ',
+            title: t('timesheets.cols.hours'),
             dataIndex: 'hoursSpent',
             key: 'hoursSpent',
             render: (val, record, idx) => (
@@ -124,7 +124,7 @@ export default function Timesheets({
             )
           },
           {
-            title: 'Loại công',
+            title: t('timesheets.cols.type'),
             dataIndex: 'workType',
             key: 'workType',
             render: (val, record, idx) => (
@@ -138,7 +138,7 @@ export default function Timesheets({
             )
           },
           {
-            title: 'Ghi chú công việc',
+            title: t('timesheets.cols.note'),
             dataIndex: 'description',
             key: 'description',
             render: (val, record, idx) => (
@@ -146,7 +146,7 @@ export default function Timesheets({
             )
           },
           {
-            title: 'Xóa',
+            title: t('timesheets.cols.delete'),
             key: 'delete',
             render: (_, record, idx) => (
               <Button danger type="text" icon={<DeleteOutlined />} onClick={() => {

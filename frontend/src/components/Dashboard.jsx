@@ -19,7 +19,7 @@ export default function Dashboard({ employees, pendingApprovals, onOpenDecisionM
           <Card bordered={false} style={{ background: 'rgba(30, 41, 59, 0.6)', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
             <Statistic
               title={t('stats.totalEmployees')}
-              value={employees.length || 12}
+              value={employees.length}
               prefix={<TeamOutlined style={{ color: '#6366f1' }} />}
             />
           </Card>
@@ -28,7 +28,7 @@ export default function Dashboard({ employees, pendingApprovals, onOpenDecisionM
           <Card bordered={false} style={{ background: 'rgba(30, 41, 59, 0.6)', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
             <Statistic
               title={t('stats.activeEmployees')}
-              value={employees.filter(e => e.status === 'ACTIVE' || e.status === 'ONBOARDING').length || 10}
+              value={employees.filter(e => e.status === 'ACTIVE' || e.status === 'ONBOARDING').length}
               valueStyle={{ color: '#10b981' }}
               prefix={<CheckCircleOutlined />}
             />
@@ -57,32 +57,32 @@ export default function Dashboard({ employees, pendingApprovals, onOpenDecisionM
 
       <Row gutter={[20, 20]}>
         <Col xs={24} lg={16}>
-          <Card title="Tuyển dụng mới & Cơ cấu nhân sự (Tháng)" style={{ background: 'rgba(30, 41, 59, 0.6)', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
+          <Card title={t('dashboard.recruitmentChart')} style={{ background: 'rgba(30, 41, 59, 0.6)', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
             <div style={{ padding: '10px 0' }}>
               <div style={{ marginBottom: 16 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-                  <Text>Phòng Công nghệ thông tin</Text>
+                  <Text>Phòng Công nghệ thông tin (IT Department)</Text>
                   <Text strong>45%</Text>
                 </div>
                 <Progress percent={45} strokeColor={{ '0%': '#6366f1', '100%': '#a855f7' }} />
               </div>
               <div style={{ marginBottom: 16 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-                  <Text>Phòng Nhân sự (HR)</Text>
+                  <Text>Phòng Nhân sự (HR Department)</Text>
                   <Text strong>20%</Text>
                 </div>
                 <Progress percent={20} strokeColor={{ '0%': '#10b981', '100%': '#34d399' }} />
               </div>
               <div style={{ marginBottom: 16 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-                  <Text>Phòng Tài chính - Kế toán</Text>
+                  <Text>Phòng Tài chính - Kế toán (Finance & Accounting)</Text>
                   <Text strong>15%</Text>
                 </div>
                 <Progress percent={15} strokeColor={{ '0%': '#f59e0b', '100%': '#fbbf24' }} />
               </div>
               <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-                  <Text>Ban Giám đốc & Marketing</Text>
+                  <Text>Ban Giám đốc & Marketing (Board & Marketing)</Text>
                   <Text strong>20%</Text>
                 </div>
                 <Progress percent={20} strokeColor={{ '0%': '#ef4444', '100%': '#f87171' }} />
@@ -92,7 +92,7 @@ export default function Dashboard({ employees, pendingApprovals, onOpenDecisionM
         </Col>
 
         <Col xs={24} lg={8}>
-          <Card title="Yêu cầu cần duyệt nhanh" extra={<Button type="link" onClick={() => onNavigate('APPROVALS')}>Xem tất cả</Button>} style={{ background: 'rgba(30, 41, 59, 0.6)', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
+          <Card title={t('dashboard.pendingQuick')} extra={<Button type="link" onClick={() => onNavigate('APPROVALS')}>{t('dashboard.viewAll')}</Button>} style={{ background: 'rgba(30, 41, 59, 0.6)', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
             <List
               dataSource={pendingApprovals.slice(0, 3)}
               renderItem={item => (
@@ -102,11 +102,11 @@ export default function Dashboard({ employees, pendingApprovals, onOpenDecisionM
                 ]}>
                   <List.Item.Meta
                     title={item.requestCode || `REQ-${item.id}`}
-                    description={`${item.transactionType} - bởi ${item.requester?.fullName || 'Nhân viên'}`}
+                    description={`${item.transactionType} - ${t('dashboard.submittedBy')} ${item.requester?.fullName || 'Staff'}`}
                   />
                 </List.Item>
               )}
-              locale={{ emptyText: 'Không có yêu cầu chờ duyệt nào' }}
+              locale={{ emptyText: t('dashboard.noPending') }}
             />
           </Card>
         </Col>
