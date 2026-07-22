@@ -126,6 +126,27 @@
     "errorCompleteTask": "Lỗi khi hoàn tất task onboarding/offboarding",
     "successCompleteTask": "Đã hoàn tất task!"
   },
+  "offb": {
+    "cardTitle": "Quy trình Offboarding",
+    "btnResign": "Nộp đơn xin thôi việc",
+    "btnComplete": "Hoàn tất task",
+    "btnSubmit": "Gửi đơn",
+    "modalResignTitle": "Nộp đơn xin thôi việc",
+    "employeeHint": "Nhấn \"Nộp đơn xin thôi việc\" để khởi tạo luồng duyệt 3 cấp (DEPT_LEAD → DIRECTOR → CHAIRMAN). Khi được duyệt, trạng thái nhân viên sẽ chuyển sang TERMINATED.",
+    "confirmComplete": "Đánh dấu task này đã hoàn tất?",
+    "cols": {
+      "code": "Mã task",
+      "employee": "Nhân viên",
+      "taskTitle": "Tên task",
+      "department": "Phòng ban phụ trách",
+      "status": "Trạng thái",
+      "actions": "Thao tác",
+      "reason": "Lý do thôi việc"
+    },
+    "validation": {
+      "reasonRequired": "Vui lòng nhập lý do thôi việc"
+    }
+  },
   "dashboard": {
     "recruitmentChart": "Tuyển dụng mới & Cơ cấu nhân sự (Tháng)",
     "pendingQuick": "Yêu cầu cần duyệt nhanh",

@@ -44,6 +44,7 @@ import SystemConfig from './components/SystemConfig.jsx';
 import AuditLogs from './components/AuditLogs.jsx';
 import Projects from './components/Projects.jsx';
 import LeaveRequests from './components/LeaveRequests.jsx';
+import Offboarding from './components/Offboarding.jsx';
 import { AuthProvider, useAuth } from './contexts/AuthContext.jsx';
 import { TAB_KEYS, ROLES, canAccessTab, canDo, getFirstAllowedTab } from './constants/roles.js';
 
@@ -147,6 +148,8 @@ function AppContent() {
       // Projects component loads its own data
     } else if (activeTab === TAB_KEYS.LEAVE) {
       // LeaveRequests component loads its own data
+    } else if (activeTab === TAB_KEYS.OFFBOARDING) {
+      // Offboarding component loads its own data
     } else if (activeTab === TAB_KEYS.DASHBOARD) {
       loadDashboardData();
     }
@@ -798,6 +801,10 @@ function AppContent() {
                 i18n={i18n}
                 isAdminView={canDo(role, 'LEAVE_VIEW_ALL')}
               />
+            ))}
+
+            {activeTab === 'OFFBOARDING' && renderWithGuard('OFFBOARDING', (
+              <Offboarding t={t} role={role} />
             ))}
           </Content>
         </Layout>

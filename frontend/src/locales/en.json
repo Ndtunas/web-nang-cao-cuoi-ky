@@ -126,6 +126,27 @@
     "errorCompleteTask": "Error completing task",
     "successCompleteTask": "Task completed!"
   },
+  "offb": {
+    "cardTitle": "Offboarding Workflow",
+    "btnResign": "Submit Resignation",
+    "btnComplete": "Complete Task",
+    "btnSubmit": "Submit",
+    "modalResignTitle": "Submit Resignation Request",
+    "employeeHint": "Click \"Submit Resignation\" to start the 3-level approval flow (DEPT_LEAD → DIRECTOR → CHAIRMAN). Once approved, the employee status will change to TERMINATED.",
+    "confirmComplete": "Mark this task as completed?",
+    "cols": {
+      "code": "Task ID",
+      "employee": "Employee",
+      "taskTitle": "Task Title",
+      "department": "Owner Department",
+      "status": "Status",
+      "actions": "Actions",
+      "reason": "Resignation Reason"
+    },
+    "validation": {
+      "reasonRequired": "Please provide a resignation reason"
+    }
+  },
   "dashboard": {
     "recruitmentChart": "New Hires & Department Structure (Monthly)",
     "pendingQuick": "Quick Action Required",
