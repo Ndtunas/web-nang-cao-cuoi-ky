@@ -8,8 +8,28 @@ import { Employee } from '../../entities/employee.entity.js';
 import { ApprovalRequest } from '../../entities/approval-request.entity.js';
 import { Project } from '../../entities/project.entity.js';
 import { ProjectTask } from '../../entities/project-task.entity.js';
+import { Attendance } from '../../entities/attendance.entity.js';
 import { ApprovalService } from '../approval/approval.service.js';
+import { AttendanceService } from '../attendance/attendance.service.js';
+import { ATTENDANCE_RULES } from '../attendance/attendance.constants.js';
 import { BusinessException } from '../../common/exceptions/business.exception.js';
+
+interface DailyExpected {
+  date: string;
+  weekday: number; // 0=Sun..6=Sat
+  expectedHours: number; // 0 if weekend
+  attendanceStatus: string | null;
+  workHours: number;
+}
+
+interface ReconciliationWarning {
+  date: string;
+  expected: number;
+  declared: number;
+  diff: number;
+  severity: 'info' | 'warn' | 'error';
+  message: string;
+}
 
 @Injectable()
 export class TimesheetsService {
@@ -27,7 +47,10 @@ export class TimesheetsService {
     private readonly projectRepository: Repository<Project>,
     @InjectRepository(ProjectTask)
     private readonly projectTaskRepository: Repository<ProjectTask>,
+    @InjectRepository(Attendance)
+    private readonly attendanceRepository: Repository<Attendance>,
     private readonly approvalService: ApprovalService,
+    private readonly attendanceService: AttendanceService,
   ) {}
 
   async getMyWeekly(
@@ -86,7 +109,165 @@ export class TimesheetsService {
 
     const tasks = await this.projectTaskRepository.find();
 
-    return { timesheet, entries, projects, tasks };
+    // Reconciliation: compute expected hours per day from attendance records
+    const dateFrom = startDate.toISOString().split('T')[0];
+    const dateTo = endDate.toISOString().split('T')[0];
+    const dailyExpected = await this.computeDailyExpected(
+      employee.id,
+      startDate,
+      endDate,
+    );
+
+    // Pre-fill: if timesheet is empty (DRAFT) AND no attendance yet today,
+    // suggest 8h × 5 weekdays (Mon-Fri) NORMAL.
+    const isDraftEmpty =
+      entries.length === 0 &&
+      (timesheet!.status === 'DRAFT' || timesheet!.status === 'REJECTED');
+
+    const suggestedEntries: any[] = [];
+    if (isDraftEmpty) {
+      const defaultProject = projects[0];
+      const defaultTask = tasks[0];
+      if (defaultProject && defaultTask) {
+        // weekdays only (Mon-Fri)
+        for (let i = 0; i < 5; i++) {
+          const d = new Date(startDate);
+          d.setDate(startDate.getDate() + i);
+          const dateStr = d.toISOString().split('T')[0];
+          suggestedEntries.push({
+            rowId: `suggest-${dateStr}`,
+            timesheetId: timesheet!.id,
+            projectId: defaultProject.id,
+            taskId: defaultTask.id,
+            entryDate: dateStr,
+            hoursSpent: ATTENDANCE_RULES.FULL_DAY_HOURS,
+            workType: 'NORMAL',
+            description: 'Auto-prefill (điều chỉnh nếu khác)',
+          });
+        }
+      }
+    }
+
+    const reconciliation = this.diffDailyExpectedVsEntries(
+      dailyExpected,
+      entries,
+    );
+
+    return {
+      timesheet,
+      entries,
+      projects,
+      tasks,
+      suggestedEntries, // populated when timesheet is empty
+      reconciliation, // { dailyExpected, warnings, targetTotalHours }
+    };
+  }
+
+  /**
+   * Compute the expected (target) work hours per weekday from attendance records.
+   * - Weekends (Sat/Sun) → 0
+   * - PRESENT/LATE/OVERTIME → 8
+   * - HALF_DAY → 4
+   * - ABSENT/no record → 0 (still possible to khai báo nếu có off-day)
+   */
+  private async computeDailyExpected(
+    employeeId: string,
+    startDate: Date,
+    endDate: Date,
+  ): Promise<DailyExpected[]> {
+    const records = await this.attendanceService.listForEmployeeInRange(
+      employeeId,
+      startDate.toISOString().split('T')[0],
+      endDate.toISOString().split('T')[0],
+    );
+    const recMap = new Map<string, Attendance>();
+    records.forEach((r) => {
+      const wd = new Date(r.workDate as any);
+      const dateStr = `${wd.getFullYear()}-${String(wd.getMonth() + 1).padStart(2, '0')}-${String(wd.getDate()).padStart(2, '0')}`;
+      recMap.set(dateStr, r);
+    });
+
+    const out: DailyExpected[] = [];
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(startDate);
+      d.setDate(startDate.getDate() + i);
+      const dateStr = d.toISOString().split('T')[0];
+      const weekday = d.getDay(); // 0=Sun..6=Sat
+      const rec = recMap.get(dateStr);
+      let expected = 0;
+      if (weekday !== 0 && weekday !== 6) {
+        if (rec) {
+          if (rec.status === 'HALF_DAY') expected = ATTENDANCE_RULES.HALF_DAY_HOURS;
+          else if (rec.status === 'ABSENT') expected = 0;
+          else expected = ATTENDANCE_RULES.FULL_DAY_HOURS;
+        }
+      }
+      out.push({
+        date: dateStr,
+        weekday,
+        expectedHours: expected,
+        attendanceStatus: rec?.status ?? null,
+        workHours: Number(rec?.workHours ?? 0),
+      });
+    }
+    return out;
+  }
+
+  /**
+   * Diff daily expected vs declared entries. Returns warnings list.
+   * Tolerance: ±0.5h (rounding). > 0.5 → warn; > 2 → error.
+   */
+  private diffDailyExpectedVsEntries(
+    expected: DailyExpected[],
+    entries: TimesheetEntry[],
+  ): {
+    dailyExpected: DailyExpected[];
+    warnings: ReconciliationWarning[];
+    targetTotalHours: number;
+    declaredTotalHours: number;
+  } {
+    const declared = new Map<string, number>();
+    entries.forEach((e) => {
+      const wd = new Date(e.entryDate as any);
+      const dateStr = `${wd.getFullYear()}-${String(wd.getMonth() + 1).padStart(2, '0')}-${String(wd.getDate()).padStart(2, '0')}`;
+      declared.set(dateStr, (declared.get(dateStr) ?? 0) + Number(e.hoursSpent || 0));
+    });
+
+    const warnings: ReconciliationWarning[] = [];
+    let totalExpected = 0;
+    let totalDeclared = 0;
+    for (const day of expected) {
+      const decl = declared.get(day.date) ?? 0;
+      totalExpected += day.expectedHours;
+      totalDeclared += decl;
+      if (day.expectedHours === 0) continue; // skip weekends/absent
+      const diff = Math.abs(decl - day.expectedHours);
+      if (diff < 0.5) continue;
+      let severity: ReconciliationWarning['severity'] = 'info';
+      if (diff > 2) severity = 'error';
+      else severity = 'warn';
+      let msg = `Ngày ${day.date}: khai ${decl}h, dự kiến theo chấm công ${day.expectedHours}h`;
+      if (decl < day.expectedHours) {
+        msg += ` (thiếu ${(day.expectedHours - decl).toFixed(2)}h)`;
+      } else {
+        msg += ` (thừa ${(decl - day.expectedHours).toFixed(2)}h)`;
+      }
+      warnings.push({
+        date: day.date,
+        expected: day.expectedHours,
+        declared: decl,
+        diff: day.expectedHours - decl,
+        severity,
+        message: msg,
+      });
+    }
+
+    return {
+      dailyExpected: expected,
+      warnings,
+      targetTotalHours: totalExpected,
+      declaredTotalHours: totalDeclared,
+    };
   }
 
   async saveEntries(userId: string, dto: any): Promise<any> {
@@ -189,7 +370,22 @@ export class TimesheetsService {
         `Saved ${savedEntries.length} entries for timesheet ${timesheet.id}`,
       );
 
-      return { timesheet, entries: savedEntries };
+      // Reconciliation: so sánh tổng khai với tổng expected từ attendance.
+      const dailyExpected = await this.computeDailyExpected(
+        employee.id,
+        timesheet.startDate,
+        timesheet.endDate,
+      );
+      const reconciliation = this.diffDailyExpectedVsEntries(
+        dailyExpected,
+        savedEntries,
+      );
+
+      return {
+        timesheet,
+        entries: savedEntries,
+        reconciliation,
+      };
     } catch (e) {
       this.logger.error(
         {
