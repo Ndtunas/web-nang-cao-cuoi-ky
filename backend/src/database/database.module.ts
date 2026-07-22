@@ -22,6 +22,7 @@ import * as entities from '../entities/index.js';
         database: configService.get<string>('DB_DATABASE', 'hrm_system'),
         entities: Object.values(entities),
         synchronize: false,
+        schema: 'public',
         logging: configService.get<string>('NODE_ENV') !== 'production',
       }),
     }),
