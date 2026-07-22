@@ -170,7 +170,7 @@ describe('Auth, Users & Config System (e2e)', () => {
       expect(response.body.data.accessToken).toBeDefined();
       expect(response.body.data.refreshToken).toBeDefined();
       expect(response.body.data.refreshToken).not.toBe(testRefreshToken);
-      
+
       // Update with the newly rotated refresh token
       testRefreshToken = response.body.data.refreshToken;
     });
@@ -202,12 +202,18 @@ describe('Auth, Users & Config System (e2e)', () => {
   describe('2. Password Reset Approval Workflow', () => {
     it('should reject reset request from non-HR Department Lead', async () => {
       // Find deptlead employee record
-      const leadUser = await userRepository.findOne({ where: { username: 'deptlead' } });
-      const leadEmp = await employeeRepository.findOne({ where: { userId: leadUser.id } });
+      const leadUser = await userRepository.findOne({
+        where: { username: 'deptlead' },
+      });
+      const leadEmp = await employeeRepository.findOne({
+        where: { userId: leadUser.id },
+      });
       const originalDeptId = leadEmp.departmentId;
 
       // Find non-HR Department
-      const nonHrDept = await departmentRepository.findOne({ where: { deptCode: 'BOD' } });
+      const nonHrDept = await departmentRepository.findOne({
+        where: { deptCode: 'BOD' },
+      });
 
       // Temporarily change deptlead's department to BOD (non-HR)
       leadEmp.departmentId = nonHrDept.id;
@@ -216,7 +222,10 @@ describe('Auth, Users & Config System (e2e)', () => {
       const response = await request(app.getHttpServer())
         .post('/api/v1/auth/reset-password/request')
         .set('Authorization', `Bearer ${deptleadToken}`)
-        .send({ targetUserId: employeeUserId, newPassword: 'ResetPassword@123' })
+        .send({
+          targetUserId: employeeUserId,
+          newPassword: 'ResetPassword@123',
+        })
         .expect(403);
 
       expect(response.body.errorCode).toBe('ERR_AUTH_002');
@@ -228,12 +237,18 @@ describe('Auth, Users & Config System (e2e)', () => {
 
     it('should accept reset request from HR Department Lead and create approval request', async () => {
       // Find IT Lead employee record
-      const leadUser = await userRepository.findOne({ where: { username: 'deptlead' } });
-      const leadEmp = await employeeRepository.findOne({ where: { userId: leadUser.id } });
+      const leadUser = await userRepository.findOne({
+        where: { username: 'deptlead' },
+      });
+      const leadEmp = await employeeRepository.findOne({
+        where: { userId: leadUser.id },
+      });
       const originalDeptId = leadEmp.departmentId;
 
       // Find HR Department ID
-      const hrDept = await departmentRepository.findOne({ where: { deptCode: 'HR' } });
+      const hrDept = await departmentRepository.findOne({
+        where: { deptCode: 'HR' },
+      });
 
       // Temporarily promote IT Lead to HR Department Lead
       leadEmp.departmentId = hrDept.id;
@@ -243,7 +258,10 @@ describe('Auth, Users & Config System (e2e)', () => {
       const response = await request(app.getHttpServer())
         .post('/api/v1/auth/reset-password/request')
         .set('Authorization', `Bearer ${deptleadToken}`)
-        .send({ targetUserId: employeeUserId, newPassword: 'ResetPassword@123' })
+        .send({
+          targetUserId: employeeUserId,
+          newPassword: 'ResetPassword@123',
+        })
         .expect(201);
 
       expect(response.body.success).toBe(true);
@@ -327,22 +345,22 @@ describe('Auth, Users & Config System (e2e)', () => {
 
     it('should allow Admin or Department Lead to update work rate configurations', async () => {
       const key = 'MAX_ANNUAL_LEAVE_DAYS';
-      
+
       // Update config
       const response = await request(app.getHttpServer())
         .put(`/api/v1/config/work-rates/${key}`)
         .set('Authorization', `Bearer ${adminToken}`)
-        .send({ valueMultiplier: 15.00 })
+        .send({ valueMultiplier: 15.0 })
         .expect(200);
 
       expect(response.body.success).toBe(true);
-      expect(parseFloat(response.body.data.valueMultiplier)).toBe(15.00);
+      expect(parseFloat(response.body.data.valueMultiplier)).toBe(15.0);
 
       // Revert config back to 12.00
       await request(app.getHttpServer())
         .put(`/api/v1/config/work-rates/${key}`)
         .set('Authorization', `Bearer ${adminToken}`)
-        .send({ valueMultiplier: 12.00 })
+        .send({ valueMultiplier: 12.0 })
         .expect(200);
     });
   });
