@@ -10,6 +10,9 @@ import { User } from '../../entities/user.entity.js';
 import { JobHistory } from '../../entities/job-history.entity.js';
 import { SalaryHistory } from '../../entities/salary-history.entity.js';
 import { Salary } from '../../entities/salary.entity.js';
+import { LeaveRequest } from '../../entities/leave-request.entity.js';
+import { OffboardingTask } from '../../entities/offboarding-task.entity.js';
+import { EmployeeStatus } from '../../common/enums/business-values.js';
 import { BusinessException } from '../../common/exceptions/business.exception.js';
 
 /**
@@ -47,6 +50,10 @@ export class ApprovalService {
     private readonly salaryHistoryRepository: Repository<SalaryHistory>,
     @InjectRepository(Salary)
     private readonly salaryRepository: Repository<Salary>,
+    @InjectRepository(LeaveRequest)
+    private readonly leaveRequestRepository: Repository<LeaveRequest>,
+    @InjectRepository(OffboardingTask)
+    private readonly offboardingTaskRepository: Repository<OffboardingTask>,
   ) {}
 
   // ============== CONFIG ==============
@@ -268,7 +275,20 @@ export class ApprovalService {
       case 'PAYROLL_MONTHLY':
         await this.applyPayrollApproved(request);
         break;
-      // DISCIPLINE_REWARD, OFFBOARDING, RESET_PASSWORD, LEAVE_SHORT/LONG: xử lý ở module riêng
+      case 'LEAVE_SHORT':
+      case 'LEAVE_LONG':
+        await this.applyLeaveApproved(request);
+        break;
+      case 'PERSONAL_INFO_CHANGE':
+        await this.applyPersonalInfoChangeApproved(request);
+        break;
+      case 'DISCIPLINE_REWARD':
+        await this.applyDisciplineRewardApproved(request);
+        break;
+      case 'OFFBOARDING':
+        await this.applyOffboardingApproved(request);
+        break;
+      // RESET_PASSWORD: handled directly inside auth.service.approvePasswordReset()
       default:
         break;
     }
@@ -283,6 +303,41 @@ export class ApprovalService {
         timesheet.status = 'REJECTED';
         await this.timesheetRepository.save(timesheet);
       }
+      return;
+    }
+
+    // Leave requests: revert PENDING -> REJECTED on the leave record
+    if (
+      request.transactionType === 'LEAVE_SHORT' ||
+      request.transactionType === 'LEAVE_LONG'
+    ) {
+      const leave = await this.leaveRequestRepository.findOne({
+        where: { approvalRequestId: request.id },
+      });
+      if (leave) {
+        leave.status = 'REJECTED';
+        await this.leaveRequestRepository.save(leave);
+      }
+      return;
+    }
+
+    // Offboarding: nếu đã chuyển NOTICE_PERIOD thì revert lại OFFICIAL
+    if (request.transactionType === 'OFFBOARDING') {
+      const refId = request.referenceEntityId;
+      const employeeIdMatch = refId?.match?.(/^EMP-([\w-]+)/);
+      if (refId) {
+        const employee = await this.employeeRepository.findOne({
+          where: { id: refId },
+        });
+        if (employee && employee.status === EmployeeStatus.NOTICE_PERIOD) {
+          employee.status = EmployeeStatus.OFFICIAL;
+          await this.employeeRepository.save(employee);
+        }
+      }
+      // Remove any auto-created OffboardingTask
+      await this.offboardingTaskRepository.delete({
+        employeeId: request.referenceEntityId,
+      });
     }
   }
 
@@ -341,5 +396,92 @@ export class ApprovalService {
       .set({ status: 'APPROVED' })
       .where('approval_request_id = :id', { id: request.id })
       .execute();
+  }
+
+  /**
+   * US-24 (Leave): Đơn nghỉ phép ngắn/dài ngày được duyệt → cập nhật LeaveRequest.status = APPROVED.
+   * Vì LeaveRequest.approvalRequestId hiện chưa được bind khi submit (module leave-requests là stub),
+   * cố gắng tra theo referenceEntityId trước, fallback tra theo requester gần nhất.
+   */
+  private async applyLeaveApproved(request: ApprovalRequest): Promise<void> {
+    const candidateId = request.referenceEntityId;
+    let leave: LeaveRequest | null = null;
+    if (candidateId && /^\d+$/.test(candidateId)) {
+      leave = await this.leaveRequestRepository.findOne({
+        where: { id: candidateId },
+      });
+    }
+    if (!leave) {
+      // Tra theo approvalRequestId (khi leave module bind đúng)
+      leave = await this.leaveRequestRepository.findOne({
+        where: { approvalRequestId: request.id },
+      });
+    }
+    if (leave) {
+      leave.status = 'APPROVED';
+      await this.leaveRequestRepository.save(leave);
+    }
+  }
+
+  /**
+   * PERSONAL_INFO_CHANGE: chỉ là audit — updatePersonalInfo() đã ghi trực tiếp
+   * vào Employee. ApprovalRequest chỉ mang ý nghĩa duyệt bước cuối; không đụng Employee ở đây.
+   */
+  private async applyPersonalInfoChangeApproved(
+    _request: ApprovalRequest,
+  ): Promise<void> {
+    // No-op: data đã được commit sẵn ở updatePersonalInfo() và audit interceptor đã bắt diff.
+  }
+
+  /**
+   * DISCIPLINE_REWARD: chỉ ghi nhận audit, không tác động Employee state.
+   * referenceEntityId lưu "empId:type:amount:ts". Hành động đã được submit lưu thành
+   * ApprovalRequest ở employees.service.ts; approver duyệt ⇒ status chuyển APPROVED
+   * mà không cần đụng entity riêng.
+   */
+  private async applyDisciplineRewardApproved(
+    _request: ApprovalRequest,
+  ): Promise<void> {
+    // No-op: chỉ để state machine ghi nhận hoàn tất.
+  }
+
+  /**
+   * US-19..22: Offboarding được duyệt → set Employee.status = TERMINATED + endDate = today,
+   * đồng thời seed các OffboardingTask thu hồi tài sản/bàn giao cho IT & Admin.
+   * Ref: business/03_workflows.md mục 7.
+   */
+  private async applyOffboardingApproved(request: ApprovalRequest): Promise<void> {
+    const employeeId = request.referenceEntityId;
+    if (!employeeId) return;
+    const employee = await this.employeeRepository.findOne({
+      where: { id: employeeId },
+    });
+    if (!employee) return;
+    const today = new Date();
+    employee.status = EmployeeStatus.TERMINATED;
+    employee.endDate = today;
+    await this.employeeRepository.save(employee);
+
+    // Seed offboarding tasks (3 nghiệp vụ thu hồi theo workflow mục 7)
+    const taskSeeds: Array<{
+      taskTitle: string;
+      targetDepartment: string;
+    }> = [
+      {
+        taskTitle: 'Thu hồi máy tính, khóa Email/Git',
+        targetDepartment: 'IT',
+      },
+      { taskTitle: 'Thu hồi thẻ ra vào, tủ đựng đồ', targetDepartment: 'ADMIN' },
+      { taskTitle: 'Bàn giao dự án & tài liệu', targetDepartment: 'DEPT' },
+    ];
+    for (const seed of taskSeeds) {
+      const task = this.offboardingTaskRepository.create({
+        employeeId: employee.id,
+        taskTitle: seed.taskTitle,
+        targetDepartment: seed.targetDepartment,
+        status: 'PENDING',
+      });
+      await this.offboardingTaskRepository.save(task);
+    }
   }
 }
