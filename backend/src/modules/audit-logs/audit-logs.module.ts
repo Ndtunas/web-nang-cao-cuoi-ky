@@ -8,10 +8,7 @@ import { AuditLogInterceptor } from './audit-log.interceptor.js';
 import { LoggerModule } from '../../common/logger/logger.module.js';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([SystemAuditLog]),
-    LoggerModule,
-  ],
+  imports: [TypeOrmModule.forFeature([SystemAuditLog]), LoggerModule],
   controllers: [AuditLogsController],
   providers: [
     AuditLogsService,

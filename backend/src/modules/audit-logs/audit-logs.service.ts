@@ -25,7 +25,9 @@ export class AuditLogsService {
     }
 
     if (filters.fromDate || filters.toDate) {
-      const from = filters.fromDate ? new Date(filters.fromDate) : new Date('2026-01-01');
+      const from = filters.fromDate
+        ? new Date(filters.fromDate)
+        : new Date('2026-01-01');
       const to = filters.toDate ? new Date(filters.toDate) : new Date();
       // Adjust to end of day if needed
       where.timestamp = Between(from, to);

@@ -121,7 +121,7 @@ export class AuditLogInterceptor implements NestInterceptor {
           } catch (e) {
             this.logger.error(
               {
-                requestId: (request as any).requestId,
+                requestId: request.requestId,
                 url,
                 method,
                 err: {
