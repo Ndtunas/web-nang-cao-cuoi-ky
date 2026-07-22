@@ -147,6 +147,31 @@
       "reasonRequired": "Please provide a resignation reason"
     }
   },
+  "onb": {
+    "cardTitle": "Onboarding Workflow",
+    "btnInitiate": "Initiate Onboarding",
+    "btnComplete": "Complete Task",
+    "btnPromote": "Evaluate → OFFICIAL",
+    "modalInitTitle": "Initiate onboarding for new employee",
+    "placeholderEmployee": "Pick employee (currently ONBOARDING/PROBATION)",
+    "initSuccess": "Onboarding initiated with 4 tasks for HR/IT/Admin.",
+    "promoteSuccess": "Employee promoted to OFFICIAL!",
+    "promoteError": "Error promoting employee",
+    "confirmComplete": "Mark this task as completed?",
+    "confirmPromote": "Confirm probation passed → move to OFFICIAL?",
+    "cols": {
+      "code": "Task ID",
+      "employee": "Employee",
+      "taskTitle": "Task Title",
+      "department": "Department",
+      "dueDate": "Due Date",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "validation": {
+      "empRequired": "Please select an employee"
+    }
+  },
   "dashboard": {
     "recruitmentChart": "New Hires & Department Structure (Monthly)",
     "pendingQuick": "Quick Action Required",

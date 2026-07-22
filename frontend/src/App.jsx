@@ -45,6 +45,7 @@ import AuditLogs from './components/AuditLogs.jsx';
 import Projects from './components/Projects.jsx';
 import LeaveRequests from './components/LeaveRequests.jsx';
 import Offboarding from './components/Offboarding.jsx';
+import Onboarding from './components/Onboarding.jsx';
 import { AuthProvider, useAuth } from './contexts/AuthContext.jsx';
 import { TAB_KEYS, ROLES, canAccessTab, canDo, getFirstAllowedTab } from './constants/roles.js';
 
@@ -150,6 +151,8 @@ function AppContent() {
       // LeaveRequests component loads its own data
     } else if (activeTab === TAB_KEYS.OFFBOARDING) {
       // Offboarding component loads its own data
+    } else if (activeTab === TAB_KEYS.ONBOARDING) {
+      // Onboarding component loads its own data
     } else if (activeTab === TAB_KEYS.DASHBOARD) {
       loadDashboardData();
     }
@@ -805,6 +808,10 @@ function AppContent() {
 
             {activeTab === 'OFFBOARDING' && renderWithGuard('OFFBOARDING', (
               <Offboarding t={t} role={role} />
+            ))}
+
+            {activeTab === 'ONBOARDING' && renderWithGuard('ONBOARDING', (
+              <Onboarding t={t} />
             ))}
           </Content>
         </Layout>

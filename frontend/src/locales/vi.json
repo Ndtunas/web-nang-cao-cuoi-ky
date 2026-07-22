@@ -147,6 +147,31 @@
       "reasonRequired": "Vui lòng nhập lý do thôi việc"
     }
   },
+  "onb": {
+    "cardTitle": "Quy trình Onboarding",
+    "btnInitiate": "Khởi tạo Onboarding",
+    "btnComplete": "Hoàn tất task",
+    "btnPromote": "Đánh giá → OFFICIAL",
+    "modalInitTitle": "Khởi tạo onboarding cho nhân viên mới",
+    "placeholderEmployee": "Chọn nhân viên (đang ONBOARDING/PROBATION)",
+    "initSuccess": "Đã khởi tạo onboarding + 4 tasks cho HR/IT/Admin.",
+    "promoteSuccess": "Đã chuyển trạng thái nhân viên sang OFFICIAL!",
+    "promoteError": "Lỗi khi promote nhân viên",
+    "confirmComplete": "Đánh dấu task này đã hoàn tất?",
+    "confirmPromote": "Xác nhận nhân viên đạt thử việc → chuyển OFFICIAL?",
+    "cols": {
+      "code": "Mã task",
+      "employee": "Nhân viên",
+      "taskTitle": "Tên task",
+      "department": "Phòng ban",
+      "dueDate": "Hạn chót",
+      "status": "Trạng thái",
+      "actions": "Thao tác"
+    },
+    "validation": {
+      "empRequired": "Vui lòng chọn nhân viên"
+    }
+  },
   "dashboard": {
     "recruitmentChart": "Tuyển dụng mới & Cơ cấu nhân sự (Tháng)",
     "pendingQuick": "Yêu cầu cần duyệt nhanh",
