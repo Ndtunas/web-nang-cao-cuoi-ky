@@ -36,6 +36,59 @@ export class PayrollService {
     });
   }
 
+  /**
+   * US-26: Lấy phiếu lương cá nhân. Lookup Salary theo userId -> employeeId -> Salary.
+   */
+  async getMyPayslip(
+    userId: string,
+    month: number,
+    year: number,
+  ): Promise<Salary | null> {
+    const employee = await this.employeeRepository.findOne({
+      where: { userId },
+      relations: { department: true, position: true },
+    });
+    if (!employee) return null;
+    return this.salaryRepository.findOne({
+      where: { employeeId: employee.id, month, year },
+      relations: {
+        employee: {
+          department: true,
+          position: true,
+        },
+      },
+    });
+  }
+
+  /**
+   * US-25: Chốt bảng lương tháng → set tất cả Salary trong tháng/năm đó từ DRAFT → APPROVED.
+   * Lưu ý: trong ngữ cảnh dự án này controller được gate ADMIN/DIRECTOR/CHAIRMAN.
+   * Nếu muốn enforce multi-level theo spec (HR Lead → Director) thì bọc thêm ApprovalRequest,
+   * nhưng US-25 đang describe thao tác cuối cùng nên đây là finalization endpoint.
+   */
+  async approveMonthly(dto: {
+    month: number;
+    year: number;
+    comment?: string;
+  }): Promise<{ updated: number; salaries: Salary[] }> {
+    const { month, year } = dto;
+    const result = await this.salaryRepository
+      .createQueryBuilder()
+      .update()
+      .set({ status: 'APPROVED' })
+      .where('month = :month AND year = :year AND status = :status', {
+        month,
+        year,
+        status: 'DRAFT',
+      })
+      .execute();
+    const salaries = await this.getSalaries(month, year);
+    return {
+      updated: result.affected ?? 0,
+      salaries,
+    };
+  }
+
   async calculateMonthly(dto: {
     month: number;
     year: number;
