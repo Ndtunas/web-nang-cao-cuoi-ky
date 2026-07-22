@@ -5,16 +5,21 @@ import type { BusinessErrorPayload } from '../enums/business-values.js';
  * Custom Business Exception theo chuẩn 05_business_values.md mục 4.
  * Trả response format: { statusCode, errorCode, i18nKey, params, timestamp }
  *
- * Mapping 10 error codes từ tài liệu:
+ * Mapping 15 error codes từ tài liệu + bổ sung theo thực tế module:
  * - ERR_AUTH_001 (401) → error.auth.invalidCredentials
  * - ERR_AUTH_002 (403) → error.auth.accessDenied
+ * - ERR_AUTH_003 (404) → error.auth.userNotFound
  * - ERR_EMP_001 (400) → error.employee.codeOrEmailExists
  * - ERR_EMP_002 (400) → error.employee.cannotTransferNoticePeriod
  * - ERR_LEAVE_001 (400) → error.leave.insufficientBalance
  * - ERR_LEAVE_002 (400) → error.leave.invalidDateRange
+ * - ERR_LEAVE_003 (400) → error.leave.cannotCancel
  * - ERR_APPROVAL_001 (403) → error.approval.unauthorizedLevel
  * - ERR_APPROVAL_002 (400) → error.approval.alreadyRejected
+ * - ERR_APPROVAL_003 (404) → error.approval.requestNotFound
+ * - ERR_APPROVAL_004 (400) → error.approval.invalidRequestData
  * - ERR_TIMESHEET_001 (400) → error.timesheet.alreadyApproved
+ * - ERR_TIMESHEET_003 (400) → error.timesheet.noEntriesToSubmit
  * - ERR_PAYROLL_001 (400) → error.payroll.alreadyFinalized
  */
 
@@ -36,6 +41,10 @@ export const BUSINESS_ERROR_MAP: Record<
     i18nKey: 'error.leave.insufficientBalance',
   },
   ERR_LEAVE_002: { statusCode: 400, i18nKey: 'error.leave.invalidDateRange' },
+  ERR_LEAVE_003: {
+    statusCode: 400,
+    i18nKey: 'error.leave.cannotCancel',
+  },
   ERR_APPROVAL_001: {
     statusCode: 403,
     i18nKey: 'error.approval.unauthorizedLevel',

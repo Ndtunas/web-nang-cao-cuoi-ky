@@ -10,7 +10,10 @@
     "projects": "Dự án",
     "logout": "Đăng xuất",
     "approvals": "Phê duyệt",
-    "auditLogs": "Nhật ký tác động"
+    "auditLogs": "Nhật ký tác động",
+    "leave": "Nghỉ phép",
+    "onboarding": "Onboarding",
+    "offboarding": "Offboarding"
   },
   "header": {
     "searchPlaceholder": "Tìm kiếm nhân viên, phòng ban...",
@@ -63,7 +66,8 @@
     },
     "leave": {
       "insufficientBalance": "Số ngày phép còn lại không đủ để đăng ký.",
-      "invalidDateRange": "Ngày bắt đầu nghỉ phải nhỏ hơn hoặc bằng ngày kết thúc."
+      "invalidDateRange": "Ngày bắt đầu nghỉ phải nhỏ hơn hoặc bằng ngày kết thúc.",
+      "cannotCancel": "Chỉ có thể hủy đơn nghỉ phép khi còn ở trạng thái Chờ duyệt."
     },
     "approval": {
       "unauthorizedLevel": "Bạn không có thẩm quyền phê duyệt ở cấp hiện tại.",
@@ -108,7 +112,19 @@
     "submittedByLabel": "bởi",
     "placeholderSelectProject": "Chọn dự án",
     "placeholderSelectTask": "Chọn công việc",
-    "placeholderUsernameExample": "Ví dụ: admin, employee"
+    "placeholderUsernameExample": "Ví dụ: admin, employee",
+    "refresh": "Tải lại",
+    "submit": "Gửi",
+    "cancel": "Hủy",
+    "errorLoadLeaveRequests": "Không thể tải danh sách đơn nghỉ phép",
+    "errorLoadOffboarding": "Không thể tải danh sách offboarding",
+    "errorLoadOnboarding": "Không thể tải danh sách onboarding",
+    "successCreate": "Đã tạo yêu cầu thành công!",
+    "successApproveOffb": "Đã duyệt đơn thôi việc thành công!",
+    "errorResign": "Lỗi khi nộp đơn thôi việc",
+    "errorInitOnboarding": "Lỗi khi khởi tạo onboarding",
+    "errorCompleteTask": "Lỗi khi hoàn tất task onboarding/offboarding",
+    "successCompleteTask": "Đã hoàn tất task!"
   },
   "dashboard": {
     "recruitmentChart": "Tuyển dụng mới & Cơ cấu nhân sự (Tháng)",
@@ -225,6 +241,31 @@
       "APPROVED": "Đã duyệt",
       "REJECTED": "Bị từ chối"
     }
+  },
+  "leave": {
+    "cardTitle": "Đơn xin nghỉ phép (Leave Requests)",
+    "btnNew": "Tạo đơn nghỉ phép",
+    "modalTitle": "Tạo đơn xin nghỉ phép mới",
+    "placeholderType": "Chọn loại nghỉ phép",
+    "cols": {
+      "code": "Mã đơn",
+      "type": "Loại nghỉ phép",
+      "range": "Thời gian nghỉ",
+      "days": "Số ngày",
+      "requester": "Người xin",
+      "status": "Trạng thái",
+      "reason": "Lý do",
+      "actions": "Thao tác"
+    },
+    "validation": {
+      "typeRequired": "Vui lòng chọn loại nghỉ phép",
+      "rangeRequired": "Vui lòng chọn ngày bắt đầu và kết thúc"
+    },
+    "confirmCancel": "Hủy đơn nghỉ phép này?",
+    "msgSubmitted": "Đã gửi đơn nghỉ phép lên ma trận duyệt!",
+    "msgCancelled": "Đã hủy đơn nghỉ phép.",
+    "msgSubmitError": "Lỗi khi nộp đơn nghỉ phép",
+    "msgCancelError": "Lỗi khi hủy đơn nghỉ phép"
   },
   "approvals": {
     "tabs": {

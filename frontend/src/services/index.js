@@ -6,6 +6,9 @@ import { auditLogsService } from './audit-logs.service.js';
 import { payrollService } from './payroll.service.js';
 import { configsService } from './configs.service.js';
 import { projectsService } from './projects.service.js';
+import { leaveService } from './leave-requests.service.js';
+import { offboardingService } from './offboarding.service.js';
+import { onboardingService } from './onboarding.service.js';
 
 export {
   authService,
@@ -16,6 +19,9 @@ export {
   payrollService,
   configsService,
   projectsService,
+  leaveService,
+  offboardingService,
+  onboardingService,
 };
 
 /**
@@ -33,4 +39,7 @@ export const api = {
   payroll: payrollService,
   configs: configsService,
   projects: projectsService,
+  leave: leaveService,
+  offboarding: offboardingService,
+  onboarding: onboardingService,
 };

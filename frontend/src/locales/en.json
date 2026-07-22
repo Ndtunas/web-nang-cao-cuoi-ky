@@ -10,7 +10,10 @@
     "projects": "Projects",
     "logout": "Log Out",
     "approvals": "Approvals",
-    "auditLogs": "Audit Logs"
+    "auditLogs": "Audit Logs",
+    "leave": "Leave",
+    "onboarding": "Onboarding",
+    "offboarding": "Offboarding"
   },
   "header": {
     "searchPlaceholder": "Search employees, departments...",
@@ -63,7 +66,8 @@
     },
     "leave": {
       "insufficientBalance": "Insufficient leave balance for this request.",
-      "invalidDateRange": "Start date must be less than or equal to end date."
+      "invalidDateRange": "Start date must be less than or equal to end date.",
+      "cannotCancel": "Only pending leave requests can be cancelled."
     },
     "approval": {
       "unauthorizedLevel": "You are not authorized to approve at the current level.",
@@ -108,7 +112,19 @@
     "submittedByLabel": "by",
     "placeholderSelectProject": "Select project",
     "placeholderSelectTask": "Select task",
-    "placeholderUsernameExample": "e.g. admin, employee"
+    "placeholderUsernameExample": "e.g. admin, employee",
+    "refresh": "Refresh",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "errorLoadLeaveRequests": "Failed to load leave requests",
+    "errorLoadOffboarding": "Failed to load offboarding tasks",
+    "errorLoadOnboarding": "Failed to load onboarding tasks",
+    "successCreate": "Request created successfully!",
+    "successApproveOffb": "Resignation approved!",
+    "errorResign": "Error submitting resignation",
+    "errorInitOnboarding": "Error initiating onboarding",
+    "errorCompleteTask": "Error completing task",
+    "successCompleteTask": "Task completed!"
   },
   "dashboard": {
     "recruitmentChart": "New Hires & Department Structure (Monthly)",
@@ -225,6 +241,31 @@
       "APPROVED": "Approved",
       "REJECTED": "Rejected"
     }
+  },
+  "leave": {
+    "cardTitle": "Leave Requests",
+    "btnNew": "New Leave Request",
+    "modalTitle": "Create New Leave Request",
+    "placeholderType": "Select leave type",
+    "cols": {
+      "code": "Request ID",
+      "type": "Leave Type",
+      "range": "Period",
+      "days": "Days",
+      "requester": "Requester",
+      "status": "Status",
+      "reason": "Reason",
+      "actions": "Actions"
+    },
+    "validation": {
+      "typeRequired": "Please select a leave type",
+      "rangeRequired": "Please pick start and end dates"
+    },
+    "confirmCancel": "Cancel this leave request?",
+    "msgSubmitted": "Leave request submitted for approval!",
+    "msgCancelled": "Leave request cancelled.",
+    "msgSubmitError": "Error submitting leave request",
+    "msgCancelError": "Error cancelling leave request"
   },
   "approvals": {
     "tabs": {

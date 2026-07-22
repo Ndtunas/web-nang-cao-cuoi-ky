@@ -43,6 +43,7 @@ import Payroll from './components/Payroll.jsx';
 import SystemConfig from './components/SystemConfig.jsx';
 import AuditLogs from './components/AuditLogs.jsx';
 import Projects from './components/Projects.jsx';
+import LeaveRequests from './components/LeaveRequests.jsx';
 import { AuthProvider, useAuth } from './contexts/AuthContext.jsx';
 import { TAB_KEYS, ROLES, canAccessTab, canDo, getFirstAllowedTab } from './constants/roles.js';
 
@@ -144,6 +145,8 @@ function AppContent() {
       loadAuditLogs();
     } else if (activeTab === TAB_KEYS.PROJECTS) {
       // Projects component loads its own data
+    } else if (activeTab === TAB_KEYS.LEAVE) {
+      // LeaveRequests component loads its own data
     } else if (activeTab === TAB_KEYS.DASHBOARD) {
       loadDashboardData();
     }
@@ -562,7 +565,10 @@ function AppContent() {
               checkAccess(TAB_KEYS.APPROVALS) && { key: TAB_KEYS.APPROVALS, icon: <CheckCircleOutlined />, label: t('nav.approvals') },
               checkAccess(TAB_KEYS.PAYROLL) && { key: TAB_KEYS.PAYROLL, icon: <DollarOutlined />, label: t('nav.payroll') },
               checkAccess(TAB_KEYS.CONFIG) && { key: TAB_KEYS.CONFIG, icon: <SettingOutlined />, label: t('nav.settings') },
-              checkAccess(TAB_KEYS.AUDIT_LOGS) && { key: TAB_KEYS.AUDIT_LOGS, icon: <AuditOutlined />, label: t('nav.auditLogs') }
+              checkAccess(TAB_KEYS.AUDIT_LOGS) && { key: TAB_KEYS.AUDIT_LOGS, icon: <AuditOutlined />, label: t('nav.auditLogs') },
+              checkAccess(TAB_KEYS.LEAVE) && { key: TAB_KEYS.LEAVE, icon: <CalendarOutlined />, label: t('nav.leave') },
+              checkAccess(TAB_KEYS.ONBOARDING) && { key: TAB_KEYS.ONBOARDING, icon: <PlusOutlined />, label: t('nav.onboarding') },
+              checkAccess(TAB_KEYS.OFFBOARDING) && { key: TAB_KEYS.OFFBOARDING, icon: <LogoutOutlined />, label: t('nav.offboarding') }
             ].filter(Boolean)}
           />
         </Sider>
@@ -784,6 +790,14 @@ function AppContent() {
 
             {activeTab === 'PROJECTS' && renderWithGuard('PROJECTS', (
               <Projects t={t} />
+            ))}
+
+            {activeTab === 'LEAVE' && renderWithGuard('LEAVE', (
+              <LeaveRequests
+                t={t}
+                i18n={i18n}
+                isAdminView={canDo(role, 'LEAVE_VIEW_ALL')}
+              />
             ))}
           </Content>
         </Layout>
