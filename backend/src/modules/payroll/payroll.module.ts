@@ -17,8 +17,8 @@ import { ApprovalRequest } from '../../entities/approval-request.entity.js';
       WorkRateConfig,
       Timesheet,
       TimesheetEntry,
-      ApprovalRequest
-    ])
+      ApprovalRequest,
+    ]),
   ],
   controllers: [PayrollController],
   providers: [PayrollService],

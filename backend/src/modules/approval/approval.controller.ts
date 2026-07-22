@@ -1,8 +1,20 @@
-import { Controller, Get, Put, Patch, Body, Param, Query, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Put,
+  Patch,
+  Body,
+  Param,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { ApprovalService } from './approval.service.js';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
+import { RolesGuard } from '../auth/guards/roles.guard.js';
+import { Roles } from '../auth/decorators/roles.decorator.js';
 import { CurrentUser } from '../auth/decorators/current-user.decorator.js';
 import { User } from '../../entities/user.entity.js';
+import { UserRole } from '../../common/enums/business-values.js';
 
 @Controller()
 @UseGuards(JwtAuthGuard)
@@ -15,11 +27,16 @@ export class ApprovalController {
   }
 
   @Put('approval-configs/:transactionType')
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN)
   async updateApprovalConfig(
     @Param('transactionType') transactionType: string,
     @Body('requiredLevels') requiredLevels: number,
   ) {
-    return this.approvalService.updateApprovalConfig(transactionType, requiredLevels);
+    return this.approvalService.updateApprovalConfig(
+      transactionType,
+      requiredLevels,
+    );
   }
 
   @Get('approval-requests/pending-my-level')

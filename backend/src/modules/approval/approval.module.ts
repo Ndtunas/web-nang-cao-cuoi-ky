@@ -8,6 +8,9 @@ import { ApprovalStepHistory } from '../../entities/approval-step-history.entity
 import { Employee } from '../../entities/employee.entity.js';
 import { User } from '../../entities/user.entity.js';
 import { Timesheet } from '../../entities/timesheet.entity.js';
+import { JobHistory } from '../../entities/job-history.entity.js';
+import { SalaryHistory } from '../../entities/salary-history.entity.js';
+import { Salary } from '../../entities/salary.entity.js';
 
 @Module({
   imports: [
@@ -17,8 +20,11 @@ import { Timesheet } from '../../entities/timesheet.entity.js';
       ApprovalStepHistory,
       Employee,
       User,
-      Timesheet
-    ])
+      Timesheet,
+      JobHistory,
+      SalaryHistory,
+      Salary,
+    ]),
   ],
   controllers: [ApprovalController],
   providers: [ApprovalService],

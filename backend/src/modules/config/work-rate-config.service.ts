@@ -29,7 +29,9 @@ export class WorkRateConfigService {
     });
 
     if (!config) {
-      throw new NotFoundException(`Không tìm thấy cấu hình hệ số công với khóa: ${key}`);
+      throw new NotFoundException(
+        `Không tìm thấy cấu hình hệ số công với khóa: ${key}`,
+      );
     }
 
     config.valueMultiplier = updateDto.valueMultiplier;

@@ -36,14 +36,19 @@ export class PayrollService {
     });
   }
 
-  async calculateMonthly(dto: { month: number; year: number }): Promise<Salary[]> {
+  async calculateMonthly(dto: {
+    month: number;
+    year: number;
+  }): Promise<Salary[]> {
     const { month, year } = dto;
     const employees = await this.employeeRepository.find({
       relations: { position: true },
     });
 
     const configs = await this.workRateConfigRepository.find();
-    const configMap = new Map(configs.map(c => [c.configKey, Number(c.valueMultiplier)]));
+    const configMap = new Map(
+      configs.map((c) => [c.configKey, Number(c.valueMultiplier)]),
+    );
 
     const standardWorkDays = configMap.get('STANDARD_WORK_DAYS_MONTH') || 22.0;
     const otRateWeekday = configMap.get('OT_RATE_WEEKDAY') || 1.5;
@@ -62,7 +67,9 @@ export class PayrollService {
       }
 
       // Base salary calculation
-      const baseSalaryRatio = emp.position ? Number(emp.position.baseSalaryRatio) : 1.0;
+      const baseSalaryRatio = emp.position
+        ? Number(emp.position.baseSalaryRatio)
+        : 1.0;
       const baseSalary = 15000000 * baseSalaryRatio;
 
       // Query timesheets for employee in this month/year
@@ -71,7 +78,7 @@ export class PayrollService {
       });
 
       // Filter timesheets whose start_date or end_date belongs to this month
-      const monthTimesheets = timesheets.filter(t => {
+      const monthTimesheets = timesheets.filter((t) => {
         const start = new Date(t.startDate);
         return start.getMonth() + 1 === month;
       });
@@ -103,7 +110,7 @@ export class PayrollService {
       }
 
       const workDays = totalNormalHours / 8.0;
-      
+
       // Calculate hourly rate
       const hourlyRate = baseSalary / (standardWorkDays * 8.0);
       const otPay =
@@ -113,8 +120,14 @@ export class PayrollService {
 
       const allowance = 1500000; // Standard food/transport allowance
       const deduction = 500000; // Standard social insurance deduction
-      
-      const netSalary = Math.max(0, baseSalary * (workDays / standardWorkDays) + otPay + allowance - deduction);
+
+      const netSalary = Math.max(
+        0,
+        baseSalary * (workDays / standardWorkDays) +
+          otPay +
+          allowance -
+          deduction,
+      );
 
       const payrollCode = `PAY-${emp.id}-${month}-${year}`;
 

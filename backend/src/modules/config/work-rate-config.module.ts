@@ -6,10 +6,7 @@ import { WorkRateConfig } from '../../entities/work-rate-config.entity.js';
 import { AuthModule } from '../auth/auth.module.js';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([WorkRateConfig]),
-    AuthModule,
-  ],
+  imports: [TypeOrmModule.forFeature([WorkRateConfig]), AuthModule],
   controllers: [WorkRateConfigController],
   providers: [WorkRateConfigService],
   exports: [WorkRateConfigService],
