@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
-import { Card, Space, Table, Tag, Button, InputNumber, Modal, Row, Col, Typography } from 'antd';
+import { Card, Space, Table, Tag, Button, InputNumber, Row, Col, Typography } from 'antd';
+import AppModal from './AppModal';
 import { CalculatorOutlined, EyeOutlined } from '@ant-design/icons';
+import { useAuth } from '../contexts/AuthContext.jsx';
+import { canDo } from '../constants/roles.js';
 
 const { Text, Title } = Typography;
 
@@ -14,8 +17,12 @@ export default function Payroll({
   payrollSalaries,
   calculatingPayroll,
   onCalculatePayroll,
+  loading = false,
   t
 }) {
+  const { role } = useAuth();
+  const canCalculate = canDo(role, 'PAYROLL_CALCULATE');
+
   const [isPayslipModalOpen, setIsPayslipModalOpen] = useState(false);
   const [selectedPayslip, setSelectedPayslip] = useState(null);
 
@@ -32,12 +39,13 @@ export default function Payroll({
           <InputNumber min={1} max={12} value={payrollMonth} onChange={setPayrollMonth} />
           <Text>{t('payroll.year')}</Text>
           <InputNumber min={2026} max={2030} value={payrollYear} onChange={setPayrollYear} />
-          <Button type="primary" icon={<CalculatorOutlined />} loading={calculatingPayroll} onClick={onCalculatePayroll}>{t('payroll.btnCalculate')}</Button>
+          <Button type="primary" icon={<CalculatorOutlined />} loading={calculatingPayroll} onClick={onCalculatePayroll} disabled={!canCalculate}>{t('payroll.btnCalculate')}</Button>
         </Space>
       </div>
 
       <Table
         dataSource={payrollSalaries}
+        loading={loading}
         columns={[
           { title: t('payroll.cols.code'), dataIndex: ['employee', 'empCode'], key: 'empCode' },
           { title: t('payroll.cols.name'), dataIndex: ['employee', 'fullName'], key: 'fullName' },
@@ -57,7 +65,7 @@ export default function Payroll({
       />
 
       {/* MODAL: Detailed Payslip */}
-      <Modal
+      <AppModal
         title={t('payroll.modalTitle')}
         open={isPayslipModalOpen}
         onCancel={() => setIsPayslipModalOpen(false)}
@@ -124,7 +132,7 @@ export default function Payroll({
             </div>
           </div>
         )}
-      </Modal>
+      </AppModal>
     </Card>
   );
 }

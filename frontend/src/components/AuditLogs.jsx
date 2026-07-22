@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Card, Select, Input, Table, Tag, Button, Modal, Row, Col, Typography, message } from 'antd';
+import { Card, Select, Input, Table, Tag, Button, Row, Col, Typography, Spin, message } from 'antd';
+import AppModal from './AppModal';
 import { EyeOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 
@@ -9,13 +10,16 @@ export default function AuditLogs({
   setAuditActionFilter,
   auditEntityFilter,
   setAuditEntityFilter,
+  loading = false,
   onGetDiff,
   t
 }) {
   const [isDiffModalOpen, setIsDiffModalOpen] = useState(false);
   const [selectedLogDiff, setSelectedLogDiff] = useState(null);
+  const [diffLoadingId, setDiffLoadingId] = useState(null);
 
   const handleViewAuditDiff = async (record) => {
+    setDiffLoadingId(record.id);
     try {
       const diff = await onGetDiff(record.id);
       setSelectedLogDiff({
@@ -26,13 +30,15 @@ export default function AuditLogs({
       setIsDiffModalOpen(true);
     } catch (e) {
       message.error('Failed to load state difference');
+    } finally {
+      setDiffLoadingId(null);
     }
   };
 
   return (
     <Card title={t('audit.cardTitle')} style={{ background: 'rgba(30, 41, 59, 0.6)', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
       <div style={{ display: 'flex', gap: 16, marginBottom: 20 }}>
-        <Select value={auditActionFilter} onChange={setAuditActionFilter} style={{ width: 180 }} placeholder="Bộ lọc thao tác">
+        <Select value={auditActionFilter} onChange={setAuditActionFilter} style={{ width: 180 }} placeholder="Bộ lọc thao tác" loading={loading}>
           <Select.Option value="">{t('audit.actionFilterAll')}</Select.Option>
           <Select.Option value="INSERT">{t('audit.actionFilterInsert')}</Select.Option>
           <Select.Option value="UPDATE">{t('audit.actionFilterUpdate')}</Select.Option>
@@ -44,11 +50,13 @@ export default function AuditLogs({
           value={auditEntityFilter}
           onChange={(e) => setAuditEntityFilter(e.target.value)}
           style={{ width: 240 }}
+          allowClear
         />
       </div>
 
       <Table
         dataSource={auditLogs}
+        loading={loading}
         columns={[
           { title: t('audit.cols.time'), dataIndex: 'timestamp', key: 'timestamp', render: (t) => dayjs(t).format('YYYY-MM-DD HH:mm:ss') },
           { title: t('audit.cols.action'), dataIndex: 'actionType', key: 'actionType', render: (t) => <Tag color={t === 'INSERT' ? 'green' : t === 'UPDATE' ? 'blue' : 'red'}>{t}</Tag> },
@@ -59,7 +67,15 @@ export default function AuditLogs({
             title: t('audit.cols.diff'),
             key: 'actions',
             render: (_, record) => (
-              <Button size="small" icon={<EyeOutlined />} onClick={() => handleViewAuditDiff(record)}>{t('audit.viewDiff')}</Button>
+              <Button
+                size="small"
+                icon={<EyeOutlined />}
+                loading={diffLoadingId === record.id}
+                disabled={diffLoadingId !== null && diffLoadingId !== record.id}
+                onClick={() => handleViewAuditDiff(record)}
+              >
+                {t('audit.viewDiff')}
+              </Button>
             )
           }
         ]}
@@ -67,14 +83,13 @@ export default function AuditLogs({
       />
 
       {/* MODAL: Side-by-side JSON Diff Viewer */}
-      <Modal
+      <AppModal
         title={t('audit.modalTitle')}
         open={isDiffModalOpen}
         onCancel={() => setIsDiffModalOpen(false)}
-        width={850}
         footer={[<Button key="close" onClick={() => setIsDiffModalOpen(false)}>{t('audit.btnClose')}</Button>]}
       >
-        {selectedLogDiff && (
+        {selectedLogDiff ? (
           <Row gutter={16}>
             <Col span={12}>
               <Card title={t('audit.oldState')} type="inner" bodyStyle={{ padding: 12 }}>
@@ -106,8 +121,12 @@ export default function AuditLogs({
               </Card>
             </Col>
           </Row>
+        ) : (
+          <div style={{ display: 'flex', justifyContent: 'center', padding: 60 }}>
+            <Spin />
+          </div>
         )}
-      </Modal>
+      </AppModal>
     </Card>
   );
 }

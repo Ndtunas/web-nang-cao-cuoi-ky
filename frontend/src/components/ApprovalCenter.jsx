@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Card, Table, Tag, Button, Space, Modal, Form, Input, Timeline, Tabs, Typography } from 'antd';
+import { Card, Table, Tag, Button, Space, Form, Input, Timeline, Tabs, Typography, Spin } from 'antd';
+import AppModal from './AppModal';
 import { CheckOutlined, CloseOutlined, EyeOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 
@@ -11,36 +12,55 @@ export default function ApprovalCenter({
   onApprove,
   onReject,
   onGetHistory,
+  loading = false,
+  loadingActions = {},
   t
 }) {
   const [isApprovalModalOpen, setIsApprovalModalOpen] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState(null);
-  const [approvalDecisionAction, setApprovalDecisionAction] = useState('approve'); // approve, reject, view
+  const [approvalDecisionAction, setApprovalDecisionAction] = useState('approve');
   const [requestHistory, setRequestHistory] = useState([]);
-  
+  const [historyLoading, setHistoryLoading] = useState(false);
+  const [actionRequestId, setActionRequestId] = useState(null);
+
   const [approvalForm] = Form.useForm();
 
   const handleOpenDecisionModal = async (record, action) => {
     setSelectedRequest(record);
     setApprovalDecisionAction(action);
     approvalForm.resetFields();
+    setRequestHistory([]);
+    setHistoryLoading(true);
+    setIsApprovalModalOpen(true);
     try {
       const history = await onGetHistory(record.id);
       setRequestHistory(history);
     } catch (e) {
       setRequestHistory([]);
+    } finally {
+      setHistoryLoading(false);
     }
-    setIsApprovalModalOpen(true);
   };
 
   const handleDecisionSubmit = (values) => {
-    if (approvalDecisionAction === 'approve') {
+    const actionType = approvalDecisionAction; // 'approve' or 'reject'
+    setActionRequestId(selectedRequest.id);
+    if (actionType === 'approve') {
       onApprove(selectedRequest.id, values.comment);
     } else {
       onReject(selectedRequest.id, values.comment);
     }
-    setIsApprovalModalOpen(false);
+    if (!loadingActions[actionType]) setIsApprovalModalOpen(false);
   };
+
+  const closeModal = () => {
+    setIsApprovalModalOpen(false);
+    setActionRequestId(null);
+  };
+
+  const isModalLoading = loadingActions.approve || loadingActions.reject;
+  const isRowActionLoading = (recordId) =>
+    actionRequestId === recordId && isModalLoading;
 
   return (
     <Card style={{ background: 'rgba(30, 41, 59, 0.6)', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
@@ -51,6 +71,7 @@ export default function ApprovalCenter({
           children: (
             <Table
               dataSource={pendingApprovals}
+              loading={loading}
               columns={[
                 { title: t('approvals.cols.code'), dataIndex: 'requestCode', key: 'requestCode', render: (val, record) => val || `REQ-${record.id}` },
                 { title: t('approvals.cols.type'), dataIndex: 'transactionType', key: 'transactionType' },
@@ -62,8 +83,26 @@ export default function ApprovalCenter({
                   key: 'actions',
                   render: (_, record) => (
                     <Space>
-                      <Button type="primary" size="small" icon={<CheckOutlined />} onClick={() => handleOpenDecisionModal(record, 'approve')}>{t('approvals.actions.approve')}</Button>
-                      <Button danger size="small" icon={<CloseOutlined />} onClick={() => handleOpenDecisionModal(record, 'reject')}>{t('approvals.actions.reject')}</Button>
+                      <Button
+                        type="primary"
+                        size="small"
+                        icon={<CheckOutlined />}
+                        loading={loadingActions.approve && actionRequestId === record.id}
+                        disabled={isModalLoading && actionRequestId !== record.id}
+                        onClick={() => handleOpenDecisionModal(record, 'approve')}
+                      >
+                        {t('approvals.actions.approve')}
+                      </Button>
+                      <Button
+                        danger
+                        size="small"
+                        icon={<CloseOutlined />}
+                        loading={loadingActions.reject && actionRequestId === record.id}
+                        disabled={isModalLoading && actionRequestId !== record.id}
+                        onClick={() => handleOpenDecisionModal(record, 'reject')}
+                      >
+                        {t('approvals.actions.reject')}
+                      </Button>
                     </Space>
                   )
                 }
@@ -78,6 +117,7 @@ export default function ApprovalCenter({
           children: (
             <Table
               dataSource={mySubmittedApprovals}
+              loading={loading}
               columns={[
                 { title: t('approvals.cols.code'), dataIndex: 'requestCode', key: 'requestCode', render: (val, record) => val || `REQ-${record.id}` },
                 { title: t('approvals.cols.type'), dataIndex: 'transactionType', key: 'transactionType' },
@@ -87,7 +127,14 @@ export default function ApprovalCenter({
                   title: t('approvals.cols.history'),
                   key: 'history',
                   render: (_, record) => (
-                    <Button size="small" icon={<EyeOutlined />} onClick={() => handleOpenDecisionModal(record, 'view')}>{t('approvals.actions.history')}</Button>
+                    <Button
+                      size="small"
+                      icon={<EyeOutlined />}
+                      loading={isRowActionLoading(record.id)}
+                      onClick={() => handleOpenDecisionModal(record, 'view')}
+                    >
+                      {t('approvals.actions.history')}
+                    </Button>
                   )
                 }
               ]}
@@ -98,19 +145,26 @@ export default function ApprovalCenter({
       ]} />
 
       {/* MODAL: Approver comments timeline decision */}
-      <Modal
+      <AppModal
         title={approvalDecisionAction === 'view' ? t('approvals.modal.historyTitle') : t('approvals.modal.commentTitle')}
         open={isApprovalModalOpen}
-        onCancel={() => setIsApprovalModalOpen(false)}
+        onCancel={closeModal}
         onOk={() => {
           if (approvalDecisionAction === 'view') {
-            setIsApprovalModalOpen(false);
+            closeModal();
           } else {
             approvalForm.submit();
           }
         }}
+        confirmLoading={isModalLoading}
+        okButtonProps={{ disabled: isModalLoading }}
+        cancelButtonProps={{ disabled: isModalLoading }}
       >
-        {requestHistory.length > 0 ? (
+        {historyLoading ? (
+          <div style={{ display: 'flex', justifyContent: 'center', padding: 40 }}>
+            <Spin />
+          </div>
+        ) : requestHistory.length > 0 ? (
           <div style={{ marginBottom: 24, padding: 12, background: 'rgba(255,255,255,0.02)', borderRadius: 8 }}>
             <Text strong style={{ display: 'block', marginBottom: 12 }}>{t('approvals.modal.progress')}</Text>
             <Timeline items={requestHistory.map(h => ({
@@ -132,13 +186,13 @@ export default function ApprovalCenter({
         )}
 
         {approvalDecisionAction !== 'view' && (
-          <Form form={approvalForm} layout="vertical" onFinish={handleDecisionSubmit}>
+          <Form form={approvalForm} layout="vertical" onFinish={handleDecisionSubmit} disabled={isModalLoading}>
             <Form.Item label={t('approvals.modal.commentLabel')} name="comment">
               <Input.TextArea placeholder={t('approvals.modal.commentPlaceholder')} rows={3} />
             </Form.Item>
           </Form>
         )}
-      </Modal>
+      </AppModal>
     </Card>
   );
 }
