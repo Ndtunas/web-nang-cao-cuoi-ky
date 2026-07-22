@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, Button, InputNumber, Select, Tag, Typography, Space, Badge, Tooltip, Empty, Progress, Row, Col, Statistic, Alert, Spin } from 'antd';
 import { PlusOutlined, SaveOutlined, SendOutlined, ClockCircleOutlined, FireOutlined, BulbOutlined, CalendarOutlined, HomeOutlined, DeleteOutlined, WarningOutlined } from '@ant-design/icons';
 
@@ -478,7 +479,7 @@ export default function Timesheets({
                                 }}
                                 style={{ width: '100%' }}
                                 size="small"
-                                placeholder="Chọn dự án"
+                                placeholder={t('common.placeholderSelectProject')}
                               >
                                 {projectsList.map(p => (
                                   <Select.Option key={p.id} value={p.id}>{p.name}</Select.Option>
@@ -499,7 +500,7 @@ export default function Timesheets({
                                 }}
                                 style={{ width: '100%' }}
                                 size="small"
-                                placeholder="Chọn công việc"
+                                placeholder={t('common.placeholderSelectTask')}
                               >
                                 {tasksList.map(t => (
                                   <Select.Option key={t.id} value={t.id}>{t.taskName}</Select.Option>

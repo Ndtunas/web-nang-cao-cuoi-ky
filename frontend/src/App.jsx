@@ -90,6 +90,9 @@ function AppContent() {
   const [auditActionFilter, setAuditActionFilter] = useState('');
   const [auditEntityFilter, setAuditEntityFilter] = useState('');
 
+  // Dashboard stats
+  const [dashboardStats, setDashboardStats] = useState(null);
+
   // Payroll variables
   const [payrollMonth, setPayrollMonth] = useState(dayjs().month() + 1);
   const [payrollYear, setPayrollYear] = useState(dayjs().year());
@@ -149,8 +152,12 @@ function AppContent() {
   const loadDashboardData = async () => {
     setTableLoading(prev => ({ ...prev, DASHBOARD: true }));
     try {
-      const emps = await api.employees.getAll();
+      const [emps, stats] = await Promise.all([
+        api.employees.getAll(),
+        api.employees.getStats().catch(() => null),
+      ]);
       setEmployees(emps);
+      setDashboardStats(stats);
       if (canDo(role, 'DASHBOARD_QUICK_APPROVE')) {
         const pending = await api.approvals.getPendingMyLevel();
         setPendingApprovals(pending);
@@ -174,7 +181,7 @@ function AppContent() {
       setDepartments(depts.data || depts);
       setPositions(posts.data || posts);
     } catch (e) {
-      message.error('Failed to load employee master lists');
+      message.error(t('common.errorLoadEmployees'));
     } finally {
       setTableLoading(prev => ({ ...prev, EMPLOYEES: false }));
     }
@@ -189,7 +196,7 @@ function AppContent() {
       setProjectsList(data.projects);
       setTasksList(data.tasks);
     } catch (e) {
-      message.error('Failed to load weekly timesheets');
+      message.error(t('common.errorLoadTimesheets'));
     } finally {
       setTableLoading(prev => ({ ...prev, TIMESHEETS: false }));
     }
@@ -205,7 +212,7 @@ function AppContent() {
       setPendingApprovals(pending);
       setMySubmittedApprovals(submitted);
     } catch (e) {
-      message.error('Failed to load approvals lists');
+      message.error(t('common.errorLoadApprovals'));
     } finally {
       setTableLoading(prev => ({ ...prev, APPROVALS: false }));
     }
@@ -233,7 +240,7 @@ function AppContent() {
       setWorkRates(rates);
       setApprovalConfigs(configs);
     } catch (e) {
-      message.error('Failed to load configurations');
+      message.error(t('common.errorLoadConfigs'));
     } finally {
       setTableLoading(prev => ({ ...prev, CONFIG: false }));
     }
@@ -248,7 +255,7 @@ function AppContent() {
       });
       setAuditLogs(logs);
     } catch (e) {
-      message.error('Failed to load system audit logs');
+      message.error(t('common.errorLoadAuditLogs'));
     } finally {
       setTableLoading(prev => ({ ...prev, AUDIT_LOGS: false }));
     }
@@ -287,7 +294,7 @@ function AppContent() {
       }
       await loadEmployeesData();
     } catch (error) {
-      const msg = error.i18nKey ? t(error.i18nKey) : 'Error saving employee profile';
+      const msg = error.i18nKey ? t(error.i18nKey) : t('common.errorSaveEmployee');
       message.error(msg);
     } finally {
       setActionLoading(prev => ({ ...prev, saveEmployee: false }));
@@ -298,10 +305,10 @@ function AppContent() {
     setActionLoading(prev => ({ ...prev, transfer: true }));
     try {
       await api.employees.submitJobTransfer(values);
-      message.success('Đã gửi yêu cầu điều chuyển công tác lên ma trận duyệt!');
+      message.success(t('common.successTransfer'));
       await loadEmployeesData();
     } catch (error) {
-      const msg = error.i18nKey ? t(error.i18nKey) : 'Error submitting transfer';
+      const msg = error.i18nKey ? t(error.i18nKey) : t('common.errorTransfer');
       message.error(msg);
     } finally {
       setActionLoading(prev => ({ ...prev, transfer: false }));
@@ -312,10 +319,11 @@ function AppContent() {
     setActionLoading(prev => ({ ...prev, adjustSalary: true }));
     try {
       await api.employees.submitSalaryAdjustment(values);
-      message.success('Đã gửi yêu cầu điều chỉnh lương lên ma trận duyệt!');
+      message.success(t('common.successSalaryAdjust'));
       await loadEmployeesData();
     } catch (error) {
-      message.error('Error submitting salary adjustments');
+      const msg = error.i18nKey ? t(error.i18nKey) : t('common.errorSalaryAdjust');
+      message.error(msg);
     } finally {
       setActionLoading(prev => ({ ...prev, adjustSalary: false }));
     }
@@ -325,9 +333,10 @@ function AppContent() {
     setActionLoading(prev => ({ ...prev, discipline: true }));
     try {
       await api.employees.submitDisciplineReward(values);
-      message.success('Ghi nhận khen thưởng/kỷ luật thành công!');
+      message.success(t('common.successDiscipline'));
     } catch (error) {
-      message.error('Error submitting discipline/reward');
+      const msg = error.i18nKey ? t(error.i18nKey) : t('common.errorDiscipline');
+      message.error(msg);
     } finally {
       setActionLoading(prev => ({ ...prev, discipline: false }));
     }
@@ -353,7 +362,7 @@ function AppContent() {
       message.success(t('timesheets.msgDraftSaved'));
       await loadTimesheetData();
     } catch (e) {
-      const msg = e.i18nKey ? t(e.i18nKey) : 'Error saving timesheet';
+      const msg = e.i18nKey ? t(e.i18nKey) : t('common.errorSaveTimesheet');
       message.error(msg);
     } finally {
       setActionLoading(prev => ({ ...prev, saveTimesheetDraft: false }));
@@ -380,7 +389,7 @@ function AppContent() {
       message.success(t('timesheets.msgSubmitted'));
       await loadTimesheetData();
     } catch (e) {
-      const msg = e.i18nKey ? t(e.i18nKey) : 'Error submitting timesheet';
+      const msg = e.i18nKey ? t(e.i18nKey) : t('common.errorSubmitTimesheet');
       message.error(msg);
     } finally {
       setActionLoading(prev => ({ ...prev, submitTimesheet: false }));
@@ -391,10 +400,10 @@ function AppContent() {
     setActionLoading(prev => ({ ...prev, approve: true }));
     try {
       await api.approvals.approve(id, comment);
-      message.success('Đã duyệt phiếu yêu cầu thành công!');
+      message.success(t('common.successApprove'));
       await loadApprovalsData();
     } catch (error) {
-      const msg = error.i18nKey ? t(error.i18nKey) : 'Error approving request';
+      const msg = error.i18nKey ? t(error.i18nKey) : t('common.errorApprove');
       message.error(msg);
     } finally {
       setActionLoading(prev => ({ ...prev, approve: false }));
@@ -405,10 +414,10 @@ function AppContent() {
     setActionLoading(prev => ({ ...prev, reject: true }));
     try {
       await api.approvals.reject(id, comment);
-      message.success('Đã từ chối phiếu yêu cầu!');
+      message.success(t('common.successReject'));
       await loadApprovalsData();
     } catch (error) {
-      const msg = error.i18nKey ? t(error.i18nKey) : 'Error rejecting request';
+      const msg = error.i18nKey ? t(error.i18nKey) : t('common.errorReject');
       message.error(msg);
     } finally {
       setActionLoading(prev => ({ ...prev, reject: false }));
@@ -419,10 +428,10 @@ function AppContent() {
     setActionLoading(prev => ({ ...prev, updateWorkRate: { ...prev.updateWorkRate, [key]: true } }));
     try {
       await api.configs.updateWorkRate(key, value);
-      message.success('Cập nhật hệ số công thành công!');
+      message.success(t('common.successUpdateWorkRate'));
       await loadConfigData();
     } catch (e) {
-      message.error('Failed to update config key');
+      message.error(t('common.errorUpdateWorkRate'));
     } finally {
       setActionLoading(prev => ({ ...prev, updateWorkRate: { ...prev.updateWorkRate, [key]: false } }));
     }
@@ -432,10 +441,10 @@ function AppContent() {
     setActionLoading(prev => ({ ...prev, updateApprovalConfig: { ...prev.updateApprovalConfig, [type]: true } }));
     try {
       await api.configs.updateApprovalConfig(type, levels);
-      message.success('Cập nhật ma trận duyệt thành công!');
+      message.success(t('common.successUpdateApprovalMatrix'));
       await loadConfigData();
     } catch (e) {
-      message.error('Failed to update approval levels');
+      message.error(t('common.errorUpdateApprovalMatrix'));
     } finally {
       setActionLoading(prev => ({ ...prev, updateApprovalConfig: { ...prev.updateApprovalConfig, [type]: false } }));
     }
@@ -448,7 +457,7 @@ function AppContent() {
       setPayrollSalaries(salaries);
       message.success(`Đã tính toán xong bảng lương tháng ${payrollMonth}/${payrollYear}!`);
     } catch (error) {
-      const msg = error.i18nKey ? t(error.i18nKey) : 'Error calculating payroll';
+      const msg = error.i18nKey ? t(error.i18nKey) : t('common.errorCalculatePayroll');
       message.error(msg);
     } finally {
       setCalculatingPayroll(false);
@@ -469,7 +478,7 @@ function AppContent() {
           status="403"
           title="403"
           subTitle={t('error.auth.accessDenied')}
-          extra={<Button type="primary" onClick={() => setActiveTab('DASHBOARD')}>Back to Dashboard</Button>}
+          extra={<Button type="primary" onClick={() => setActiveTab('DASHBOARD')}>{t('common.back')}</Button>}
         />
       );
     }
@@ -550,10 +559,10 @@ function AppContent() {
               checkAccess(TAB_KEYS.EMPLOYEES) && { key: TAB_KEYS.EMPLOYEES, icon: <TeamOutlined />, label: t('nav.employees') },
               checkAccess(TAB_KEYS.PROJECTS) && { key: TAB_KEYS.PROJECTS, icon: <ProjectOutlined />, label: t('nav.projects') },
               checkAccess(TAB_KEYS.TIMESHEETS) && { key: TAB_KEYS.TIMESHEETS, icon: <CalendarOutlined />, label: t('nav.attendance') },
-              checkAccess(TAB_KEYS.APPROVALS) && { key: TAB_KEYS.APPROVALS, icon: <CheckCircleOutlined />, label: 'Phê duyệt' },
+              checkAccess(TAB_KEYS.APPROVALS) && { key: TAB_KEYS.APPROVALS, icon: <CheckCircleOutlined />, label: t('nav.approvals') },
               checkAccess(TAB_KEYS.PAYROLL) && { key: TAB_KEYS.PAYROLL, icon: <DollarOutlined />, label: t('nav.payroll') },
               checkAccess(TAB_KEYS.CONFIG) && { key: TAB_KEYS.CONFIG, icon: <SettingOutlined />, label: t('nav.settings') },
-              checkAccess(TAB_KEYS.AUDIT_LOGS) && { key: TAB_KEYS.AUDIT_LOGS, icon: <AuditOutlined />, label: 'Audit Logs' }
+              checkAccess(TAB_KEYS.AUDIT_LOGS) && { key: TAB_KEYS.AUDIT_LOGS, icon: <AuditOutlined />, label: t('nav.auditLogs') }
             ].filter(Boolean)}
           />
         </Sider>
@@ -662,6 +671,7 @@ function AppContent() {
             {activeTab === 'DASHBOARD' && renderWithGuard('DASHBOARD', (
               <Dashboard
                 employees={employees}
+                stats={dashboardStats}
                 pendingApprovals={pendingApprovals}
                 onOpenDecisionModal={(record) => {
                   // Delegate opening approval decision modal directly

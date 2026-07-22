@@ -29,7 +29,7 @@ export default function AuditLogs({
       });
       setIsDiffModalOpen(true);
     } catch (e) {
-      message.error('Failed to load state difference');
+      message.error(t('audit.errorLoadDiff'));
     } finally {
       setDiffLoadingId(null);
     }
@@ -38,7 +38,7 @@ export default function AuditLogs({
   return (
     <Card title={t('audit.cardTitle')} style={{ background: 'rgba(30, 41, 59, 0.6)', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
       <div style={{ display: 'flex', gap: 16, marginBottom: 20 }}>
-        <Select value={auditActionFilter} onChange={setAuditActionFilter} style={{ width: 180 }} placeholder="Bộ lọc thao tác" loading={loading}>
+        <Select value={auditActionFilter} onChange={setAuditActionFilter} style={{ width: 180 }} placeholder={t('audit.actionFilterPlaceholder')} loading={loading}>
           <Select.Option value="">{t('audit.actionFilterAll')}</Select.Option>
           <Select.Option value="INSERT">{t('audit.actionFilterInsert')}</Select.Option>
           <Select.Option value="UPDATE">{t('audit.actionFilterUpdate')}</Select.Option>

@@ -8,7 +8,9 @@
     "payroll": "Payroll",
     "settings": "Settings",
     "projects": "Projects",
-    "logout": "Log Out"
+    "logout": "Log Out",
+    "approvals": "Approvals",
+    "auditLogs": "Audit Logs"
   },
   "header": {
     "searchPlaceholder": "Search employees, departments...",
@@ -73,13 +75,47 @@
     },
     "payroll": {
       "alreadyFinalized": "Monthly payroll has been finalized and cannot be recalculated."
+    },
+    "network": {
+      "fetchFailed": "Cannot reach the server. Please try again later."
     }
+  },
+  "common": {
+    "back": "Back to Dashboard",
+    "successApprove": "Approval request approved successfully!",
+    "successReject": "Approval request rejected successfully!",
+    "errorApprove": "Error approving request",
+    "errorReject": "Error rejecting request",
+    "errorSaveEmployee": "Error saving employee profile",
+    "errorTransfer": "Error submitting transfer request",
+    "errorSalaryAdjust": "Error submitting salary adjustment",
+    "errorDiscipline": "Error submitting discipline/reward",
+    "errorCalculatePayroll": "Error calculating payroll",
+    "successTransfer": "Job transfer request submitted for approval!",
+    "successSalaryAdjust": "Salary adjustment request submitted for approval!",
+    "successDiscipline": "Discipline/reward recorded successfully!",
+    "successUpdateWorkRate": "Work rate updated successfully!",
+    "errorUpdateWorkRate": "Error updating work rate",
+    "successUpdateApprovalMatrix": "Approval matrix updated successfully!",
+    "errorUpdateApprovalMatrix": "Error updating approval matrix",
+    "errorLoadEmployees": "Failed to load employee master lists",
+    "errorLoadTimesheets": "Failed to load weekly timesheets",
+    "errorLoadApprovals": "Failed to load approvals lists",
+    "errorLoadConfigs": "Failed to load system configurations",
+    "errorLoadAuditLogs": "Failed to load system audit logs",
+    "errorSaveTimesheet": "Error saving timesheet",
+    "errorSubmitTimesheet": "Error submitting timesheet",
+    "submittedByLabel": "by",
+    "placeholderSelectProject": "Select project",
+    "placeholderSelectTask": "Select task",
+    "placeholderUsernameExample": "e.g. admin, employee"
   },
   "dashboard": {
     "recruitmentChart": "New Hires & Department Structure (Monthly)",
     "pendingQuick": "Quick Action Required",
     "viewAll": "View All",
     "noPending": "No pending approval requests",
+    "noDepartments": "No department breakdown available",
     "submittedBy": "by"
   },
   "directory": {
@@ -273,7 +309,9 @@
     "actionFilterInsert": "Insertions (INSERT)",
     "actionFilterUpdate": "Updates (UPDATE)",
     "actionFilterDelete": "Deletes (DELETE)",
+    "actionFilterPlaceholder": "Action filter",
     "entityFilterPlaceholder": "Target data table (e.g. employees, users)",
+    "errorLoadDiff": "Failed to load state difference",
     "cols": {
       "time": "Timestamp",
       "action": "Action",

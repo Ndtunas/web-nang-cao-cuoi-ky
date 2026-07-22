@@ -92,7 +92,7 @@ export default function Login({ onLogin, loading }) {
                 name="username"
                 rules={[{ required: true, message: t('login.usernameRequired') }]}
               >
-                <Input prefix={<UserOutlined />} placeholder="Ví dụ: admin, employee" />
+                <Input prefix={<UserOutlined />} placeholder={t('common.placeholderUsernameExample')} />
               </Form.Item>
 
               <Form.Item

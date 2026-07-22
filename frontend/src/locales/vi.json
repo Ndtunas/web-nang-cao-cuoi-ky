@@ -8,7 +8,9 @@
     "payroll": "Bảng lương",
     "settings": "Cài đặt",
     "projects": "Dự án",
-    "logout": "Đăng xuất"
+    "logout": "Đăng xuất",
+    "approvals": "Phê duyệt",
+    "auditLogs": "Nhật ký tác động"
   },
   "header": {
     "searchPlaceholder": "Tìm kiếm nhân viên, phòng ban...",
@@ -73,13 +75,47 @@
     },
     "payroll": {
       "alreadyFinalized": "Bảng lương tháng đã chốt phê duyệt, không thể tính toán lại."
+    },
+    "network": {
+      "fetchFailed": "Không thể kết nối tới máy chủ. Vui lòng thử lại sau."
     }
+  },
+  "common": {
+    "back": "Quay lại Tổng quan",
+    "successApprove": "Đã duyệt phiếu yêu cầu thành công!",
+    "successReject": "Đã từ chối phiếu yêu cầu!",
+    "errorApprove": "Lỗi khi phê duyệt yêu cầu",
+    "errorReject": "Lỗi khi từ chối yêu cầu",
+    "errorSaveEmployee": "Lỗi khi lưu hồ sơ nhân viên",
+    "errorTransfer": "Lỗi khi gửi yêu cầu điều chuyển",
+    "errorSalaryAdjust": "Lỗi khi gửi yêu cầu điều chỉnh lương",
+    "errorDiscipline": "Lỗi khi ghi nhận khen thưởng/kỷ luật",
+    "errorCalculatePayroll": "Lỗi khi tính bảng lương",
+    "successTransfer": "Đã gửi yêu cầu điều chuyển công tác lên ma trận duyệt!",
+    "successSalaryAdjust": "Đã gửi yêu cầu điều chỉnh lương lên ma trận duyệt!",
+    "successDiscipline": "Ghi nhận khen thưởng/kỷ luật thành công!",
+    "successUpdateWorkRate": "Cập nhật hệ số công thành công!",
+    "errorUpdateWorkRate": "Lỗi khi cập nhật hệ số công",
+    "successUpdateApprovalMatrix": "Cập nhật ma trận duyệt thành công!",
+    "errorUpdateApprovalMatrix": "Lỗi khi cập nhật ma trận duyệt",
+    "errorLoadEmployees": "Không thể tải danh sách nhân viên",
+    "errorLoadTimesheets": "Không thể tải bảng chấm công tuần",
+    "errorLoadApprovals": "Không thể tải danh sách phê duyệt",
+    "errorLoadConfigs": "Không thể tải cấu hình hệ thống",
+    "errorLoadAuditLogs": "Không thể tải nhật ký tác động",
+    "errorSaveTimesheet": "Lỗi khi lưu bảng chấm công",
+    "errorSubmitTimesheet": "Lỗi khi nộp bảng chấm công",
+    "submittedByLabel": "bởi",
+    "placeholderSelectProject": "Chọn dự án",
+    "placeholderSelectTask": "Chọn công việc",
+    "placeholderUsernameExample": "Ví dụ: admin, employee"
   },
   "dashboard": {
     "recruitmentChart": "Tuyển dụng mới & Cơ cấu nhân sự (Tháng)",
     "pendingQuick": "Yêu cầu cần duyệt nhanh",
     "viewAll": "Xem tất cả",
     "noPending": "Không có yêu cầu chờ duyệt nào",
+    "noDepartments": "Chưa có dữ liệu cơ cấu phòng ban",
     "submittedBy": "bởi"
   },
   "directory": {
@@ -273,7 +309,9 @@
     "actionFilterInsert": "Thêm mới (INSERT)",
     "actionFilterUpdate": "Cập nhật (UPDATE)",
     "actionFilterDelete": "Xóa (DELETE)",
+    "actionFilterPlaceholder": "Bộ lọc thao tác",
     "entityFilterPlaceholder": "Tên bảng dữ liệu (e.g. employees, users)",
+    "errorLoadDiff": "Không thể tải chi tiết thay đổi trạng thái",
     "cols": {
       "time": "Thời gian",
       "action": "Thao tác",
