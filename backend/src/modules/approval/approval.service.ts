@@ -12,8 +12,13 @@ import { SalaryHistory } from '../../entities/salary-history.entity.js';
 import { Salary } from '../../entities/salary.entity.js';
 import { LeaveRequest } from '../../entities/leave-request.entity.js';
 import { OffboardingTask } from '../../entities/offboarding-task.entity.js';
+import { Notification } from '../../entities/notification.entity.js';
 import { EmployeeStatus } from '../../common/enums/business-values.js';
 import { BusinessException } from '../../common/exceptions/business.exception.js';
+import {
+  notifyApproversForNextLevel,
+  notifyRequesterOfOutcome,
+} from './approval.notify-helpers.js';
 
 /**
  * Service phê duyệt đa cấp
@@ -54,6 +59,8 @@ export class ApprovalService {
     private readonly leaveRequestRepository: Repository<LeaveRequest>,
     @InjectRepository(OffboardingTask)
     private readonly offboardingTaskRepository: Repository<OffboardingTask>,
+    @InjectRepository(Notification)
+    private readonly notificationRepository: Repository<Notification>,
   ) {}
 
   // ============== CONFIG ==============
@@ -184,14 +191,22 @@ export class ApprovalService {
     await this.approvalStepHistoryRepository.save(history);
 
     // 2. Advance level or finalize
+    let finalOutcome: 'APPROVED' | null = null;
     if (request.currentLevel < request.totalLevels) {
       request.currentLevel += 1;
+      // US-14: notify next approver level
+      await this.notifyNextApprovers(request, config);
     } else {
       request.status = 'APPROVED';
       await this.executeFinalAction(request);
+      finalOutcome = 'APPROVED';
     }
 
-    return this.approvalRequestRepository.save(request);
+    const saved = await this.approvalRequestRepository.save(request);
+    if (finalOutcome) {
+      await this.notifyRequester(saved, finalOutcome);
+    }
+    return saved;
   }
 
   async reject(
@@ -244,7 +259,10 @@ export class ApprovalService {
     // Revert target resource if applicable
     await this.revertTargetOnReject(request);
 
-    return this.approvalRequestRepository.save(request);
+    const saved = await this.approvalRequestRepository.save(request);
+    // US-14: notify requester of rejection
+    await this.notifyRequester(saved, 'REJECTED');
+    return saved;
   }
 
   async getHistory(requestId: string): Promise<ApprovalStepHistory[]> {
@@ -253,6 +271,43 @@ export class ApprovalService {
       relations: { approver: true },
       order: { stepLevel: 'ASC' },
     });
+  }
+
+  /**
+   * US-14: Notify next-level approvers khi advance level.
+   */
+  private async notifyNextApprovers(
+    request: ApprovalRequest,
+    config: ApprovalConfig,
+  ): Promise<void> {
+    const sequence = (config.approverRolesSequence as string[]) || [];
+    const nextRole = sequence[request.currentLevel - 1];
+    if (!nextRole) return;
+    await notifyApproversForNextLevel(
+      {
+        notificationRepo: this.notificationRepository,
+        userRepo: this.userRepository,
+        employeeRepo: this.employeeRepository,
+      },
+      request,
+      nextRole,
+      config.transactionType,
+    );
+  }
+
+  /** US-14: Notify requester of approve/reject outcome. */
+  private async notifyRequester(
+    request: ApprovalRequest,
+    outcome: 'APPROVED' | 'REJECTED',
+  ): Promise<void> {
+    await notifyRequesterOfOutcome(
+      {
+        notificationRepo: this.notificationRepository,
+        employeeRepo: this.employeeRepository,
+      },
+      request,
+      outcome,
+    );
   }
 
   // ============== FINAL ACTION (State Machine) ==============

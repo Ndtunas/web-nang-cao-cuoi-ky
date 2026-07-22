@@ -13,6 +13,7 @@ import { SalaryHistory } from '../../entities/salary-history.entity.js';
 import { Salary } from '../../entities/salary.entity.js';
 import { LeaveRequest } from '../../entities/leave-request.entity.js';
 import { OffboardingTask } from '../../entities/offboarding-task.entity.js';
+import { Notification } from '../../entities/notification.entity.js';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { OffboardingTask } from '../../entities/offboarding-task.entity.js';
       Salary,
       LeaveRequest,
       OffboardingTask,
+      Notification,
     ]),
   ],
   controllers: [ApprovalController],
