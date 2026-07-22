@@ -42,13 +42,13 @@ export class AuditLogInterceptor implements NestInterceptor {
       tap({
         next: async (responseData) => {
           try {
-            let actorId = request.user?.id || null;
-            let actorRole = request.user?.role || 'ANONYMOUS';
+            let actorId: string | undefined = request.user?.id;
+            let actorRole: string = request.user?.role || 'ANONYMOUS';
             let actionType = '';
             let entityName = 'system';
             let entityId = '';
-            let oldData = null;
-            let newData = null;
+            let oldData: Record<string, any> | undefined;
+            let newData: Record<string, any> | undefined;
 
             if (isLogin) {
               actionType = 'LOGIN';
@@ -69,7 +69,7 @@ export class AuditLogInterceptor implements NestInterceptor {
                 entityId = request.user.id;
               }
             } else {
-              actionType = method === 'POST' ? 'INSERT' : method === 'DELETE' ? 'DELETE' : 'UPDATE';
+              actionType = method === 'POST' ? 'CREATE' : method === 'DELETE' ? 'DELETE' : 'UPDATE';
               
               // Tách tên bảng/entity từ URL
               const parts = url.split('?')[0].split('/');
