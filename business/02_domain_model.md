@@ -8,7 +8,7 @@ Tài liệu này chi tiết hóa toàn bộ **Mô hình đối tượng, thuộc
 
 ### 1.1 `User` (Tài khoản người dùng)
 - **Thuộc tính:** `id` (PK), `username`, `passwordHash`, `role` (ENUM: ADMIN, CHAIRMAN, DIRECTOR, DEPT_LEAD, EMPLOYEE), `status`, `createdAt`, `updatedAt`.
-- **Phương thức:** `login()`, `logout()`, `changePassword()`, `updateRole()`.
+- **Phương thức:** `login()`, `logout()`, `changePassword()`, `updateRole()`, `requestPasswordReset()`, `approvePasswordReset()`.
 
 ### 1.2 `SystemAuditLog` (Nhật ký Lưu vết Tất cả Giao dịch - Dành cho Admin)
 - **Thuộc tính:** `id` (PK), `timestamp` (ISO 8601), `actorId` (FK -> User), `actorRole`, `actionType` (ENUM: CREATE, UPDATE, DELETE, APPROVE, REJECT, LOGIN, EXPORT), `entityName`, `entityId`, `oldData` (JSON), `newData` (JSON), `ipAddress`, `userAgent`.
@@ -35,7 +35,7 @@ Tài liệu này chi tiết hóa toàn bộ **Mô hình đối tượng, thuộc
 - **Phương thức:** `addEntry()`, `updateEntry()`, `deleteEntry()`.
 
 ### 1.8 `ApprovalConfig` (Cấu hình Ma trận Phê duyệt Đa Cấp)
-- **Thuộc tính:** `id` (PK), `transactionType` (ENUM: LEAVE_SHORT, LEAVE_LONG, TIMESHEET, SALARY_ADJUSTMENT, JOB_TRANSFER, OFFBOARDING, PAYROLL_MONTHLY), `requiredLevels`, `approverRolesSequence`.
+- **Thuộc tính:** `id` (PK), `transactionType` (ENUM: LEAVE_SHORT, LEAVE_LONG, TIMESHEET, SALARY_ADJUSTMENT, JOB_TRANSFER, OFFBOARDING, PAYROLL_MONTHLY, RESET_PASSWORD), `requiredLevels`, `approverRolesSequence`.
 - **Phương thức:** `configureMatrix()`, `getRequiredLevels()`.
 
 ### 1.9 `ApprovalRequest` (Phiếu Yêu cầu Phê duyệt)

@@ -58,7 +58,8 @@ export enum TransactionType {
   SALARY_ADJUSTMENT = 'SALARY_ADJUSTMENT',       // Tăng lương & Phụ cấp Group C (3 Cấp)
   DISCIPLINE_REWARD = 'DISCIPLINE_REWARD',       // Khen thưởng / Kỷ luật Group D (3 Cấp)
   OFFBOARDING = 'OFFBOARDING',                   // Thôi việc & Offboarding (3 Cấp)
-  PAYROLL_MONTHLY = 'PAYROLL_MONTHLY'            // Chốt Bảng lương tháng (2 Cấp)
+  PAYROLL_MONTHLY = 'PAYROLL_MONTHLY',           // Chốt Bảng lương tháng (2 Cấp)
+  RESET_PASSWORD = 'RESET_PASSWORD'              // Yêu cầu reset mật khẩu bởi HR Lead (1 Cấp - Admin duyệt)
 }
 
 export enum ApprovalStatus {
