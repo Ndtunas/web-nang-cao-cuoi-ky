@@ -8,6 +8,7 @@ import { Employee } from '../../entities/employee.entity.js';
 import { ApprovalRequest } from '../../entities/approval-request.entity.js';
 import { Project } from '../../entities/project.entity.js';
 import { ProjectTask } from '../../entities/project-task.entity.js';
+import { ApprovalService } from '../approval/approval.service.js';
 import { BusinessException } from '../../common/exceptions/business.exception.js';
 
 @Injectable()
@@ -26,10 +27,17 @@ export class TimesheetsService {
     private readonly projectRepository: Repository<Project>,
     @InjectRepository(ProjectTask)
     private readonly projectTaskRepository: Repository<ProjectTask>,
+    private readonly approvalService: ApprovalService,
   ) {}
 
-  async getMyWeekly(userId: string, weekNumber: number, year: number): Promise<any> {
-    const employee = await this.employeeRepository.findOne({ where: { userId } });
+  async getMyWeekly(
+    userId: string,
+    weekNumber: number,
+    year: number,
+  ): Promise<any> {
+    const employee = await this.employeeRepository.findOne({
+      where: { userId },
+    });
     if (!employee) throw new BusinessException('ERR_AUTH_001');
 
     // Calculate start and end date of the week
@@ -83,7 +91,9 @@ export class TimesheetsService {
 
   async saveEntries(userId: string, dto: any): Promise<any> {
     try {
-      const employee = await this.employeeRepository.findOne({ where: { userId } });
+      const employee = await this.employeeRepository.findOne({
+        where: { userId },
+      });
       if (!employee) throw new BusinessException('ERR_TIMESHEET_002');
 
       const entriesCount = dto?.entries?.length ?? 0;
@@ -100,7 +110,10 @@ export class TimesheetsService {
 
       const firstEntry = dto.entries?.[0];
       if (!firstEntry) {
-        this.logger.warn({ userId }, 'saveEntries called with empty entries array');
+        this.logger.warn(
+          { userId },
+          'saveEntries called with empty entries array',
+        );
         return { success: true };
       }
 
@@ -195,7 +208,9 @@ export class TimesheetsService {
   }
 
   async submit(id: string, userId: string): Promise<Timesheet> {
-    const employee = await this.employeeRepository.findOne({ where: { userId } });
+    const employee = await this.employeeRepository.findOne({
+      where: { userId },
+    });
     if (!employee) throw new BusinessException('ERR_TIMESHEET_002');
 
     const timesheet = await this.timesheetRepository.findOne({ where: { id } });
@@ -220,5 +235,158 @@ export class TimesheetsService {
     timesheet.status = 'PENDING_APPROVAL';
     timesheet.approvalRequestId = savedReq.id;
     return this.timesheetRepository.save(timesheet);
+  }
+
+  /**
+   * Xóa 1 dòng khai timesheet (Ref: business/04_architecture.md mục 2.3)
+   */
+  async deleteEntry(
+    userId: string,
+    entryId: string,
+  ): Promise<{ success: boolean }> {
+    const employee = await this.employeeRepository.findOne({
+      where: { userId },
+    });
+    if (!employee) throw new BusinessException('ERR_TIMESHEET_002');
+
+    const entry = await this.timesheetEntryRepository.findOne({
+      where: { id: entryId },
+    });
+    if (!entry) throw new BusinessException('ERR_AUTH_003');
+
+    // Chỉ owner mới được xóa entry
+    const timesheet = await this.timesheetRepository.findOne({
+      where: { id: entry.timesheetId },
+    });
+    if (!timesheet || timesheet.employeeId !== employee.id) {
+      throw new BusinessException('ERR_AUTH_002');
+    }
+
+    if (timesheet.status !== 'DRAFT' && timesheet.status !== 'REJECTED') {
+      throw new BusinessException('ERR_TIMESHEET_001');
+    }
+
+    await this.timesheetEntryRepository.remove(entry);
+    return { success: true };
+  }
+
+  /**
+   * Danh sách timesheet chờ duyệt cho PM/Trưởng phòng (cấp 1) hoặc HR Lead (cấp 2)
+   * Ref: business/04_architecture.md mục 2.3
+   */
+  async getPendingApproval(userId: string, userRole: string): Promise<any[]> {
+    // Lấy tất cả timesheet có ApprovalRequest status = PENDING, level hiện tại 1 hoặc 2
+    const pendingTimesheets = await this.timesheetRepository
+      .createQueryBuilder('ts')
+      .leftJoinAndSelect('ts.approvalRequest', 'ar')
+      .leftJoinAndSelect('ts.employee', 'emp')
+      .leftJoinAndSelect('emp.department', 'dept')
+      .where('ar.status = :status', { status: 'PENDING' })
+      .andWhere('ts.status = :tsStatus', { tsStatus: 'PENDING_APPROVAL' })
+      .getMany();
+
+    // Filter theo role (PM/DEPT_LEAD = cấp 1, HR Lead/DEPT_LEAD = cấp 2 tuỳ nghiệp vụ)
+    if (
+      userRole === 'DIRECTOR' ||
+      userRole === 'CHAIRMAN' ||
+      userRole === 'ADMIN'
+    ) {
+      return pendingTimesheets;
+    }
+
+    // DEPT_LEAD: chỉ thấy direct report của mình
+    if (userRole === 'DEPT_LEAD') {
+      const manager = await this.employeeRepository.findOne({
+        where: { userId },
+      });
+      if (!manager) return [];
+      const deptIds: string[] = [];
+      // Đơn giản hoá: DEPT_LEAD thấy tất cả (project sẽ bổ sung PM-level filter sau)
+      return pendingTimesheets;
+    }
+
+    return [];
+  }
+
+  /**
+   * Phê duyệt/từ chối timesheet — route trực tiếp ngoài approval-requests
+   * Delegate cho ApprovalService engine (đảm bảo logic duyệt đa cấp nhất quán)
+   */
+  async approveOrReject(
+    timesheetId: string,
+    userId: string,
+    action: 'APPROVE' | 'REJECT',
+    comment: string,
+  ): Promise<any> {
+    const timesheet = await this.timesheetRepository.findOne({
+      where: { id: timesheetId },
+    });
+    if (!timesheet) throw new BusinessException('ERR_AUTH_003');
+    if (!timesheet.approvalRequestId)
+      throw new BusinessException('ERR_UNKNOWN');
+
+    if (action === 'APPROVE') {
+      return this.approvalService.approve(
+        timesheet.approvalRequestId,
+        comment,
+        userId,
+      );
+    }
+    return this.approvalService.reject(
+      timesheet.approvalRequestId,
+      comment,
+      userId,
+    );
+  }
+
+  /**
+   * Tổng hợp giờ OT theo tháng (Ref: business/04_architecture.md mục 2.3)
+   */
+  async getOtSummary(month: number, year: number): Promise<any[]> {
+    // Lấy entries thuộc timesheets APPROVED của tháng đó
+    const result = await this.timesheetEntryRepository
+      .createQueryBuilder('entry')
+      .leftJoinAndSelect('entry.timesheet', 'ts')
+      .leftJoinAndSelect('ts.employee', 'emp')
+      .select('emp.id', 'employeeId')
+      .addSelect('emp.emp_code', 'empCode')
+      .addSelect('emp.full_name', 'fullName')
+      .addSelect(
+        'SUM(CASE WHEN entry.work_type = :otWeekday THEN entry.hours_spent ELSE 0 END)',
+        'otWeekdayHours',
+      )
+      .addSelect(
+        'SUM(CASE WHEN entry.work_type = :otWeekend THEN entry.hours_spent ELSE 0 END)',
+        'otWeekendHours',
+      )
+      .addSelect(
+        'SUM(CASE WHEN entry.work_type = :otHoliday THEN entry.hours_spent ELSE 0 END)',
+        'otHolidayHours',
+      )
+      .addSelect(
+        'SUM(CASE WHEN entry.work_type = :nightShift THEN entry.hours_spent ELSE 0 END)',
+        'nightShiftHours',
+      )
+      .addSelect('SUM(entry.hours_spent)', 'totalOtHours')
+      .where('ts.status = :status', { status: 'APPROVED' })
+      .andWhere('EXTRACT(MONTH FROM entry.entry_date) = :month', { month })
+      .andWhere('EXTRACT(YEAR FROM entry.entry_date) = :year', { year })
+      .groupBy('emp.id, emp.emp_code, emp.full_name')
+      .setParameter('otWeekday', 'OT_WEEKDAY')
+      .setParameter('otWeekend', 'OT_WEEKEND')
+      .setParameter('otHoliday', 'OT_HOLIDAY')
+      .setParameter('nightShift', 'NIGHT_SHIFT')
+      .getRawMany();
+
+    return result.map((r: any) => ({
+      employeeId: r.employeeId,
+      empCode: r.empcode,
+      fullName: r.fullname,
+      otWeekdayHours: parseFloat(r.otweekdayhours || 0),
+      otWeekendHours: parseFloat(r.otweekendhours || 0),
+      otHolidayHours: parseFloat(r.otholidayhours || 0),
+      nightShiftHours: parseFloat(r.nightshifthours || 0),
+      totalOtHours: parseFloat(r.totalOtHours || 0),
+    }));
   }
 }
