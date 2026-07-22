@@ -11,6 +11,8 @@ import { Timesheet } from '../../entities/timesheet.entity.js';
 import { JobHistory } from '../../entities/job-history.entity.js';
 import { SalaryHistory } from '../../entities/salary-history.entity.js';
 import { Salary } from '../../entities/salary.entity.js';
+import { LeaveRequest } from '../../entities/leave-request.entity.js';
+import { OffboardingTask } from '../../entities/offboarding-task.entity.js';
 
 @Module({
   imports: [
@@ -24,6 +26,8 @@ import { Salary } from '../../entities/salary.entity.js';
       JobHistory,
       SalaryHistory,
       Salary,
+      LeaveRequest,
+      OffboardingTask,
     ]),
   ],
   controllers: [ApprovalController],
