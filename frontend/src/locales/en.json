@@ -6,7 +6,8 @@
     "departments": "Departments",
     "attendance": "Attendance",
     "payroll": "Payroll",
-    "settings": "Settings"
+    "settings": "Settings",
+    "logout": "Log Out"
   },
   "header": {
     "searchPlaceholder": "Search employees, departments...",
@@ -66,7 +67,8 @@
       "alreadyRejected": "Request was already rejected and cannot be approved further."
     },
     "timesheet": {
-      "alreadyApproved": "Weekly timesheet has already been approved and cannot be edited."
+      "alreadyApproved": "Weekly timesheet has already been approved and cannot be edited.",
+      "noEntriesToSubmit": "No work hours to submit. Please enter at least one work entry."
     },
     "payroll": {
       "alreadyFinalized": "Monthly payroll has been finalized and cannot be recalculated."
@@ -131,21 +133,60 @@
   },
   "timesheets": {
     "weeklyCard": "Log Weekly Attendance",
-    "week": "Week:",
-    "year": "Year:",
+    "week": "Week",
+    "year": "Year",
+    "currentWeek": "Current Week",
     "status": "Timesheet Status:",
     "notCreated": "Not Created",
     "addRow": "Add Attendance Row",
     "saveDraft": "Save Draft",
     "submit": "Submit For Approval",
-    "cols": {
-      "project": "Project",
-      "task": "Task",
-      "date": "Working Date",
-      "hours": "Hours Spent",
-      "type": "Work Type",
-      "note": "Work Details",
-      "delete": "Remove"
+    "totalHours": "Total Hours",
+    "otHours": "Overtime Hours",
+    "workTypes": "Work Types",
+    "noData": "No attendance data for this week.",
+    "addFirstRow": "Click 'Add work row' to start logging.",
+    "addWorkRow": "Add work row",
+    "weekSummary": "Week {week}/{year}",
+    "totalHoursLabel": "Total Working Hours",
+    "otHoursLabel": "Overtime Hours",
+    "workTypeCount": "Work Type Count",
+    "noOtHours": "No OT hours",
+    "noWorkTypes": "No work types recorded",
+    "addWorkRowBtn": "Add work row",
+    "saveDraftBtn": "Save Draft",
+    "submitApprovalBtn": "Submit For Approval",
+    "weeklyTimesheet": "Weekly Timesheet",
+    "noTimesheetData": "No attendance data for this week.",
+    "clickToStart": "Click 'Add work row' to start logging.",
+    "projectTask": "Project / Task",
+    "weekday": "Weekday",
+    "weekend": "Weekend",
+    "holiday": "Holiday",
+    "total": "Total",
+    "workType": "Work Type",
+    "normalHours": "Normal",
+    "otWeekday": "Weekday OT",
+    "otWeekend": "Weekend OT",
+    "otHoliday": "Holiday OT",
+    "nightShift": "Night Shift",
+    "msgNoValidEntries": "No valid attendance entries (hours > 0)",
+    "msgDraftSaved": "Timesheet draft saved successfully!",
+    "msgSubmitted": "Weekly timesheet submitted for approval!",
+    "unsavedChangesBanner": "You have unsaved changes",
+    "unsavedChangesHint": "Click \"Save Draft\" or \"Submit for Approval\" to update the timesheet.",
+    "workTypeLabels": {
+      "NORMAL": "Normal Hours",
+      "OT_WEEKDAY": "OT Weekday",
+      "OT_WEEKEND": "OT Weekend",
+      "OT_HOLIDAY": "OT Holiday",
+      "NIGHT_SHIFT": "Night Shift"
+    },
+    "statusLabels": {
+      "DRAFT": "Draft",
+      "SUBMITTED": "Submitted",
+      "APPROVED": "Approved",
+      "REJECTED": "Rejected"
     }
   },
   "approvals": {

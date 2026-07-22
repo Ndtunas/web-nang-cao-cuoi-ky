@@ -6,7 +6,8 @@
     "departments": "Phòng ban",
     "attendance": "Chấm công",
     "payroll": "Bảng lương",
-    "settings": "Cài đặt"
+    "settings": "Cài đặt",
+    "logout": "Đăng xuất"
   },
   "header": {
     "searchPlaceholder": "Tìm kiếm nhân viên, phòng ban...",
@@ -66,7 +67,8 @@
       "alreadyRejected": "Phiếu yêu cầu đã bị từ chối trước đó, không thể duyệt tiếp."
     },
     "timesheet": {
-      "alreadyApproved": "Bảng Timesheet tuần đã được phê duyệt, không thể chỉnh sửa."
+      "alreadyApproved": "Bảng Timesheet tuần đã được phê duyệt, không thể chỉnh sửa.",
+      "noEntriesToSubmit": "Không có giờ công nào để nộp. Vui lòng nhập ít nhất một dòng công việc."
     },
     "payroll": {
       "alreadyFinalized": "Bảng lương tháng đã chốt phê duyệt, không thể tính toán lại."
@@ -131,21 +133,60 @@
   },
   "timesheets": {
     "weeklyCard": "Ghi nhận chấm công tuần",
-    "week": "Tuần:",
-    "year": "Năm:",
-    "status": "Trạng thái timesheet:",
+    "week": "Tuần",
+    "year": "Năm",
+    "currentWeek": "Hiện tại",
+    "status": "Trạng thái:",
     "notCreated": "Chưa tạo",
     "addRow": "Thêm dòng chấm công",
     "saveDraft": "Lưu nháp",
     "submit": "Nộp phê duyệt",
-    "cols": {
-      "project": "Dự án",
-      "task": "Tác vụ",
-      "date": "Ngày làm việc",
-      "hours": "Số giờ",
-      "type": "Loại công",
-      "note": "Ghi chú công việc",
-      "delete": "Xóa"
+    "totalHours": "Tổng giờ làm",
+    "otHours": "Giờ OT",
+    "workTypes": "Phân loại giờ công",
+    "noData": "Chưa có dữ liệu chấm công tuần này.",
+    "addFirstRow": "Nhấn 'Thêm dòng công việc' để bắt đầu ghi nhận.",
+    "addWorkRow": "Thêm dòng công việc",
+    "weekSummary": "Tuần {week}/{year}",
+    "totalHoursLabel": "Tổng giờ làm",
+    "otHoursLabel": "Giờ làm thêm",
+    "workTypeCount": "Số loại giờ công",
+    "noOtHours": "Chưa có giờ OT",
+    "noWorkTypes": "Chưa ghi nhận giờ công",
+    "addWorkRowBtn": "Thêm dòng công việc",
+    "saveDraftBtn": "Lưu nháp",
+    "submitApprovalBtn": "Nộp phê duyệt",
+    "weeklyTimesheet": "Bảng chấm công tuần",
+    "noTimesheetData": "Chưa có dữ liệu chấm công tuần này.",
+    "clickToStart": "Nhấn 'Thêm dòng công việc' để bắt đầu.",
+    "projectTask": "Dự án / Công việc",
+    "weekday": "Ngày thường",
+    "weekend": "Cuối tuần",
+    "holiday": "Ngày lễ",
+    "total": "Tổng",
+    "workType": "Loại công",
+    "normalHours": "Thường",
+    "otWeekday": "OT thường",
+    "otWeekend": "OT cuối tuần",
+    "otHoliday": "OT lễ",
+    "nightShift": "Ca đêm",
+    "msgNoValidEntries": "Không có dòng chấm công hợp lệ (giờ > 0)",
+    "msgDraftSaved": "Lưu nháp thành công!",
+    "msgSubmitted": "Đã nộp bảng chấm công tuần lên quản lý duyệt!",
+    "unsavedChangesBanner": "Bạn có thay đổi chưa được lưu",
+    "unsavedChangesHint": "Nhấn \"Lưu nháp\" hoặc \"Nộp duyệt\" để cập nhật bảng chấm công.",
+    "workTypeLabels": {
+      "NORMAL": "Giờ thường",
+      "OT_WEEKDAY": "OT ngày thường",
+      "OT_WEEKEND": "OT cuối tuần",
+      "OT_HOLIDAY": "OT ngày lễ",
+      "NIGHT_SHIFT": "Ca đêm"
+    },
+    "statusLabels": {
+      "DRAFT": "Nháp",
+      "SUBMITTED": "Đã nộp",
+      "APPROVED": "Đã duyệt",
+      "REJECTED": "Bị từ chối"
     }
   },
   "approvals": {
