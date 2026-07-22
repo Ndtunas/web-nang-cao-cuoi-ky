@@ -1,4 +1,10 @@
-import { Entity, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 /**
  * Bảng 9: approval_configs — Cấu hình ma trận phê duyệt
@@ -9,7 +15,12 @@ export class ApprovalConfig {
   @PrimaryColumn({ type: 'bigint' })
   id: string;
 
-  @Column({ type: 'varchar', length: 50, unique: true, name: 'transaction_type' })
+  @Column({
+    type: 'varchar',
+    length: 50,
+    unique: true,
+    name: 'transaction_type',
+  })
   transactionType: string;
 
   @Column({ type: 'int', default: 1, name: 'required_levels' })

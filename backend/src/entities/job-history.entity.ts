@@ -1,4 +1,11 @@
-import { Entity, PrimaryColumn, Column, ManyToOne, JoinColumn, CreateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+  CreateDateColumn,
+} from 'typeorm';
 import { Employee } from './employee.entity.js';
 import { Department } from './department.entity.js';
 import { Position } from './position.entity.js';
@@ -10,7 +17,12 @@ export class JobHistory {
   @PrimaryColumn({ type: 'bigint' })
   id: string;
 
-  @Column({ type: 'varchar', length: 50, unique: true, name: 'decision_number' })
+  @Column({
+    type: 'varchar',
+    length: 50,
+    unique: true,
+    name: 'decision_number',
+  })
   decisionNumber: string;
 
   @Column({ type: 'bigint', name: 'employee_id' })

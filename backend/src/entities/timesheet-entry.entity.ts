@@ -1,4 +1,12 @@
-import { Entity, PrimaryColumn, Column, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { Timesheet } from './timesheet.entity.js';
 import { Project } from './project.entity.js';
 import { ProjectTask } from './project-task.entity.js';
@@ -30,7 +38,13 @@ export class TimesheetEntry {
   @Column({ type: 'varchar', length: 20, name: 'work_type' })
   workType: string;
 
-  @Column({ type: 'numeric', precision: 4, scale: 2, default: 1.0, name: 'applied_rate' })
+  @Column({
+    type: 'numeric',
+    precision: 4,
+    scale: 2,
+    default: 1.0,
+    name: 'applied_rate',
+  })
   appliedRate: number;
 
   @Column({ type: 'text', nullable: true })

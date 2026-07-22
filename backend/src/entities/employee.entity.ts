@@ -1,4 +1,12 @@
-import { Entity, PrimaryColumn, Column, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { User } from './user.entity.js';
 import { Department } from './department.entity.js';
 import { Position } from './position.entity.js';
@@ -12,7 +20,13 @@ export class Employee {
   @PrimaryColumn({ type: 'bigint' })
   id: string;
 
-  @Column({ type: 'varchar', length: 30, unique: true, name: 'emp_code', nullable: true })
+  @Column({
+    type: 'varchar',
+    length: 30,
+    unique: true,
+    name: 'emp_code',
+    nullable: true,
+  })
   empCode: string;
 
   @Column({ type: 'varchar', length: 100, name: 'full_name' })

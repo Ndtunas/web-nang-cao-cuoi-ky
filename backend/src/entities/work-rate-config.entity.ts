@@ -1,4 +1,12 @@
-import { Entity, PrimaryColumn, Column, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { User } from './user.entity.js';
 
 /** Bảng 3: work_rate_configs — Ref: schema.sql line 172-182 */
@@ -16,7 +24,11 @@ export class WorkRateConfig {
   @Column({ type: 'numeric', precision: 5, scale: 2, name: 'value_multiplier' })
   valueMultiplier: number;
 
-  @Column({ type: 'date', name: 'effective_date', default: () => 'CURRENT_DATE' })
+  @Column({
+    type: 'date',
+    name: 'effective_date',
+    default: () => 'CURRENT_DATE',
+  })
   effectiveDate: Date;
 
   @Column({ type: 'varchar', length: 20, default: 'ACTIVE' })

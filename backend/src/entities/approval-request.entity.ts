@@ -1,4 +1,12 @@
-import { Entity, PrimaryColumn, Column, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { Employee } from './employee.entity.js';
 
 /**
@@ -10,7 +18,13 @@ export class ApprovalRequest {
   @PrimaryColumn({ type: 'bigint' })
   id: string;
 
-  @Column({ type: 'varchar', length: 50, unique: true, nullable: true, name: 'request_code' })
+  @Column({
+    type: 'varchar',
+    length: 50,
+    unique: true,
+    nullable: true,
+    name: 'request_code',
+  })
   requestCode: string;
 
   @Column({ type: 'varchar', length: 50, name: 'transaction_type' })

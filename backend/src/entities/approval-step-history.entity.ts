@@ -29,7 +29,11 @@ export class ApprovalStepHistory {
   @Column({ type: 'text', nullable: true })
   comment: string;
 
-  @Column({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP', name: 'action_at' })
+  @Column({
+    type: 'timestamptz',
+    default: () => 'CURRENT_TIMESTAMP',
+    name: 'action_at',
+  })
   actionAt: Date;
 
   // Relations

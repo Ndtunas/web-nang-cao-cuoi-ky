@@ -1,4 +1,12 @@
-import { Entity, PrimaryColumn, Column, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { Project } from './project.entity.js';
 
 /**
@@ -19,7 +27,13 @@ export class ProjectTask {
   @Column({ type: 'text', nullable: true })
   description: string;
 
-  @Column({ type: 'numeric', precision: 6, scale: 2, default: 0.0, name: 'estimated_hours' })
+  @Column({
+    type: 'numeric',
+    precision: 6,
+    scale: 2,
+    default: 0.0,
+    name: 'estimated_hours',
+  })
   estimatedHours: number;
 
   @CreateDateColumn({ type: 'timestamptz', name: 'created_at' })

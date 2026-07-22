@@ -19,21 +19,51 @@ import type { BusinessErrorPayload } from '../enums/business-values.js';
  */
 
 /** Bảng ánh xạ Error Code → i18nKey + HTTP Status */
-export const BUSINESS_ERROR_MAP: Record<string, { statusCode: number; i18nKey: string }> = {
+export const BUSINESS_ERROR_MAP: Record<
+  string,
+  { statusCode: number; i18nKey: string }
+> = {
   ERR_AUTH_001: { statusCode: 401, i18nKey: 'error.auth.invalidCredentials' },
   ERR_AUTH_002: { statusCode: 403, i18nKey: 'error.auth.accessDenied' },
   ERR_AUTH_003: { statusCode: 404, i18nKey: 'error.auth.userNotFound' },
   ERR_EMP_001: { statusCode: 400, i18nKey: 'error.employee.codeOrEmailExists' },
-  ERR_EMP_002: { statusCode: 400, i18nKey: 'error.employee.cannotTransferNoticePeriod' },
-  ERR_LEAVE_001: { statusCode: 400, i18nKey: 'error.leave.insufficientBalance' },
+  ERR_EMP_002: {
+    statusCode: 400,
+    i18nKey: 'error.employee.cannotTransferNoticePeriod',
+  },
+  ERR_LEAVE_001: {
+    statusCode: 400,
+    i18nKey: 'error.leave.insufficientBalance',
+  },
   ERR_LEAVE_002: { statusCode: 400, i18nKey: 'error.leave.invalidDateRange' },
-  ERR_APPROVAL_001: { statusCode: 403, i18nKey: 'error.approval.unauthorizedLevel' },
-  ERR_APPROVAL_002: { statusCode: 400, i18nKey: 'error.approval.alreadyRejected' },
-  ERR_APPROVAL_003: { statusCode: 404, i18nKey: 'error.approval.requestNotFound' },
-  ERR_APPROVAL_004: { statusCode: 400, i18nKey: 'error.approval.invalidRequestData' },
-  ERR_TIMESHEET_001: { statusCode: 400, i18nKey: 'error.timesheet.alreadyApproved' },
-  ERR_TIMESHEET_003: { statusCode: 400, i18nKey: 'error.timesheet.noEntriesToSubmit' },
-  ERR_PAYROLL_001: { statusCode: 400, i18nKey: 'error.payroll.alreadyFinalized' },
+  ERR_APPROVAL_001: {
+    statusCode: 403,
+    i18nKey: 'error.approval.unauthorizedLevel',
+  },
+  ERR_APPROVAL_002: {
+    statusCode: 400,
+    i18nKey: 'error.approval.alreadyRejected',
+  },
+  ERR_APPROVAL_003: {
+    statusCode: 404,
+    i18nKey: 'error.approval.requestNotFound',
+  },
+  ERR_APPROVAL_004: {
+    statusCode: 400,
+    i18nKey: 'error.approval.invalidRequestData',
+  },
+  ERR_TIMESHEET_001: {
+    statusCode: 400,
+    i18nKey: 'error.timesheet.alreadyApproved',
+  },
+  ERR_TIMESHEET_003: {
+    statusCode: 400,
+    i18nKey: 'error.timesheet.noEntriesToSubmit',
+  },
+  ERR_PAYROLL_001: {
+    statusCode: 400,
+    i18nKey: 'error.payroll.alreadyFinalized',
+  },
 };
 
 export class BusinessException extends HttpException {

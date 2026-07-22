@@ -1,4 +1,11 @@
-import { Entity, PrimaryColumn, Column, ManyToOne, JoinColumn, CreateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+  CreateDateColumn,
+} from 'typeorm';
 import { Employee } from './employee.entity.js';
 import { ApprovalRequest } from './approval-request.entity.js';
 
@@ -8,7 +15,12 @@ export class SalaryHistory {
   @PrimaryColumn({ type: 'bigint' })
   id: string;
 
-  @Column({ type: 'varchar', length: 50, unique: true, name: 'addendum_number' })
+  @Column({
+    type: 'varchar',
+    length: 50,
+    unique: true,
+    name: 'addendum_number',
+  })
   addendumNumber: string;
 
   @Column({ type: 'bigint', name: 'employee_id' })

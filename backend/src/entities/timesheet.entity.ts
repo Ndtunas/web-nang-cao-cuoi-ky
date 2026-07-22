@@ -1,4 +1,12 @@
-import { Entity, PrimaryColumn, Column, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { Employee } from './employee.entity.js';
 import { ApprovalRequest } from './approval-request.entity.js';
 
@@ -11,7 +19,13 @@ export class Timesheet {
   @PrimaryColumn({ type: 'bigint' })
   id: string;
 
-  @Column({ type: 'varchar', length: 50, unique: true, nullable: true, name: 'timesheet_code' })
+  @Column({
+    type: 'varchar',
+    length: 50,
+    unique: true,
+    nullable: true,
+    name: 'timesheet_code',
+  })
   timesheetCode: string;
 
   @Column({ type: 'bigint', name: 'employee_id' })
@@ -29,10 +43,22 @@ export class Timesheet {
   @Column({ type: 'date', name: 'end_date' })
   endDate: Date;
 
-  @Column({ type: 'numeric', precision: 5, scale: 2, default: 0.0, name: 'total_normal_hours' })
+  @Column({
+    type: 'numeric',
+    precision: 5,
+    scale: 2,
+    default: 0.0,
+    name: 'total_normal_hours',
+  })
   totalNormalHours: number;
 
-  @Column({ type: 'numeric', precision: 5, scale: 2, default: 0.0, name: 'total_ot_hours' })
+  @Column({
+    type: 'numeric',
+    precision: 5,
+    scale: 2,
+    default: 0.0,
+    name: 'total_ot_hours',
+  })
   totalOtHours: number;
 
   @Column({ type: 'varchar', length: 20, default: 'DRAFT' })

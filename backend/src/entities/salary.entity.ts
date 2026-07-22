@@ -1,4 +1,12 @@
-import { Entity, PrimaryColumn, Column, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { Employee } from './employee.entity.js';
 import { ApprovalRequest } from './approval-request.entity.js';
 
@@ -23,19 +31,49 @@ export class Salary {
   @Column({ type: 'numeric', precision: 12, scale: 2, name: 'base_salary' })
   baseSalary: number;
 
-  @Column({ type: 'numeric', precision: 4, scale: 2, default: 0.0, name: 'work_days' })
+  @Column({
+    type: 'numeric',
+    precision: 4,
+    scale: 2,
+    default: 0.0,
+    name: 'work_days',
+  })
   workDays: number;
 
-  @Column({ type: 'numeric', precision: 5, scale: 2, default: 0.0, name: 'ot_normal_hours' })
+  @Column({
+    type: 'numeric',
+    precision: 5,
+    scale: 2,
+    default: 0.0,
+    name: 'ot_normal_hours',
+  })
   otNormalHours: number;
 
-  @Column({ type: 'numeric', precision: 5, scale: 2, default: 0.0, name: 'ot_weekend_hours' })
+  @Column({
+    type: 'numeric',
+    precision: 5,
+    scale: 2,
+    default: 0.0,
+    name: 'ot_weekend_hours',
+  })
   otWeekendHours: number;
 
-  @Column({ type: 'numeric', precision: 5, scale: 2, default: 0.0, name: 'ot_holiday_hours' })
+  @Column({
+    type: 'numeric',
+    precision: 5,
+    scale: 2,
+    default: 0.0,
+    name: 'ot_holiday_hours',
+  })
   otHolidayHours: number;
 
-  @Column({ type: 'numeric', precision: 12, scale: 2, default: 0.0, name: 'ot_pay_amount' })
+  @Column({
+    type: 'numeric',
+    precision: 12,
+    scale: 2,
+    default: 0.0,
+    name: 'ot_pay_amount',
+  })
   otPayAmount: number;
 
   @Column({ type: 'numeric', precision: 12, scale: 2, default: 0.0 })

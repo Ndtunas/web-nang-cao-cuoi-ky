@@ -1,4 +1,10 @@
-import { Entity, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 /**
  * Bảng 4: positions — Chức vụ & Hệ số lương
@@ -12,7 +18,13 @@ export class Position {
   @Column({ type: 'varchar', length: 100 })
   title: string;
 
-  @Column({ type: 'numeric', precision: 4, scale: 2, default: 1.0, name: 'base_salary_ratio' })
+  @Column({
+    type: 'numeric',
+    precision: 4,
+    scale: 2,
+    default: 1.0,
+    name: 'base_salary_ratio',
+  })
   baseSalaryRatio: number;
 
   @Column({ type: 'text', nullable: true })

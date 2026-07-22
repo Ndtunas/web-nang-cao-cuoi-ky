@@ -1,4 +1,11 @@
-import { Entity, PrimaryColumn, Column, ManyToOne, JoinColumn, CreateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+  CreateDateColumn,
+} from 'typeorm';
 import { Employee } from './employee.entity.js';
 
 /** Bảng 19: attendances — Ref: schema.sql line 391-401 */
@@ -19,7 +26,13 @@ export class Attendance {
   @Column({ type: 'time', nullable: true, name: 'check_out' })
   checkOut: string;
 
-  @Column({ type: 'numeric', precision: 4, scale: 2, default: 0.0, name: 'work_hours' })
+  @Column({
+    type: 'numeric',
+    precision: 4,
+    scale: 2,
+    default: 0.0,
+    name: 'work_hours',
+  })
   workHours: number;
 
   @Column({ type: 'varchar', length: 20, default: 'PRESENT' })

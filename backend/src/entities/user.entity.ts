@@ -1,5 +1,12 @@
-import { Entity, PrimaryColumn, Column, OneToOne, OneToMany, CreateDateColumn, UpdateDateColumn } from 'typeorm';
-
+import {
+  Entity,
+  PrimaryColumn,
+  Column,
+  OneToOne,
+  OneToMany,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 /**
  * Bảng 1: users — Tài khoản người dùng
@@ -28,7 +35,12 @@ export class User {
   @UpdateDateColumn({ type: 'timestamptz', name: 'updated_at' })
   updatedAt: Date;
 
-  @Column({ type: 'varchar', length: 255, name: 'refresh_token', nullable: true })
+  @Column({
+    type: 'varchar',
+    length: 255,
+    name: 'refresh_token',
+    nullable: true,
+  })
   refreshToken: string | null;
 
   // Relations (lazy — sẽ define khi cần)
