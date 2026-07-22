@@ -4,6 +4,7 @@
     "dashboard": "Dashboard",
     "employees": "Employees",
     "departments": "Departments",
+    "timesheets": "Timesheet",
     "attendance": "Attendance",
     "payroll": "Payroll",
     "settings": "Settings",
@@ -81,6 +82,10 @@
     "payroll": {
       "alreadyFinalized": "Monthly payroll has been finalized and cannot be recalculated."
     },
+    "attendance": {
+      "outsideCheckInWindow": "Outside check-in hours (only allowed from 07:30 to 23:59).",
+      "outsideCheckOutWindow": "Outside check-out hours (only allowed from 00:00 to 23:59). The system will auto-finalize after 23:59:30."
+    },
     "common": {
       "notFound": "Requested resource was not found."
     },
@@ -150,6 +155,52 @@
     "validation": {
       "reasonRequired": "Please provide a resignation reason"
     }
+  },
+  "notif": {
+    "title": "Notifications",
+    "empty": "You have no notifications",
+    "markAllRead": "Mark all as read"
+  },
+  "att": {
+    "cardTitle": "Attendance",
+    "checkIn": "Check In",
+    "checkOut": "Check Out",
+    "checkedIn": "Checked In",
+    "checkedOut": "Checked Out",
+    "today": "Today",
+    "myHistory": "My History",
+    "statsTitle": "This Month",
+    "cols": {
+      "date": "Date",
+      "checkIn": "Check In",
+      "checkOut": "Check Out",
+      "workHours": "Hours",
+      "status": "Status",
+      "employee": "Employee"
+    },
+    "statusLabels": {
+      "PRESENT": "On Time",
+      "LATE": "Late",
+      "HALF_DAY": "Half Day",
+      "ABSENT": "Absent",
+      "OVERTIME": "Overtime",
+      "INCOMPLETE": "Incomplete"
+    },
+    "msgCheckInSuccess": "Checked in successfully!",
+    "msgCheckOutSuccess": "Checked out successfully!",
+    "msgCheckInError": "Unable to check in. You may have already checked in today.",
+    "msgCheckOutError": "Unable to check out. You need to check in first.",
+    "confirmCheckIn": "Confirm check in at this time?",
+    "confirmCheckOut": "Confirm check out at this time?",
+    "confirmCheckInBeforeWindow": "Outside check-in window (only allowed from 07:30 to 23:59).",
+    "confirmCheckOutAfterWindow": "Outside check-out window (after 23:59). The system will auto-finalize.",
+    "confirmCheckOutEarly": "Check out before 15:30 — confirm?",
+    "confirmCheckOutEarlyDesc": "This will be recorded as HALF_DAY (early off).",
+    "warnCheckoutEarly": "You are checking out before 15:30 — counted as HALF_DAY",
+    "warnHalfDayAbsent": "It is past 12:30 with no check-in yet — will count as HALF_DAY if still absent.",
+    "warnAbsent": "It is past 13:30 with no check-in yet — today will be marked ABSENT.",
+    "msgCheckOutOvertime": "Check-out recorded as OVERTIME — total {{hours}}h.",
+    "msgCheckOutEarlyHalf": "Early check-out (before 15:30) — counted as HALF_DAY."
   },
   "onb": {
     "cardTitle": "Onboarding Workflow",
@@ -291,7 +342,13 @@
       "SUBMITTED": "Submitted",
       "APPROVED": "Approved",
       "REJECTED": "Rejected"
-    }
+    },
+    "prefillTitle": "No entries this week yet",
+    "prefillDesc": "There are {{count}} attendance days — auto-add 8h/day entries for reconciliation?",
+    "prefillAccept": "Accept",
+    "prefillAccepted": "Pre-filled entries added. Adjust project/task and save.",
+    "reconciliationTitle": "Reconciliation: declared {{declared}}h / expected {{target}}h",
+    "reconciliationWarning": "{{count}} reconciliation warnings — please review before submitting."
   },
   "leave": {
     "cardTitle": "Leave Requests",

@@ -28,7 +28,8 @@ import {
   DashboardOutlined,
   AuditOutlined,
   ProjectOutlined,
-  LogoutOutlined
+  LogoutOutlined,
+  ClockCircleOutlined
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import weekOfYear from 'dayjs/plugin/weekOfYear.js';
@@ -46,6 +47,8 @@ import Projects from './components/Projects.jsx';
 import LeaveRequests from './components/LeaveRequests.jsx';
 import Offboarding from './components/Offboarding.jsx';
 import Onboarding from './components/Onboarding.jsx';
+import NotificationBell from './components/NotificationBell.jsx';
+import Attendance from './components/Attendance.jsx';
 import { AuthProvider, useAuth } from './contexts/AuthContext.jsx';
 import { TAB_KEYS, ROLES, canAccessTab, canDo, getFirstAllowedTab } from './constants/roles.js';
 
@@ -79,6 +82,8 @@ function AppContent() {
   // Timesheets variables
   const [timesheetData, setTimesheetData] = useState(null);
   const [timesheetEntries, setTimesheetEntries] = useState([]);
+  const [suggestedEntries, setSuggestedEntries] = useState([]);
+  const [reconciliation, setReconciliation] = useState(null);
   const [projectsList, setProjectsList] = useState([]);
   const [tasksList, setTasksList] = useState([]);
   const [selectedWeek, setSelectedWeek] = useState(dayjs().week());
@@ -153,6 +158,8 @@ function AppContent() {
       // Offboarding component loads its own data
     } else if (activeTab === TAB_KEYS.ONBOARDING) {
       // Onboarding component loads its own data
+    } else if (activeTab === TAB_KEYS.ATTENDANCE) {
+      // Attendance component loads its own data
     } else if (activeTab === TAB_KEYS.DASHBOARD) {
       loadDashboardData();
     }
@@ -203,6 +210,8 @@ function AppContent() {
       const data = await api.timesheets.getMyWeekly(selectedWeek, selectedYear);
       setTimesheetData(data.timesheet);
       setTimesheetEntries(data.entries);
+      setSuggestedEntries(data.suggestedEntries || []);
+      setReconciliation(data.reconciliation || null);
       setProjectsList(data.projects);
       setTasksList(data.tasks);
     } catch (e) {
@@ -360,7 +369,7 @@ function AppContent() {
         message.warning(t('timesheets.msgNoValidEntries'));
         return;
       }
-      await api.timesheets.saveEntries(validEntries.map(e => ({
+      const result = await api.timesheets.saveEntries(validEntries.map(e => ({
         timesheetId: e.timesheetId || timesheetData.id,
         projectId: e.projectId,
         taskId: e.taskId,
@@ -369,6 +378,12 @@ function AppContent() {
         workType: e.workType,
         description: e.description || '',
       })));
+      if (result?.reconciliation?.warnings?.length) {
+        setReconciliation(result.reconciliation);
+        message.warning(
+          t('timesheets.reconciliationWarning', { count: result.reconciliation.warnings.length }),
+        );
+      }
       message.success(t('timesheets.msgDraftSaved'));
       await loadTimesheetData();
     } catch (e) {
@@ -568,14 +583,15 @@ function AppContent() {
               checkAccess(TAB_KEYS.DASHBOARD) && { key: TAB_KEYS.DASHBOARD, icon: <DashboardOutlined />, label: t('nav.dashboard') },
               checkAccess(TAB_KEYS.EMPLOYEES) && { key: TAB_KEYS.EMPLOYEES, icon: <TeamOutlined />, label: t('nav.employees') },
               checkAccess(TAB_KEYS.PROJECTS) && { key: TAB_KEYS.PROJECTS, icon: <ProjectOutlined />, label: t('nav.projects') },
-              checkAccess(TAB_KEYS.TIMESHEETS) && { key: TAB_KEYS.TIMESHEETS, icon: <CalendarOutlined />, label: t('nav.attendance') },
+              checkAccess(TAB_KEYS.TIMESHEETS) && { key: TAB_KEYS.TIMESHEETS, icon: <CalendarOutlined />, label: t('nav.timesheets') },
               checkAccess(TAB_KEYS.APPROVALS) && { key: TAB_KEYS.APPROVALS, icon: <CheckCircleOutlined />, label: t('nav.approvals') },
               checkAccess(TAB_KEYS.PAYROLL) && { key: TAB_KEYS.PAYROLL, icon: <DollarOutlined />, label: t('nav.payroll') },
               checkAccess(TAB_KEYS.CONFIG) && { key: TAB_KEYS.CONFIG, icon: <SettingOutlined />, label: t('nav.settings') },
               checkAccess(TAB_KEYS.AUDIT_LOGS) && { key: TAB_KEYS.AUDIT_LOGS, icon: <AuditOutlined />, label: t('nav.auditLogs') },
               checkAccess(TAB_KEYS.LEAVE) && { key: TAB_KEYS.LEAVE, icon: <CalendarOutlined />, label: t('nav.leave') },
               checkAccess(TAB_KEYS.ONBOARDING) && { key: TAB_KEYS.ONBOARDING, icon: <PlusOutlined />, label: t('nav.onboarding') },
-              checkAccess(TAB_KEYS.OFFBOARDING) && { key: TAB_KEYS.OFFBOARDING, icon: <LogoutOutlined />, label: t('nav.offboarding') }
+              checkAccess(TAB_KEYS.OFFBOARDING) && { key: TAB_KEYS.OFFBOARDING, icon: <LogoutOutlined />, label: t('nav.offboarding') },
+              checkAccess(TAB_KEYS.ATTENDANCE) && { key: TAB_KEYS.ATTENDANCE, icon: <ClockCircleOutlined />, label: t('nav.attendance') }
             ].filter(Boolean)}
           />
         </Sider>
@@ -606,6 +622,8 @@ function AppContent() {
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
+              <NotificationBell t={t} />
+
               <Button
                 type="text"
                 icon={<GlobalOutlined style={{ color: '#94a3b8' }} />}
@@ -720,6 +738,8 @@ function AppContent() {
               <Timesheets
                 timesheetData={timesheetData}
                 timesheetEntries={timesheetEntries}
+                suggestedEntries={suggestedEntries}
+                reconciliation={reconciliation}
                 projectsList={projectsList}
                 tasksList={tasksList}
                 selectedWeek={selectedWeek}
@@ -813,6 +833,10 @@ function AppContent() {
 
             {activeTab === 'ONBOARDING' && renderWithGuard('ONBOARDING', (
               <Onboarding t={t} />
+            ))}
+
+            {activeTab === 'ATTENDANCE' && renderWithGuard('ATTENDANCE', (
+              <Attendance t={t} />
             ))}
           </Content>
         </Layout>

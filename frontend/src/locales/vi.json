@@ -4,6 +4,7 @@
     "dashboard": "Tổng quan",
     "employees": "Danh sách Nhân viên",
     "departments": "Phòng ban",
+    "timesheets": "Giờ công",
     "attendance": "Chấm công",
     "payroll": "Bảng lương",
     "settings": "Cài đặt",
@@ -81,6 +82,10 @@
     "payroll": {
       "alreadyFinalized": "Bảng lương tháng đã chốt phê duyệt, không thể tính toán lại."
     },
+    "attendance": {
+      "outsideCheckInWindow": "Ngoài giờ chấm công vào (chỉ chấp nhận từ 07:30 đến 23:59).",
+      "outsideCheckOutWindow": "Ngoài giờ chấm công ra (chỉ chấp nhận từ 00:00 đến 23:59). Hệ thống sẽ tự động chốt sau 23:59:30."
+    },
     "common": {
       "notFound": "Không tìm thấy tài nguyên yêu cầu."
     },
@@ -150,6 +155,52 @@
     "validation": {
       "reasonRequired": "Vui lòng nhập lý do thôi việc"
     }
+  },
+  "notif": {
+    "title": "Thông báo",
+    "empty": "Bạn không có thông báo nào",
+    "markAllRead": "Đánh dấu tất cả đã đọc"
+  },
+  "att": {
+    "cardTitle": "Chấm công (Attendance)",
+    "checkIn": "Chấm công vào",
+    "checkOut": "Chấm công ra",
+    "checkedIn": "Đã chấm công vào",
+    "checkedOut": "Đã chấm công ra",
+    "today": "Hôm nay",
+    "myHistory": "Lịch sử của tôi",
+    "statsTitle": "Thống kê tháng này",
+    "cols": {
+      "date": "Ngày",
+      "checkIn": "Giờ vào",
+      "checkOut": "Giờ ra",
+      "workHours": "Số giờ",
+      "status": "Trạng thái",
+      "employee": "Nhân viên"
+    },
+    "statusLabels": {
+      "PRESENT": "Đúng giờ",
+      "LATE": "Đi muộn",
+      "HALF_DAY": "Nửa ngày",
+      "ABSENT": "Vắng mặt",
+      "OVERTIME": "Tăng ca",
+      "INCOMPLETE": "Chưa đủ"
+    },
+    "msgCheckInSuccess": "Chấm công vào thành công!",
+    "msgCheckOutSuccess": "Chấm công ra thành công!",
+    "msgCheckInError": "Không thể chấm công vào. Bạn có thể đã chấm công hôm nay rồi.",
+    "msgCheckOutError": "Không thể chấm công ra. Bạn cần chấm công vào trước.",
+    "confirmCheckIn": "Xác nhận chấm công vào lúc này?",
+    "confirmCheckOut": "Xác nhận chấm công ra lúc này?",
+    "confirmCheckInBeforeWindow": "Ngoài giờ chấm công vào (chỉ cho phép từ 07:30 đến 23:59).",
+    "confirmCheckOutAfterWindow": "Ngoài giờ chấm công ra (sau 23:59). Hệ thống sẽ tự động chốt.",
+    "confirmCheckOutEarly": "Chấm công ra trước 15:30 — xác nhận?",
+    "confirmCheckOutEarlyDesc": "Sẽ được tính là HALF_DAY (off nửa buổi).",
+    "warnCheckoutEarly": "Bạn đang chấm công ra trước 15:30 — sẽ tính HALF_DAY",
+    "warnHalfDayAbsent": "Đã quá 12:30 mà chưa chấm công vào — sẽ tính HALF_DAY nếu tiếp tục vắng.",
+    "warnAbsent": "Đã quá 13:30 mà chưa chấm công vào — ngày hôm nay tính ABSENT.",
+    "msgCheckOutOvertime": "Chấm công ra ghi nhận OVERTIME — tổng {{hours}}h.",
+    "msgCheckOutEarlyHalf": "Chấm công ra trước 15:30 — tính HALF_DAY."
   },
   "onb": {
     "cardTitle": "Quy trình Onboarding",
@@ -291,7 +342,13 @@
       "SUBMITTED": "Đã nộp",
       "APPROVED": "Đã duyệt",
       "REJECTED": "Bị từ chối"
-    }
+    },
+    "prefillTitle": "Tuần này chưa có khai báo giờ công",
+    "prefillDesc": "Đã có {{count}} ngày chấm công — muốn tự động thêm 8h/ngày vào giờ công để đối soát?",
+    "prefillAccept": "Chấp nhận",
+    "prefillAccepted": "Đã thêm các dòng pre-fill, bạn có thể chỉnh project/task và lưu.",
+    "reconciliationTitle": "Đối soát giờ công: khai {{declared}}h / dự kiến {{target}}h",
+    "reconciliationWarning": "Có {{count}} cảnh báo đối soát — kiểm tra trước khi submit."
   },
   "leave": {
     "cardTitle": "Đơn xin nghỉ phép (Leave Requests)",
