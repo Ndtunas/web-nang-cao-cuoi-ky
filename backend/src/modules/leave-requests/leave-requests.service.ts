@@ -163,10 +163,10 @@ export class LeaveRequestsService {
     const leave = await this.leaveRequestRepository.findOne({
       where: { id: leaveId },
     });
-    if (leave) {
-      leave.status = 'APPROVED';
-      return this.leaveRequestRepository.save(leave);
+    if (!leave) {
+      throw new BusinessException('ERR_UNKNOWN', { leaveId });
     }
-    return leave as unknown as LeaveRequest;
+    leave.status = 'APPROVED';
+    return this.leaveRequestRepository.save(leave);
   }
 }

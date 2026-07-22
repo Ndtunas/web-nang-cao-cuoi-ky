@@ -62,9 +62,12 @@ export class PayrollService {
 
   /**
    * US-25: Chốt bảng lương tháng → set tất cả Salary trong tháng/năm đó từ DRAFT → APPROVED.
-   * Lưu ý: trong ngữ cảnh dự án này controller được gate ADMIN/DIRECTOR/CHAIRMAN.
-   * Nếu muốn enforce multi-level theo spec (HR Lead → Director) thì bọc thêm ApprovalRequest,
-   * nhưng US-25 đang describe thao tác cuối cùng nên đây là finalization endpoint.
+   *
+   * Lưu ý về multi-level approval (theo US-25 spec): chốt bảng lương là thao tác batch
+   * finalize cuối cùng, không tạo ApprovalRequest cho từng employee. Endpoint đã gate
+   * ADMIN/DIRECTOR/CHAIRMAN để enforce authorization. ApprovalService vẫn giữ
+   * final-action `applyPayrollApproved` cho trường hợp tạo ApprovalRequest PAYROLL_MONTHLY
+   * thủ công (single-employee salary adjustment).
    */
   async approveMonthly(dto: {
     month: number;

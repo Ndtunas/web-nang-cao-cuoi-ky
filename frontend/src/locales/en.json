@@ -75,10 +75,14 @@
     },
     "timesheet": {
       "alreadyApproved": "Weekly timesheet has already been approved and cannot be edited.",
+      "notFound": "The requested timesheet was not found.",
       "noEntriesToSubmit": "No work hours to submit. Please enter at least one work entry."
     },
     "payroll": {
       "alreadyFinalized": "Monthly payroll has been finalized and cannot be recalculated."
+    },
+    "common": {
+      "notFound": "Requested resource was not found."
     },
     "network": {
       "fetchFailed": "Cannot reach the server. Please try again later."
@@ -178,7 +182,8 @@
     "viewAll": "View All",
     "noPending": "No pending approval requests",
     "noDepartments": "No department breakdown available",
-    "submittedBy": "by"
+    "submittedBy": "by",
+    "errorLoad": "Failed to load dashboard data. Please retry."
   },
   "directory": {
     "tabs": {

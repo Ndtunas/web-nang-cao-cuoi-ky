@@ -75,10 +75,14 @@
     },
     "timesheet": {
       "alreadyApproved": "Bảng Timesheet tuần đã được phê duyệt, không thể chỉnh sửa.",
+      "notFound": "Không tìm thấy bảng Timesheet yêu cầu.",
       "noEntriesToSubmit": "Không có giờ công nào để nộp. Vui lòng nhập ít nhất một dòng công việc."
     },
     "payroll": {
       "alreadyFinalized": "Bảng lương tháng đã chốt phê duyệt, không thể tính toán lại."
+    },
+    "common": {
+      "notFound": "Không tìm thấy tài nguyên yêu cầu."
     },
     "network": {
       "fetchFailed": "Không thể kết nối tới máy chủ. Vui lòng thử lại sau."
@@ -178,7 +182,8 @@
     "viewAll": "Xem tất cả",
     "noPending": "Không có yêu cầu chờ duyệt nào",
     "noDepartments": "Chưa có dữ liệu cơ cấu phòng ban",
-    "submittedBy": "bởi"
+    "submittedBy": "bởi",
+    "errorLoad": "Lỗi khi tải dữ liệu Dashboard. Vui lòng thử lại."
   },
   "directory": {
     "tabs": {

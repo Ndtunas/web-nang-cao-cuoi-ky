@@ -172,7 +172,8 @@ function AppContent() {
         setPendingApprovals(pending);
       }
     } catch (e) {
-      console.error(e);
+      const msg = e?.i18nKey ? t(e.i18nKey) : t('dashboard.errorLoad');
+      message.error(msg);
     } finally {
       setTableLoading(prev => ({ ...prev, DASHBOARD: false }));
     }

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Card, Table, Button, Modal, Input, Tag, Space, message, Popconfirm, Form,
+  Card, Table, Button, Modal, Input, Tag, message, Popconfirm, Form,
 } from 'antd';
 import { LogoutOutlined, ReloadOutlined, CheckOutlined } from '@ant-design/icons';
 import { api } from '../api.js';
@@ -42,6 +42,7 @@ export default function Offboarding({ t, role }) {
       message.success(t('common.successCreate'));
       setModalOpen(false);
       form.resetFields();
+      await load();
     } catch (e) {
       if (e?.errorFields) return; // antd validation error
       const msg = e?.i18nKey ? t(e.i18nKey) : t('common.errorResign');
