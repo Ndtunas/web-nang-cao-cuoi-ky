@@ -32,6 +32,7 @@ export const BUSINESS_ERROR_MAP: Record<string, { statusCode: number; i18nKey: s
   ERR_APPROVAL_003: { statusCode: 404, i18nKey: 'error.approval.requestNotFound' },
   ERR_APPROVAL_004: { statusCode: 400, i18nKey: 'error.approval.invalidRequestData' },
   ERR_TIMESHEET_001: { statusCode: 400, i18nKey: 'error.timesheet.alreadyApproved' },
+  ERR_TIMESHEET_003: { statusCode: 400, i18nKey: 'error.timesheet.noEntriesToSubmit' },
   ERR_PAYROLL_001: { statusCode: 400, i18nKey: 'error.payroll.alreadyFinalized' },
 };
 
