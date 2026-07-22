@@ -30,19 +30,23 @@ export class TimesheetsService {
     const employee = await this.employeeRepository.findOne({ where: { userId } });
     if (!employee) throw new BusinessException('ERR_AUTH_001');
 
-    let timesheet = await this.timesheetRepository.findOne({
-      where: { employeeId: employee.id, weekNumber, year },
-    });
+    // Calculate start and end date of the week
+    const janFirst = new Date(year, 0, 1);
+    const dayOfWeek = janFirst.getDay();
+    const offset = (weekNumber - 1) * 7 - (dayOfWeek === 0 ? 6 : dayOfWeek - 1);
+    const startDate = new Date(janFirst);
+    startDate.setDate(janFirst.getDate() + offset);
+    const endDate = new Date(startDate);
+    endDate.setDate(startDate.getDate() + 6);
 
-    if (!timesheet) {
-      // Calculate start and end date of the week
-      const janFirst = new Date(year, 0, 1);
-      const days = (weekNumber - 1) * 7;
-      const startDate = new Date(janFirst.setDate(janFirst.getDate() + days - janFirst.getDay() + 1));
-      const endDate = new Date(startDate);
-      endDate.setDate(startDate.getDate() + 6);
+    // Use upsert to avoid race condition - only insert if not exists
+    const timesheetCode = `TS-${employee.empCode}-W${weekNumber.toString().padStart(2, '0')}-${year}`;
 
-      timesheet = this.timesheetRepository.create({
+    await this.timesheetRepository
+      .createQueryBuilder()
+      .insert()
+      .into(Timesheet)
+      .values({
         employeeId: employee.id,
         weekNumber,
         year,
@@ -51,12 +55,18 @@ export class TimesheetsService {
         totalNormalHours: 0,
         totalOtHours: 0,
         status: 'DRAFT',
-      });
-      timesheet = await this.timesheetRepository.save(timesheet);
-    }
+        timesheetCode,
+      })
+      .orIgnore() // PostgreSQL: INSERT ... ON CONFLICT DO NOTHING
+      .execute();
+
+    // Fetch the timesheet (either newly created or existing)
+    const timesheet = await this.timesheetRepository.findOne({
+      where: { employeeId: employee.id, weekNumber, year },
+    });
 
     const entries = await this.timesheetEntryRepository.find({
-      where: { timesheetId: timesheet.id },
+      where: { timesheetId: timesheet!.id },
       relations: { project: true, task: true },
     });
 
@@ -70,70 +80,76 @@ export class TimesheetsService {
   }
 
   async saveEntries(userId: string, dto: any): Promise<any> {
-    const employee = await this.employeeRepository.findOne({ where: { userId } });
-    if (!employee) throw new BusinessException('ERR_AUTH_001');
+    try {
+      const employee = await this.employeeRepository.findOne({ where: { userId } });
+      if (!employee) throw new BusinessException('ERR_TIMESHEET_002'); // Không tìm thấy hồ sơ nhân viên
 
-    const firstEntry = dto.entries[0];
-    if (!firstEntry) return { success: true };
+      console.log('[saveEntries] dto.entries length:', dto?.entries?.length);
+      const firstEntry = dto.entries?.[0];
+      if (!firstEntry) return { success: true };
 
-    const timesheet = await this.timesheetRepository.findOne({
-      where: { id: firstEntry.timesheetId },
-    });
-    if (!timesheet) throw new BusinessException('ERR_UNKNOWN');
-
-    // Rule: Cannot update if already approved or pending (ERR_TIMESHEET_001)
-    if (timesheet.status !== 'DRAFT' && timesheet.status !== 'REJECTED') {
-      throw new BusinessException('ERR_TIMESHEET_001');
-    }
-
-    // Delete existing entries
-    await this.timesheetEntryRepository.delete({ timesheetId: timesheet.id });
-
-    // Save new entries and compute totals
-    let totalNormal = 0;
-    let totalOt = 0;
-
-    for (const ent of dto.entries) {
-      let rate = 1.0;
-      if (ent.workType === 'OT_WEEKDAY') rate = 1.5;
-      else if (ent.workType === 'OT_WEEKEND') rate = 2.0;
-      else if (ent.workType === 'OT_HOLIDAY') rate = 3.0;
-      else if (ent.workType === 'NIGHT_SHIFT') rate = 1.3;
-
-      const entry = this.timesheetEntryRepository.create({
-        timesheetId: timesheet.id,
-        projectId: ent.projectId,
-        taskId: ent.taskId,
-        entryDate: new Date(ent.entryDate),
-        hoursSpent: parseFloat(ent.hoursSpent),
-        workType: ent.workType,
-        appliedRate: rate,
-        description: ent.description,
+      const timesheet = await this.timesheetRepository.findOne({
+        where: { id: firstEntry.timesheetId },
       });
-      await this.timesheetEntryRepository.save(entry);
+      if (!timesheet) throw new BusinessException('ERR_UNKNOWN');
 
-      if (ent.workType === 'NORMAL') {
-        totalNormal += parseFloat(ent.hoursSpent);
-      } else {
-        totalOt += parseFloat(ent.hoursSpent);
+      // Rule: Cannot update if already approved or pending (ERR_TIMESHEET_001)
+      if (timesheet.status !== 'DRAFT' && timesheet.status !== 'REJECTED') {
+        throw new BusinessException('ERR_TIMESHEET_001');
       }
+
+      // Delete existing entries
+      await this.timesheetEntryRepository.delete({ timesheetId: timesheet.id });
+
+      // Save new entries and compute totals
+      let totalNormal = 0;
+      let totalOt = 0;
+
+      for (const ent of dto.entries) {
+        let rate = 1.0;
+        if (ent.workType === 'OT_WEEKDAY') rate = 1.5;
+        else if (ent.workType === 'OT_WEEKEND') rate = 2.0;
+        else if (ent.workType === 'OT_HOLIDAY') rate = 3.0;
+        else if (ent.workType === 'NIGHT_SHIFT') rate = 1.3;
+
+        const entry = this.timesheetEntryRepository.create({
+          timesheetId: timesheet.id,
+          projectId: ent.projectId,
+          taskId: ent.taskId,
+          entryDate: new Date(ent.entryDate),
+          hoursSpent: parseFloat(ent.hoursSpent),
+          workType: ent.workType,
+          appliedRate: rate,
+          description: ent.description,
+        });
+        await this.timesheetEntryRepository.save(entry);
+
+        if (ent.workType === 'NORMAL') {
+          totalNormal += parseFloat(ent.hoursSpent);
+        } else {
+          totalOt += parseFloat(ent.hoursSpent);
+        }
+      }
+
+      timesheet.totalNormalHours = totalNormal;
+      timesheet.totalOtHours = totalOt;
+      await this.timesheetRepository.save(timesheet);
+
+      const savedEntries = await this.timesheetEntryRepository.find({
+        where: { timesheetId: timesheet.id },
+        relations: { project: true, task: true },
+      });
+
+      return { timesheet, entries: savedEntries };
+    } catch (e) {
+      console.error('[saveEntries] Error:', e);
+      throw e;
     }
-
-    timesheet.totalNormalHours = totalNormal;
-    timesheet.totalOtHours = totalOt;
-    await this.timesheetRepository.save(timesheet);
-
-    const savedEntries = await this.timesheetEntryRepository.find({
-      where: { timesheetId: timesheet.id },
-      relations: { project: true, task: true },
-    });
-
-    return { timesheet, entries: savedEntries };
   }
 
   async submit(id: string, userId: string): Promise<Timesheet> {
     const employee = await this.employeeRepository.findOne({ where: { userId } });
-    if (!employee) throw new BusinessException('ERR_AUTH_001');
+    if (!employee) throw new BusinessException('ERR_TIMESHEET_002');
 
     const timesheet = await this.timesheetRepository.findOne({ where: { id } });
     if (!timesheet) throw new BusinessException('ERR_UNKNOWN');
