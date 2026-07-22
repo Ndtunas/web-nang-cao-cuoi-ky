@@ -44,6 +44,7 @@
 | ERR_EMP_002 | error.employee.cannotTransferNoticePeriod | 400 |
 | ERR_LEAVE_001 | error.leave.insufficientBalance | 400 |
 | ERR_LEAVE_002 | error.leave.invalidDateRange | 400 |
+| ERR_LEAVE_003 | error.leave.cannotCancel | 400 |
 | ERR_APPROVAL_001 | error.approval.unauthorizedLevel | 403 |
 | ERR_APPROVAL_002 | error.approval.alreadyRejected | 400 |
 | ERR_APPROVAL_003 | error.approval.requestNotFound | 404 |
@@ -74,6 +75,10 @@
     - SALARY_ADJUSTMENT: lưu SalaryHistory làm audit
     - TIMESHEET: status → APPROVED
     - PAYROLL_MONTHLY: status → APPROVED
+    - LEAVE_SHORT / LEAVE_LONG: LeaveRequest.status → APPROVED
+    - PERSONAL_INFO_CHANGE: no-op (data đã commit ở updatePersonalInfo)
+    - DISCIPLINE_REWARD: no-op (audit đã capture)
+    - OFFBOARDING: Employee.status → TERMINATED + endDate = today, seed 3 OffboardingTask (IT / Admin / Dept)
 - [ ] Khi reject ở bất kỳ level nào → status = REJECTED + revert target (nếu có)
 - [ ] Ghi ApprovalStepHistory mỗi lần approve/reject
 ```
@@ -232,17 +237,40 @@ npm test
 | timesheets | ✅ 100% | CRUD + approve/reject + ot-summary |
 | approval | ✅ 100% | Engine + DB-driven levels + final actions |
 | employees | ✅ 100% | 4 groups + history + promote |
-| payroll | ⚠️ 90% | calculate + salaries OK; missing /:id/approve + /my-payslip |
+| payroll | ⚠️ 95% | + calculate + salaries + approve + my-payslip (US-25/26) |
 | departments | ⚠️ 90% | thiếu POST/PATCH/DELETE (chỉ GET) |
 | positions | ⚠️ 90% | thiếu POST/PATCH/DELETE |
 | **projects** | ✅ 100% | CRUD + tasks + labor-hours |
 | attendance | ❌ 0% | Module TRỐNG (chưa làm) |
-| leave-requests | ❌ 0% | Module TRỐNG (chưa làm) |
-| onboarding | ❌ 0% | Module TRỐNG (chưa làm) |
-| offboarding | ❌ 0% | Module TRỐNG (chưa làm) |
+| **leave-requests** | ✅ 95% | submit + my-requests + cancel; auto-route 1-or-2 level theo số ngày (US-24a/b) |
+| **onboarding** | ✅ 95% | initiate + tasks cho HR/IT/Admin + promote (US-15..18) |
+| **offboarding** | ✅ 95% | resignation-request + tasks queue + auto create khi APPROVED (US-19..22) |
 | notifications | ❌ 0% | Module TRỐNG (chưa làm) |
-| **Frontend** | ⚠️ 85% | Dashboard hard-code; thiếu Onboarding/Offboarding tabs |
+| **Frontend** | ⚠️ 95% | + Dashboard live stats; + Leave / Onboarding / Offboarding tabs; + Payroll approve + my-payslip |
 
 ---
 
-Cập nhật lần cuối: 2026-07-22
+## 🆕 Cập Nhật Lần Cuối (2026-07-23)
+
+### P1 (4 commits) — fix sai nghiệp vụ đã có
+1. **`feat(approval)`**: wire 4 final-action — LEAVE_SHORT/LONG, PERSONAL_INFO_CHANGE, DISCIPLINE_REWARD, OFFBOARDING.
+2. **`feat(payroll)`**: `PATCH /payroll/approve` (finalize month) + `GET /payroll/my-payslip`.
+3. **`i18n(frontend)`**: route ~12 hardcoded strings qua vi/en locale (App.jsx, Login.jsx, Timesheets.jsx, AuditLogs.jsx).
+4. **`feat(dashboard)`**: `GET /employees/stats` (DB-driven stats) → Dashboard số liệu thật thay mock.
+
+### P2 (3 commits) — wire 5 module lớn end-to-end
+5. **`feat(leave)`**: leave-requests service + DTO + frontend tab (US-24a/b).
+6. **`feat(offboarding)`**: resignation flow + task queue + auto-Terminated khi duyệt (US-19..22).
+7. **`feat(onboarding)`**: initiate + tasks cho HR/IT/Admin + promotion OFFICIAL (US-15..18).
+
+**Coverage hiện tại: 23/26 USR end-to-end (88%)**
+- US-01..14 ✅
+- US-15..22 ✅ (mới P2)
+- US-23a..d ✅
+- US-24a..b ✅ (mới P2)
+- US-25..26 ✅ (mới P1)
+- ❌ Còn: notifications (US-14 đã có logic noti mức ApprovalService, thiếu bell icon/panel UI).
+
+---
+
+Cập nhật lần cuối: 2026-07-23
