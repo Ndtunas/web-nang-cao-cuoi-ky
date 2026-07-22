@@ -5,7 +5,7 @@ import { LockOutlined, UserOutlined, GlobalOutlined } from '@ant-design/icons';
 
 const { Title, Text } = Typography;
 
-export default function Login({ onLogin }) {
+export default function Login({ onLogin, loading }) {
   const { t, i18n } = useTranslation();
 
   const toggleLanguage = () => {
@@ -104,7 +104,7 @@ export default function Login({ onLogin }) {
               </Form.Item>
 
               <Form.Item style={{ marginBottom: 0 }}>
-                <Button type="primary" htmlType="submit" block size="large" style={{
+                <Button type="primary" htmlType="submit" block size="large" loading={loading} style={{
                   background: 'linear-gradient(135deg, #6366f1 0%, #a855f7 100%)',
                   border: 'none',
                   fontWeight: 600,

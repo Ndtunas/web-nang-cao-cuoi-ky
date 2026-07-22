@@ -348,3 +348,40 @@ body {
   background: rgba(99, 102, 241, 0.2);
   border-color: var(--primary-accent);
 }
+
+/* ===== Global Modal sizing =====
+ * - Width set per-modal via ConfigProvider theme.components.Modal
+ * - Body constrained to 80vh and scrolls when content exceeds it
+ * - On small screens (<768px) fall back to 95vw
+ */
+.ant-modal {
+  max-width: calc(100vw - 32px);
+}
+
+.ant-modal-body {
+  max-height: 80vh;
+  overflow-y: auto;
+  padding: 24px !important;
+}
+
+@media (max-width: 768px) {
+  .ant-modal-body {
+    max-height: 75vh;
+    padding: 16px !important;
+  }
+}
+
+/* Pretty scrollbar inside modal body for dark theme */
+.ant-modal-body::-webkit-scrollbar {
+  width: 8px;
+}
+.ant-modal-body::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+}
+.ant-modal-body::-webkit-scrollbar-thumb {
+  background: rgba(99, 102, 241, 0.4);
+  border-radius: 4px;
+}
+.ant-modal-body::-webkit-scrollbar-thumb:hover {
+  background: rgba(99, 102, 241, 0.6);
+}
