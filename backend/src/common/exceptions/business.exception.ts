@@ -21,6 +21,8 @@ import type { BusinessErrorPayload } from '../enums/business-values.js';
  * - ERR_TIMESHEET_001 (400) → error.timesheet.alreadyApproved
  * - ERR_TIMESHEET_003 (400) → error.timesheet.noEntriesToSubmit
  * - ERR_PAYROLL_001 (400) → error.payroll.alreadyFinalized
+ * - ERR_ATT_001 (400) → error.attendance.outsideCheckInWindow
+ * - ERR_ATT_002 (400) → error.attendance.outsideCheckOutWindow
  */
 
 /** Bảng ánh xạ Error Code → i18nKey + HTTP Status */
@@ -76,6 +78,14 @@ export const BUSINESS_ERROR_MAP: Record<
   ERR_PAYROLL_001: {
     statusCode: 400,
     i18nKey: 'error.payroll.alreadyFinalized',
+  },
+  ERR_ATT_001: {
+    statusCode: 400,
+    i18nKey: 'error.attendance.outsideCheckInWindow',
+  },
+  ERR_ATT_002: {
+    statusCode: 400,
+    i18nKey: 'error.attendance.outsideCheckOutWindow',
   },
   ERR_UNKNOWN: {
     statusCode: 404,
