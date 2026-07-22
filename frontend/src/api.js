@@ -26,18 +26,22 @@ async function request(url, options = {}) {
   try {
     const response = await fetch(`${BASE_URL}${url}`, config);
     
+    let result = {};
+    try {
+      result = await response.json();
+    } catch (e) {
+      // ignore json parse errors
+    }
+
     // Handle unauthorized (expired token, etc.)
     if (response.status === 401) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      // Redirect to login or reload page
-      if (window.location.pathname !== '/login') {
+      // Redirect to login or reload page (skip for login attempts)
+      if (!url.includes('/auth/login') && window.location.pathname !== '/login') {
         window.location.reload();
       }
-      throw new Error('Unauthorized');
     }
-
-    const result = await response.json();
 
     if (!response.ok) {
       // Return custom backend error format
