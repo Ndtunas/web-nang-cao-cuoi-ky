@@ -5,6 +5,10 @@ export const employeesService = {
     return request('/employees');
   },
 
+  async getStats() {
+    return request('/employees/stats');
+  },
+
   async create(employeeData) {
     return request('/employees', {
       method: 'POST',

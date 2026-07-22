@@ -25,6 +25,11 @@ export class EmployeesController {
     return this.employeesService.findAll();
   }
 
+  @Get('stats')
+  async getStats() {
+    return this.employeesService.getStats();
+  }
+
   @Post()
   @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.DEPT_LEAD)

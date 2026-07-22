@@ -56,6 +56,73 @@ export class EmployeesService {
     });
   }
 
+  /**
+   * Thống kê nhân sự cho Dashboard.
+   * - totalEmployees: tổng số hồ sơ
+   * - activeEmployees: đang làm việc (status OFFICIAL | PROBATION)
+   * - onLeave: đang trong thời gian báo trước (NOTICE_PERIOD)
+   * - newHires: tuyển mới trong tháng hiện tại (joinDate trong tháng)
+   * - departments: GROUP BY department, đếm nhân viên và tính % so với tổng
+   */
+  async getStats(): Promise<{
+    totalEmployees: number;
+    activeEmployees: number;
+    onLeave: number;
+    newHires: number;
+    departments: Array<{ id: string; name: string; count: number; percent: number }>;
+  }> {
+    const employees = await this.employeeRepository.find({
+      relations: { department: true },
+    });
+    const total = employees.length;
+
+    const now = new Date();
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+
+    const active = employees.filter(
+      (e) => e.status === EmployeeStatus.OFFICIAL || e.status === EmployeeStatus.PROBATION,
+    ).length;
+
+    const onLeave = employees.filter(
+      (e) => e.status === EmployeeStatus.NOTICE_PERIOD,
+    ).length;
+
+    const newHires = employees.filter((e) => {
+      const j = e.joinDate ? new Date(e.joinDate) : null;
+      return j && j >= monthStart && j < monthEnd;
+    }).length;
+
+    const deptMap = new Map<string, { id: string; name: string; count: number }>();
+    for (const e of employees) {
+      const dept = e.department;
+      const id = dept?.id ?? 'UNASSIGNED';
+      const name = dept?.name ?? 'Chưa phân phòng';
+      const existing = deptMap.get(id);
+      if (existing) {
+        existing.count += 1;
+      } else {
+        deptMap.set(id, { id, name, count: 1 });
+      }
+    }
+    const departments = Array.from(deptMap.values())
+      .map((d) => ({
+        id: d.id,
+        name: d.name,
+        count: d.count,
+        percent: total > 0 ? Math.round((d.count / total) * 100) : 0,
+      }))
+      .sort((a, b) => b.count - a.count);
+
+    return {
+      totalEmployees: total,
+      activeEmployees: active,
+      onLeave,
+      newHires,
+      departments,
+    };
+  }
+
   async create(dto: any): Promise<Employee> {
     // 1. Check if email exists
     const existing = await this.employeeRepository.findOne({
