@@ -9,6 +9,7 @@ import { Position } from '../../entities/position.entity.js';
 import { JobHistory } from '../../entities/job-history.entity.js';
 import { SalaryHistory } from '../../entities/salary-history.entity.js';
 import { ApprovalRequest } from '../../entities/approval-request.entity.js';
+import { ApprovalConfig } from '../../entities/approval-config.entity.js';
 
 @Module({
   imports: [
@@ -19,8 +20,9 @@ import { ApprovalRequest } from '../../entities/approval-request.entity.js';
       Position,
       JobHistory,
       SalaryHistory,
-      ApprovalRequest
-    ])
+      ApprovalRequest,
+      ApprovalConfig,
+    ]),
   ],
   controllers: [EmployeesController],
   providers: [EmployeesService],
