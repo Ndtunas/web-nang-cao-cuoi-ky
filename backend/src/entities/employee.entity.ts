@@ -50,6 +50,9 @@ export class Employee {
   @Column({ type: 'varchar', length: 20, nullable: true, name: 'tax_code' })
   taxCode: string;
 
+  @Column({ type: 'varchar', length: 50, nullable: true, name: 'bank_name' })
+  bankName: string;
+
   @Column({ type: 'varchar', length: 50, nullable: true, name: 'bank_account' })
   bankAccount: string;
 
