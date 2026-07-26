@@ -214,6 +214,7 @@ CREATE TABLE IF NOT EXISTS employees (
   dob DATE,
   address TEXT,
   tax_code VARCHAR(20),
+  bank_name VARCHAR(50),
   bank_account VARCHAR(50),
   join_date DATE NOT NULL DEFAULT CURRENT_DATE,
   end_date DATE,

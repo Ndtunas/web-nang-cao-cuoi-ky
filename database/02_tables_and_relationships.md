@@ -11,7 +11,7 @@ Tài liệu này mô tả chi tiết danh sách **21 Bảng CSDL**, sử dụng 
 - **Constraints:** `CHECK (role IN ('ADMIN', 'CHAIRMAN', 'DIRECTOR', 'DEPT_LEAD', 'EMPLOYEE'))`.
 
 ### 2. `employees` (Hồ sơ nhân viên - Thực thể Trung tâm)
-- **Columns:** `id` (BIGINT - Snowflake ID, PK), `emp_code` (VARCHAR(30), UNIQUE - Sinh tự động theo quy tắc `Tên + Viết tắt Họ/Lót + Num` ví dụ: `BaoLM`, `BaoLM2`), `full_name` (VARCHAR(100)), `email` (VARCHAR(100), UNIQUE), `phone` (VARCHAR(20)), `gender` (VARCHAR(10)), `dob` (DATE), `address` (TEXT), `tax_code` (VARCHAR(20)), `bank_account` (VARCHAR(50)), `join_date` (DATE), `end_date` (DATE), `status` (VARCHAR(20)), `department_id` (BIGINT, FK -> `departments.id`), `position_id` (BIGINT, FK -> `positions.id`), `user_id` (BIGINT, FK -> `users.id`, UNIQUE), `created_at` (TIMESTAMP), `updated_at` (TIMESTAMP).
+- **Columns:** `id` (BIGINT - Snowflake ID, PK), `emp_code` (VARCHAR(30), UNIQUE - Sinh tự động theo quy tắc `Tên + Viết tắt Họ/Lót + Num` ví dụ: `BaoLM`, `BaoLM2`), `full_name` (VARCHAR(100)), `email` (VARCHAR(100), UNIQUE), `phone` (VARCHAR(20)), `gender` (VARCHAR(10)), `dob` (DATE), `address` (TEXT), `tax_code` (VARCHAR(20)), `bank_name` (VARCHAR(50)), `bank_account` (VARCHAR(50)), `join_date` (DATE), `end_date` (DATE), `status` (VARCHAR(20)), `department_id` (BIGINT, FK -> `departments.id`), `position_id` (BIGINT, FK -> `positions.id`), `user_id` (BIGINT, FK -> `users.id`, UNIQUE), `created_at` (TIMESTAMP), `updated_at` (TIMESTAMP).
 - **Constraints:** `CHECK (status IN ('ONBOARDING', 'PROBATION', 'OFFICIAL', 'SUSPENDED', 'NOTICE_PERIOD', 'TERMINATED'))`.
 
 ### 3. `system_audit_logs` (Nhật ký lưu vết giao dịch - Admin Check)
