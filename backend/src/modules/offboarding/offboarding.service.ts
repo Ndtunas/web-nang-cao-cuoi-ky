@@ -126,4 +126,86 @@ export class OffboardingService {
     });
     return tasks.length > 0 && tasks.every((t) => t.status === 'COMPLETED');
   }
+
+  /**
+   * US-21: Lấy task offboarding theo phòng ban của requester.
+   * Map deptCode → targetDepartment tương ứng.
+   */
+  async getTasksForRequesterDepartment(
+    requesterUserId: string,
+  ): Promise<OffboardingTask[]> {
+    const requesterEmp = await this.employeeRepository.findOne({
+      where: { userId: requesterUserId },
+      relations: { department: true },
+    });
+    if (!requesterEmp?.department) return [];
+    const deptCode = requesterEmp.department.deptCode;
+    const targetDept = deptCode; // HR/IT/ADMIN map 1-1 với targetDepartment
+    return this.offboardingTaskRepository.find({
+      where: { targetDepartment: targetDept, status: 'PENDING' },
+      relations: { employee: true },
+      order: { createdAt: 'ASC' },
+    });
+  }
+
+  /**
+   * US-22: Quyết toán & chốt TERMINATED cho nhân viên.
+   * Tính: netSettlement = severanceAmount + unusedLeaveDays * dailyRate.
+   * Đặt Employee.status = TERMINATED, endDate = lastWorkingDay.
+   */
+  async finalSettlement(dto: {
+    employeeId: string;
+    lastWorkingDay: string | Date;
+    unusedLeaveDays: number;
+    severanceAmount: number;
+  }): Promise<{
+    employee: Employee;
+    netSettlement: number;
+    breakdown: {
+      severance: number;
+      unusedLeaveCompensation: number;
+      dailyRate: number;
+    };
+  }> {
+    const employee = await this.employeeRepository.findOne({
+      where: { id: dto.employeeId },
+      relations: { department: true, position: true, user: true },
+    });
+    if (!employee) throw new BusinessException('ERR_AUTH_003');
+
+    // Estimate dailyRate từ base salary (Position.baseSalaryRatio * 15M / 22 ngày)
+    const baseSalary = 15000000 * (Number(employee.position?.baseSalaryRatio ?? 1));
+    const dailyRate = baseSalary / 22.0;
+
+    const unusedLeaveComp = Math.max(0, dto.unusedLeaveDays) * dailyRate;
+    const severance = Math.max(0, dto.severanceAmount);
+    const netSettlement = unusedLeaveComp + severance;
+
+    employee.status = EmployeeStatus.TERMINATED;
+    employee.endDate = dto.lastWorkingDay
+      ? new Date(dto.lastWorkingDay)
+      : new Date();
+    const saved = await this.employeeRepository.save(employee);
+
+    // Khóa user account (set status INACTIVE để không login được nữa)
+    if (saved.userId) {
+      const user = await this.userRepository.findOne({
+        where: { id: saved.userId },
+      });
+      if (user) {
+        user.status = 'INACTIVE';
+        await this.userRepository.save(user);
+      }
+    }
+
+    return {
+      employee: saved,
+      netSettlement,
+      breakdown: {
+        severance,
+        unusedLeaveCompensation: unusedLeaveComp,
+        dailyRate,
+      },
+    };
+  }
 }

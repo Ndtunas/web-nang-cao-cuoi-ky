@@ -54,6 +54,21 @@ export class OffboardingController {
     return this.offboardingService.getAllPendingTasks();
   }
 
+  /**
+   * US-21: Lấy task theo phòng ban của requester (HR/IT/ADMIN).
+   */
+  @Get('tasks/my-department')
+  @Roles(
+    UserRole.EMPLOYEE,
+    UserRole.DEPT_LEAD,
+    UserRole.DIRECTOR,
+    UserRole.CHAIRMAN,
+    UserRole.ADMIN,
+  )
+  async getTasksByMyDepartment(@CurrentUser() user: User) {
+    return this.offboardingService.getTasksForRequesterDepartment(user.id);
+  }
+
   @Patch('tasks/:taskId/complete')
   @Roles(
     UserRole.ADMIN,
@@ -78,5 +93,22 @@ export class OffboardingController {
   async checkCompleted(@Param('employeeId') employeeId: string) {
     const done = await this.offboardingService.checkAllCompleted(employeeId);
     return { allCompleted: done };
+  }
+
+  /**
+   * US-22: Quyết toán + chốt TERMINATED. HR/Admin only.
+   */
+  @Post('final-settlement')
+  @Roles(UserRole.ADMIN, UserRole.DEPT_LEAD)
+  async finalSettlement(
+    @Body()
+    dto: {
+      employeeId: string;
+      lastWorkingDay: string;
+      unusedLeaveDays: number;
+      severanceAmount: number;
+    },
+  ) {
+    return this.offboardingService.finalSettlement(dto);
   }
 }

@@ -39,13 +39,9 @@ export class EmployeesController {
 
   @Patch(':id/personal-info')
   @UseGuards(RolesGuard)
-  @Roles(UserRole.ADMIN, UserRole.DEPT_LEAD, UserRole.EMPLOYEE)
-  async submitPersonalInfoChange(
-    @Param('id') id: string,
-    @Body() dto: any,
-    @CurrentUser() user: User,
-  ) {
-    return this.employeesService.submitPersonalInfoChange(id, dto, user.id);
+  @Roles(UserRole.ADMIN, UserRole.DEPT_LEAD)
+  async updatePersonalInfo(@Param('id') id: string, @Body() dto: any) {
+    return this.employeesService.updatePersonalInfo(id, dto);
   }
 
   @Post('job-transfers')
@@ -90,3 +86,17 @@ export class EmployeesController {
     return this.employeesService.promoteToOfficial(id);
   }
 }
+  /**
+   * US-22: HR chốt TERMINATED thủ công cho nhân viên.
+   * (Thường đi kèm POST /offboarding/final-settlement nhưng có thể tách rời.)
+   */
+  @Patch(':id/terminate')
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.DEPT_LEAD)
+  async terminate(
+    @Param('id') id: string,
+    @Body() dto: { endDate?: string },
+  ) {
+    return this.employeesService.terminateEmployee(id, dto.endDate);
+  }
+
