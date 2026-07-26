@@ -42,7 +42,7 @@ export class LeaveRequestsService {
    * US-24a/b: Nộp đơn xin nghỉ phép.
    * - ≤ 2 ngày = LEAVE_SHORT → 1 cấp DEPT_LEAD
    * - > 2 ngày = LEAVE_LONG  → 2 cấp DEPT_LEAD → DIRECTOR
-   * Validation: balance check cho ANNUAL_LEAVE, SICK_LEAVE, COMPASSIONATE_LEAVE.
+   * Validation: balance check cho ANNUAL_LEAVE (trừ vào Employee.annualLeaveBalance).
    */
   async submitLeave(
     dto: SubmitLeaveDto,
@@ -61,12 +61,20 @@ export class LeaveRequestsService {
     const start = new Date(dto.startDate);
     const end = new Date(dto.endDate);
     if (isNaN(start.getTime()) || isNaN(end.getTime()) || end < start) {
-      throw new BusinessException('ERR_LEAVE_001');
+      throw new BusinessException('ERR_LEAVE_002');
     }
     const days = Math.floor((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
 
-    // Note: Annual leave balance tracking chưa có trong schema hiện tại;
-    // nếu mở rộng trong tương lai sẽ check `Employee.annualLeaveBalance` ở đây.
+    // Balance check cho ANNUAL_LEAVE (US-23a spec §3)
+    if (dto.leaveType === 'ANNUAL_LEAVE') {
+      const balance = employee.annualLeaveBalance ?? 12;
+      if (days > balance) {
+        throw new BusinessException('ERR_LEAVE_001', {
+          requestedDays: days,
+          remainingDays: balance,
+        });
+      }
+    }
 
     const txType =
       days <= 2 ? TransactionType.LEAVE_SHORT : TransactionType.LEAVE_LONG;

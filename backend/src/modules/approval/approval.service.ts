@@ -476,6 +476,27 @@ export class ApprovalService {
       if (leave) {
         leave.status = 'REJECTED';
         await this.leaveRequestRepository.save(leave);
+
+        // Cộng lại annual leave balance nếu là ANNUAL_LEAVE
+        // (chỉ có hiệu lực khi balance đã được pre-deducted; hiện tại
+        //  applyLeaveApproved mới trừ nên reject sau khi approve sẽ refund.
+        //  Reject trước khi approve: chưa trừ → không cần cộng.)
+        const days =
+          Math.floor(
+            (new Date(leave.endDate).getTime() -
+              new Date(leave.startDate).getTime()) /
+              (1000 * 60 * 60 * 24),
+          ) + 1;
+        if (leave.leaveType === 'ANNUAL_LEAVE') {
+          const employee = await this.employeeRepository.findOne({
+            where: { id: leave.employeeId },
+          });
+          if (employee) {
+            const balance = employee.annualLeaveBalance ?? 12;
+            employee.annualLeaveBalance = balance + days;
+            await this.employeeRepository.save(employee);
+          }
+        }
       }
       return;
     }
@@ -586,6 +607,24 @@ export class ApprovalService {
 
     leave.status = 'APPROVED';
     await this.leaveRequestRepository.save(leave);
+
+    // Trừ annual leave balance nếu là ANNUAL_LEAVE (US-23a)
+    if (leave.leaveType === 'ANNUAL_LEAVE') {
+      const days =
+        Math.floor(
+          (new Date(leave.endDate).getTime() -
+            new Date(leave.startDate).getTime()) /
+            (1000 * 60 * 60 * 24),
+        ) + 1;
+      const employee = await this.employeeRepository.findOne({
+        where: { id: leave.employeeId },
+      });
+      if (employee) {
+        const balance = employee.annualLeaveBalance ?? 12;
+        employee.annualLeaveBalance = Math.max(0, balance - days);
+        await this.employeeRepository.save(employee);
+      }
+    }
   }
 
   /**
