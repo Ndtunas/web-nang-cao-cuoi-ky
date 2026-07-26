@@ -152,43 +152,53 @@ export default function Attendance({ t, isAdminView = false }) {
         />
       )}
 
-      <Row gutter={16} style={{ marginBottom: 16 }}>
+      <Row gutter={16} style={{ marginBottom: 16 }} align="stretch">
         <Col xs={24} md={8}>
-          <Card style={{ background: 'rgba(15, 23, 42, 0.6)' }}>
-            <Statistic
-              title={t('att.today')}
-              prefix={<ClockCircleOutlined />}
-              value={todayStatus ? todayStatus.status : (today?.status ?? '-')}
-              valueStyle={{ fontSize: 16 }}
-            />
-            {today && (
-              <div style={{ marginTop: 12, color: '#94a3b8' }}>
-                {t('att.cols.checkIn')}: {today.checkIn || '-'} |{' '}
-                {t('att.cols.checkOut')}: {today.checkOut || '-'}
-              </div>
-            )}
+          <Card style={{ background: 'rgba(15, 23, 42, 0.6)', height: '100%' }} bodyStyle={{ height: '100%' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
+              <Statistic
+                title={t('att.today')}
+                prefix={<ClockCircleOutlined />}
+                value={todayStatus ? todayStatus.status : (today?.status ?? '-')}
+                valueStyle={{ fontSize: 16 }}
+              />
+              {today && (
+                <div style={{ marginTop: 12, color: '#94a3b8' }}>
+                  {t('att.cols.checkIn')}: {today.checkIn || '-'} |{' '}
+                  {t('att.cols.checkOut')}: {today.checkOut || '-'}
+                </div>
+              )}
+            </div>
           </Card>
         </Col>
         {stats && (
           <>
             <Col xs={12} md={4}>
-              <Card style={{ background: 'rgba(15, 23, 42, 0.6)' }}>
-                <Statistic title="PRESENT" value={stats.present} valueStyle={{ color: '#10b981' }} />
+              <Card style={{ background: 'rgba(15, 23, 42, 0.6)', height: '100%' }} bodyStyle={{ height: '100%' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
+                  <Statistic title="PRESENT" value={stats.present} valueStyle={{ color: '#10b981' }} />
+                </div>
               </Card>
             </Col>
             <Col xs={12} md={4}>
-              <Card style={{ background: 'rgba(15, 23, 42, 0.6)' }}>
-                <Statistic title="LATE" value={stats.late} valueStyle={{ color: '#f59e0b' }} />
+              <Card style={{ background: 'rgba(15, 23, 42, 0.6)', height: '100%' }} bodyStyle={{ height: '100%' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
+                  <Statistic title="LATE" value={stats.late} valueStyle={{ color: '#f59e0b' }} />
+                </div>
               </Card>
             </Col>
             <Col xs={12} md={4}>
-              <Card style={{ background: 'rgba(15, 23, 42, 0.6)' }}>
-                <Statistic title="OT" value={stats.overtime || 0} valueStyle={{ color: '#a78bfa' }} />
+              <Card style={{ background: 'rgba(15, 23, 42, 0.6)', height: '100%' }} bodyStyle={{ height: '100%' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
+                  <Statistic title="OT" value={stats.overtime || 0} valueStyle={{ color: '#a78bfa' }} />
+                </div>
               </Card>
             </Col>
             <Col xs={12} md={4}>
-              <Card style={{ background: 'rgba(15, 23, 42, 0.6)' }}>
-                <Statistic title={t('att.cols.workHours')} value={Number(stats.workHoursSum || 0).toFixed(1)} suffix="h" />
+              <Card style={{ background: 'rgba(15, 23, 42, 0.6)', height: '100%' }} bodyStyle={{ height: '100%' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
+                  <Statistic title={t('att.cols.workHours')} value={Number(stats.workHoursSum || 0).toFixed(1)} suffix="h" />
+                </div>
               </Card>
             </Col>
           </>
