@@ -64,7 +64,7 @@ export class DatabaseLogger implements TypeOrmLogger {
    * Log khi query lỗi
    */
   logQueryError(
-    error: string,
+    error: unknown,
     query: string,
     parameters?: any[],
     queryRunner?: any,
@@ -72,10 +72,10 @@ export class DatabaseLogger implements TypeOrmLogger {
     const ctx = this.parseContext(queryRunner);
     const funcName = ctx?.funcName ?? 'unknown';
     const table = ctx?.table ?? 'unknown';
+    const errorMessage = error instanceof Error ? error.message : String(error);
 
-    // Xác định loại lỗi để log mức độ phù hợp
     const isConstraintViolation =
-      /duplicate|unique|foreign key|not null|check constraint/i.test(error);
+      /duplicate|unique|foreign key|not null|check constraint/i.test(errorMessage);
     const level = isConstraintViolation ? 'warn' : 'error';
 
     const sqlSnippet = this.snippet(query, 80);
@@ -89,7 +89,7 @@ export class DatabaseLogger implements TypeOrmLogger {
         sql: sqlSnippet,
         params,
         error: this.extractErrorCode(error),
-        errorMessage: this.extractErrorMessage(error),
+        errorMessage: this.extractErrorMessage(errorMessage),
       },
       `✗ ${funcName} on ${table} failed: ${this.extractErrorCode(error)}`,
     );
@@ -202,13 +202,14 @@ export class DatabaseLogger implements TypeOrmLogger {
    * Trích error code từ message PostgreSQL
    * VD: "duplicate key value violates unique constraint \"users_username_key\"" → "23505"
    */
-  private extractErrorCode(error: string): string {
-    const match = error.match(/\b(\d{5})\b/);
+  private extractErrorCode(error: unknown): string {
+    const message = error instanceof Error ? error.message : String(error);
+    const match = message.match(/\b(\d{5})\b/);
     if (match) return match[1];
-    if (/duplicate/i.test(error)) return '23505'; // unique_violation
-    if (/foreign key/i.test(error)) return '23503'; // foreign_key_violation
-    if (/not null/i.test(error)) return '23502'; // not_null_violation
-    if (/check constraint/i.test(error)) return '23514';
+    if (/duplicate/i.test(message)) return '23505';
+    if (/foreign key/i.test(message)) return '23503';
+    if (/not null/i.test(message)) return '23502';
+    if (/check constraint/i.test(message)) return '23514';
     return 'UNKNOWN';
   }
 
