@@ -1,34 +1,33 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Card, Table, Button, Form, Select, DatePicker, Input, Modal, Tag, Space, message, Popconfirm,
+  Card, Table, Button, Form, Select, DatePicker, Input, Tag, Space, message, Popconfirm,
 } from 'antd';
+import AppModal from './AppModal.jsx';
 import { PlusOutlined, DeleteOutlined, ReloadOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import { api } from '../api.js';
 
-const LEAVE_TYPE_LABELS = {
-  ANNUAL_LEAVE: { vi: 'Nghỉ phép năm', en: 'Annual Leave', color: 'blue' },
-  SICK_LEAVE: { vi: 'Nghỉ ốm', en: 'Sick Leave', color: 'red' },
-  MATERNITY_LEAVE: { vi: 'Nghỉ thai sản', en: 'Maternity Leave', color: 'magenta' },
-  UNPAID_LEAVE: { vi: 'Nghỉ không lương', en: 'Unpaid Leave', color: 'orange' },
-  COMPASSIONATE_LEAVE: { vi: 'Nghỉ việc hiếu/hỷ', en: 'Compassionate Leave', color: 'purple' },
+const LEAVE_TYPE_COLORS = {
+  ANNUAL_LEAVE: 'blue',
+  SICK_LEAVE: 'red',
+  MATERNITY_LEAVE: 'magenta',
+  UNPAID_LEAVE: 'orange',
+  COMPASSIONATE_LEAVE: 'purple',
 };
 
-const STATUS_LABELS = {
-  PENDING: { vi: 'Chờ duyệt', en: 'Pending', color: 'gold' },
-  APPROVED: { vi: 'Đã duyệt', en: 'Approved', color: 'green' },
-  REJECTED: { vi: 'Từ chối', en: 'Rejected', color: 'red' },
-  CANCELLED: { vi: 'Đã hủy', en: 'Cancelled', color: 'default' },
+const STATUS_COLORS = {
+  PENDING: 'gold',
+  APPROVED: 'green',
+  REJECTED: 'red',
+  CANCELLED: 'default',
 };
 
-export default function LeaveRequests({ t, i18n, isAdminView = false }) {
+export default function LeaveRequests({ t, isAdminView = false }) {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [form] = Form.useForm();
-
-  const lang = i18n?.language || 'vi';
 
   const load = async () => {
     setLoading(true);
@@ -90,8 +89,9 @@ export default function LeaveRequests({ t, i18n, isAdminView = false }) {
       dataIndex: 'leaveType',
       key: 'leaveType',
       render: (v) => {
-        const meta = LEAVE_TYPE_LABELS[v];
-        return meta ? <Tag color={meta.color}>{lang === 'vi' ? meta.vi : meta.en}</Tag> : v;
+        const color = LEAVE_TYPE_COLORS[v];
+        const label = t(`leave.typeLabels.${v}`, { defaultValue: v });
+        return color ? <Tag color={color}>{label}</Tag> : label;
       },
     },
     {
@@ -122,8 +122,9 @@ export default function LeaveRequests({ t, i18n, isAdminView = false }) {
       dataIndex: 'status',
       key: 'status',
       render: (v) => {
-        const meta = STATUS_LABELS[v];
-        return meta ? <Tag color={meta.color}>{lang === 'vi' ? meta.vi : meta.en}</Tag> : v;
+        const color = STATUS_COLORS[v];
+        const label = t(`leave.statusLabels.${v}`, { defaultValue: v });
+        return color ? <Tag color={color}>{label}</Tag> : label;
       },
     },
     {
@@ -166,7 +167,7 @@ export default function LeaveRequests({ t, i18n, isAdminView = false }) {
         pagination={{ pageSize: 10 }}
       />
 
-      <Modal
+      <AppModal
         title={t('leave.modalTitle')}
         open={modalOpen}
         onCancel={() => setModalOpen(false)}
@@ -175,16 +176,16 @@ export default function LeaveRequests({ t, i18n, isAdminView = false }) {
         cancelText={t('common.cancel')}
         confirmLoading={submitting}
       >
-        <Form layout="vertical" form={form}>
+        <Form layout="vertical" form={form} onFinish={onSubmit}>
           <Form.Item
             label={t('leave.cols.type')}
             name="leaveType"
             rules={[{ required: true, message: t('leave.validation.typeRequired') }]}
           >
             <Select placeholder={t('leave.placeholderType')}>
-              {Object.entries(LEAVE_TYPE_LABELS).map(([k, meta]) => (
+              {Object.keys(LEAVE_TYPE_COLORS).map((k) => (
                 <Select.Option key={k} value={k}>
-                  {lang === 'vi' ? meta.vi : meta.en}
+                  {t(`leave.typeLabels.${k}`, { defaultValue: k })}
                 </Select.Option>
               ))}
             </Select>
@@ -200,7 +201,7 @@ export default function LeaveRequests({ t, i18n, isAdminView = false }) {
             <Input.TextArea rows={3} maxLength={500} showCount />
           </Form.Item>
         </Form>
-      </Modal>
+      </AppModal>
     </Card>
   );
 }
