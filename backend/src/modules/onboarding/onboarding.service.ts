@@ -1,14 +1,31 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 import { OnboardingTask } from '../../entities/onboarding-task.entity.js';
 import { Employee } from '../../entities/employee.entity.js';
 import { User } from '../../entities/user.entity.js';
-import { EmployeeStatus } from '../../common/enums/business-values.js';
+import { EmployeeStatus, UserRole } from '../../common/enums/business-values.js';
 import { BusinessException } from '../../common/exceptions/business.exception.js';
 
+interface EmployeeDto {
+  fullName: string;
+  email: string;
+  phone?: string;
+  gender?: string;
+  dob?: string;
+  address?: string;
+  taxCode?: string;
+  bankName?: string;
+  bankAccount?: string;
+  joinDate?: string;
+  departmentId?: string;
+  positionId?: string;
+}
+
 interface InitiateDto {
-  employeeId: string;
+  employee?: EmployeeDto; // Nếu truyền employee → tạo mới. Nếu truyền employeeId → dùng employee đã có
+  employeeId?: string;    // Employee đã tồn tại
   dueDate?: string | Date;
 }
 
@@ -27,8 +44,9 @@ export class OnboardingService {
 
   /**
    * US-15: HR Manager khởi tạo onboarding cho nhân viên mới →
+   *   - Nếu truyền `employee` → tạo mới Employee + User, rồi seed 4 tasks
+   *   - Nếu truyền `employeeId` → dùng employee đã có, chỉ seed tasks
    *   - Set Employee.status = ONBOARDING
-   *   - Seed 4 OnboardingTask cho HR/IT/Admin (delegate theo phòng ban)
    */
   async initiateOnboarding(
     dto: InitiateDto,
@@ -39,16 +57,36 @@ export class OnboardingService {
     });
     if (!requester) throw new BusinessException('ERR_AUTH_001');
 
-    const employee = await this.employeeRepository.findOne({
-      where: { id: dto.employeeId },
+    // onboarding_tasks.assigned_by_id FK → employees(id), không phải users(id).
+    // Tra cứu employee tương ứng của requester (nếu có). Nếu không có thì để null.
+    const requesterEmployee = await this.employeeRepository.findOne({
+      where: { userId: requester.id },
     });
-    if (!employee) throw new BusinessException('ERR_AUTH_003');
+    const assignedById = requesterEmployee?.id ?? null;
 
-    if (employee.status !== EmployeeStatus.ONBOARDING) {
-      employee.status = EmployeeStatus.ONBOARDING;
-      await this.employeeRepository.save(employee);
+    let employee: Employee;
+
+    // Case 1: Tạo employee mới
+    if (dto.employee) {
+      const { employee: newEmp } = await this.createEmployeeAndUser(dto.employee);
+      employee = newEmp;
+    }
+    // Case 2: Dùng employee đã có
+    else if (dto.employeeId) {
+      const found = await this.employeeRepository.findOne({
+        where: { id: dto.employeeId },
+      });
+      if (!found) throw new BusinessException('ERR_AUTH_003');
+      employee = found;
+    } else {
+      throw new BusinessException('ERR_EMP_001'); // Missing employee or employeeId
     }
 
+    // Set status = ONBOARDING
+    employee.status = EmployeeStatus.ONBOARDING;
+    await this.employeeRepository.save(employee);
+
+    // Seed 4 OnboardingTask cho HR/IT/Admin
     const dueDate = dto.dueDate ? new Date(dto.dueDate) : null;
     const seedTitles: Array<{ title: string; dept: string }> = [
       { title: 'Thu thập hồ sơ, ký HĐLĐ, đăng ký MST', dept: 'HR' },
@@ -63,17 +101,108 @@ export class OnboardingService {
         employeeId: employee.id,
         taskTitle: seed.title,
         targetDepartment: seed.dept,
-        assignedById: requester.id,
+        assignedById,
         status: 'PENDING',
         dueDate,
       } as Partial<OnboardingTask>);
       const saved = await this.onboardingTaskRepository.save(task);
       tasks.push(saved);
     }
+
     this.logger.log(
-      `Onboarding initiated for emp#${employee.id} with ${tasks.length} tasks`,
+      `Onboarding initiated for emp#${employee.id} (${employee.fullName}) with ${tasks.length} tasks`,
     );
     return { employee, tasks };
+  }
+
+  /**
+   * Tạo Employee + User account trong 1 transaction
+   */
+  private async createEmployeeAndUser(dto: EmployeeDto): Promise<{ employee: Employee }> {
+    // Check email unique
+    const existing = await this.employeeRepository.findOne({
+      where: { email: dto.email },
+    });
+    if (existing) {
+      throw new BusinessException('ERR_EMP_001');
+    }
+
+    // Tạo username từ email
+    const baseUsername = dto.email.split('@')[0];
+    let username = baseUsername;
+    let userExists = await this.userRepository.findOne({ where: { username } });
+    let counter = 1;
+    while (userExists) {
+      username = `${baseUsername}${counter}`;
+      userExists = await this.userRepository.findOne({ where: { username } });
+      counter++;
+    }
+
+    // Password hash: empCode sẽ update sau khi có empCode từ trigger
+    const dobStr = dto.dob ? this.formatDob(dto.dob) : '19950101';
+    const tempRawPass = `${username}@Temp${dobStr}`;
+    const passwordHash = await bcrypt.hash(tempRawPass, 10);
+
+    const user = this.userRepository.create({
+      username,
+      passwordHash,
+      role: UserRole.EMPLOYEE,
+      status: 'ACTIVE',
+    });
+    await this.userRepository.save(user);
+
+    // Re-fetch user bằng username (UNIQUE) để lấy id do DB default cấp
+    const savedUser = await this.userRepository.findOne({
+      where: { username },
+    });
+    if (!savedUser) throw new BusinessException('ERR_UNKNOWN');
+
+    // Tạo Employee
+    const employee = this.employeeRepository.create({
+      fullName: dto.fullName,
+      email: dto.email,
+      phone: dto.phone,
+      gender: dto.gender,
+      dob: dto.dob ? new Date(dto.dob) : undefined,
+      address: dto.address,
+      taxCode: dto.taxCode,
+      bankName: dto.bankName,
+      bankAccount: dto.bankAccount,
+      joinDate: dto.joinDate ? new Date(dto.joinDate) : new Date(),
+      status: EmployeeStatus.ONBOARDING,
+      departmentId: dto.departmentId,
+      positionId: dto.positionId,
+      userId: savedUser.id,
+    });
+    await this.employeeRepository.save(employee);
+
+    // Re-fetch bằng email (UNIQUE) vì @PrimaryColumn không tự lấy lại id từ DB
+    // sau khi insert với DEFAULT fn_generate_snowflake_id().
+    const foundEmp = await this.employeeRepository.findOne({
+      where: { email: dto.email },
+      relations: { department: true, position: true, user: true },
+    });
+    if (!foundEmp) throw new BusinessException('ERR_UNKNOWN');
+
+    // Re-hash password theo spec: Temp@{empCode}
+    if (savedUser && foundEmp.empCode) {
+      const defaultPassword = `Temp@${foundEmp.empCode}`;
+      const properPlaintext = `${foundEmp.empCode}${defaultPassword}${dobStr}`;
+      savedUser.passwordHash = await bcrypt.hash(properPlaintext, 10);
+      await this.userRepository.save(savedUser);
+    }
+
+    return { employee: foundEmp };
+  }
+
+  private formatDob(dob: string | Date): string {
+    if (!dob) return '';
+    const d = typeof dob === 'string' ? new Date(dob) : dob;
+    if (isNaN(d.getTime())) return '';
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 
   /**
