@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Card, Table, Button, Modal, Input, Tag, message, Popconfirm, Form,
+  Card, Table, Button, Input, Tag, message, Popconfirm, Form,
 } from 'antd';
+import AppModal from './AppModal.jsx';
 import { LogoutOutlined, ReloadOutlined, CheckOutlined } from '@ant-design/icons';
 import { api } from '../api.js';
 
@@ -121,7 +122,7 @@ export default function Offboarding({ t, role }) {
         style={{ background: 'rgba(30, 41, 59, 0.6)', border: '1px solid rgba(255, 255, 255, 0.05)' }}
       >
         <p style={{ color: '#94a3b8' }}>{t('offb.employeeHint')}</p>
-        <Modal
+        <AppModal
           title={t('offb.modalResignTitle')}
           open={modalOpen}
           onCancel={() => setModalOpen(false)}
@@ -135,7 +136,7 @@ export default function Offboarding({ t, role }) {
               <Input.TextArea rows={4} maxLength={500} showCount />
             </Form.Item>
           </Form>
-        </Modal>
+        </AppModal>
       </Card>
     );
   }
