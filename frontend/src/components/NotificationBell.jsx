@@ -6,7 +6,7 @@ import { api } from '../api.js';
 
 const POLL_INTERVAL_MS = 5000;
 
-export default function NotificationBell({ t }) {
+export default function NotificationBell({ t, onNotificationClick }) {
   const [items, setItems] = useState([]);
   const [unread, setUnread] = useState(0);
   const [open, setOpen] = useState(false);
@@ -35,11 +35,18 @@ export default function NotificationBell({ t }) {
     setOpen(next);
   };
 
-  const onMarkRead = async (id) => {
-    try {
-      await api.notifications.markAsRead(id);
-      await fetchAll();
-    } catch { /* no-op */ }
+  const onItemClick = async (item) => {
+    // Navigate to detail if callback provided
+    if (onNotificationClick) {
+      onNotificationClick(item);
+    }
+    // Mark as read
+    if (!item.isRead) {
+      try {
+        await api.notifications.markAsRead(item.id);
+        await fetchAll();
+      } catch { /* no-op */ }
+    }
   };
 
   const onMarkAll = async () => {
@@ -89,7 +96,7 @@ export default function NotificationBell({ t }) {
                 padding: '8px 12px',
                 cursor: 'pointer',
               }}
-              onClick={() => !item.isRead && onMarkRead(item.id)}
+              onClick={() => onItemClick(item)}
             >
               <List.Item.Meta
                 title={
