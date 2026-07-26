@@ -1,6 +1,6 @@
 import {
   Entity,
-  PrimaryColumn,
+  PrimaryGeneratedColumn,
   Column,
   ManyToOne,
   JoinColumn,
@@ -15,7 +15,7 @@ import { Employee } from './employee.entity.js';
  */
 @Entity('approval_requests')
 export class ApprovalRequest {
-  @PrimaryColumn({ type: 'bigint' })
+  @PrimaryGeneratedColumn({ type: 'bigint' })
   id: string;
 
   @Column({

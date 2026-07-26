@@ -9,6 +9,7 @@ import { ApprovalRequest } from '../../entities/approval-request.entity.js';
 import { Project } from '../../entities/project.entity.js';
 import { ProjectTask } from '../../entities/project-task.entity.js';
 import { Attendance } from '../../entities/attendance.entity.js';
+import { WorkRateConfig } from '../../entities/work-rate-config.entity.js';
 import { ApprovalService } from '../approval/approval.service.js';
 import { AttendanceService } from '../attendance/attendance.service.js';
 import { ATTENDANCE_RULES } from '../attendance/attendance.constants.js';
@@ -49,6 +50,8 @@ export class TimesheetsService {
     private readonly projectTaskRepository: Repository<ProjectTask>,
     @InjectRepository(Attendance)
     private readonly attendanceRepository: Repository<Attendance>,
+    @InjectRepository(WorkRateConfig)
+    private readonly workRateConfigRepository: Repository<WorkRateConfig>,
     private readonly approvalService: ApprovalService,
     private readonly attendanceService: AttendanceService,
   ) {}
@@ -172,13 +175,15 @@ export class TimesheetsService {
    */
   private async computeDailyExpected(
     employeeId: string,
-    startDate: Date,
-    endDate: Date,
+    startDate: Date | string,
+    endDate: Date | string,
   ): Promise<DailyExpected[]> {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
     const records = await this.attendanceService.listForEmployeeInRange(
       employeeId,
-      startDate.toISOString().split('T')[0],
-      endDate.toISOString().split('T')[0],
+      start.toISOString().split('T')[0],
+      end.toISOString().split('T')[0],
     );
     const recMap = new Map<string, Attendance>();
     records.forEach((r) => {
@@ -189,8 +194,8 @@ export class TimesheetsService {
 
     const out: DailyExpected[] = [];
     for (let i = 0; i < 7; i++) {
-      const d = new Date(startDate);
-      d.setDate(startDate.getDate() + i);
+      const d = new Date(start);
+      d.setDate(start.getDate() + i);
       const dateStr = d.toISOString().split('T')[0];
       const weekday = d.getDay(); // 0=Sun..6=Sat
       const rec = recMap.get(dateStr);
@@ -323,12 +328,20 @@ export class TimesheetsService {
       let totalNormal = 0;
       let totalOt = 0;
 
+      // Nạp động hệ số từ WorkRateConfig theo spec 03_workflows.md §3
+      const configs = await this.workRateConfigRepository.find();
+      const configMap = new Map(
+        configs.map((c) => [c.configKey, Number(c.valueMultiplier)]),
+      );
+      const rateMap: Record<string, number> = {
+        OT_WEEKDAY: configMap.get('OT_RATE_WEEKDAY') ?? 1.5,
+        OT_WEEKEND: configMap.get('OT_RATE_WEEKEND') ?? 2.0,
+        OT_HOLIDAY: configMap.get('OT_RATE_HOLIDAY') ?? 3.0,
+        NIGHT_SHIFT: configMap.get('NIGHT_SHIFT_BONUS') ?? 0.3,
+      };
+
       for (const ent of dto.entries) {
-        let rate = 1.0;
-        if (ent.workType === 'OT_WEEKDAY') rate = 1.5;
-        else if (ent.workType === 'OT_WEEKEND') rate = 2.0;
-        else if (ent.workType === 'OT_HOLIDAY') rate = 3.0;
-        else if (ent.workType === 'NIGHT_SHIFT') rate = 1.3;
+        const rate = rateMap[ent.workType] ?? 1.0;
 
         const entry = this.timesheetEntryRepository.create({
           timesheetId: timesheet.id,
