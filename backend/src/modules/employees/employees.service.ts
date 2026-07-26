@@ -243,6 +243,103 @@ export class EmployeesService {
     return updated;
   }
 
+  /**
+   * US-23a: Nhân viên/HR gửi yêu cầu cập nhật thông tin cá nhân — tạo
+   * ApprovalRequest PERSONAL_INFO_CHANGE (1 cấp ADMIN) chứa snapshot dữ liệu
+   * mới. Khi ADMIN duyệt, ApprovalService sẽ gọi `applyPersonalInfoFromApproval`
+   * để apply snapshot lên Employee.
+   */
+  async submitPersonalInfoChange(
+    id: string,
+    dto: any,
+    requesterUserId: string,
+  ): Promise<{ approvalRequest: ApprovalRequest }> {
+    const requester = await this.employeeRepository.findOne({
+      where: { userId: requesterUserId },
+    });
+    if (!requester) throw new BusinessException('ERR_AUTH_001');
+
+    const employee = await this.employeeRepository.findOne({ where: { id } });
+    if (!employee) throw new BusinessException('ERR_AUTH_003');
+
+    // Validate email nếu đổi
+    if (dto.email && dto.email !== employee.email) {
+      const existing = await this.employeeRepository.findOne({
+        where: { email: dto.email },
+      });
+      if (existing) throw new BusinessException('ERR_EMP_001');
+    }
+
+    // Snapshot các trường được phép cập nhật
+    const snapshot: Record<string, any> = {};
+    if (dto.email !== undefined) snapshot.email = dto.email;
+    if (dto.phone !== undefined) snapshot.phone = dto.phone;
+    if (dto.address !== undefined) snapshot.address = dto.address;
+    if (dto.bankAccount !== undefined) snapshot.bankAccount = dto.bankAccount;
+    if (dto.taxCode !== undefined) snapshot.taxCode = dto.taxCode;
+
+    if (Object.keys(snapshot).length === 0) {
+      throw new BusinessException('ERR_APPROVAL_004');
+    }
+
+    const levels = await this.getRequiredLevels(
+      TransactionType.PERSONAL_INFO_CHANGE,
+      1,
+    );
+
+    const approvalReq = this.approvalRequestRepository.create({
+      transactionType: TransactionType.PERSONAL_INFO_CHANGE,
+      referenceEntityId: `${employee.id}:${JSON.stringify(snapshot)}`,
+      requesterId: requester.id,
+      currentLevel: 1,
+      totalLevels: levels,
+      status: 'PENDING',
+    });
+    const saved = await this.approvalRequestRepository.save(approvalReq);
+
+    console.log(
+      `PersonalInfoChange submitted for emp#${employee.id} (approval#${saved.id})`,
+    );
+    return { approvalRequest: saved };
+  }
+
+  /**
+   * Apply snapshot từ ApprovalRequest PERSONAL_INFO_CHANGE lên Employee.
+   * Được ApprovalService gọi khi status chuyển APPROVED.
+   */
+  async applyPersonalInfoFromApproval(
+    employeeId: string,
+    snapshot: Record<string, any>,
+  ): Promise<Employee> {
+    const employee = await this.employeeRepository.findOne({
+      where: { id: employeeId },
+    });
+    if (!employee) throw new BusinessException('ERR_AUTH_003');
+
+    if (snapshot.email !== undefined && snapshot.email !== employee.email) {
+      const existing = await this.employeeRepository.findOne({
+        where: { email: snapshot.email },
+      });
+      if (existing && existing.id !== employeeId) {
+        throw new BusinessException('ERR_EMP_001');
+      }
+      employee.email = snapshot.email;
+    }
+    if (snapshot.phone !== undefined) employee.phone = snapshot.phone;
+    if (snapshot.address !== undefined) employee.address = snapshot.address;
+    if (snapshot.bankAccount !== undefined)
+      employee.bankAccount = snapshot.bankAccount;
+    if (snapshot.taxCode !== undefined) employee.taxCode = snapshot.taxCode;
+
+    await this.employeeRepository.save(employee);
+    const updated = await this.employeeRepository.findOne({
+      where: { id: employeeId },
+      relations: { department: true, position: true, user: true },
+    });
+    if (!updated) throw new BusinessException('ERR_UNKNOWN');
+    return updated;
+  }
+
   async submitJobTransfer(dto: any, requesterUserId: string): Promise<any> {
     // Find requester employee profile
     const requester = await this.employeeRepository.findOne({

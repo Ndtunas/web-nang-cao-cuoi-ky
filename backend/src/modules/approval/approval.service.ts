@@ -628,13 +628,52 @@ export class ApprovalService {
   }
 
   /**
-   * PERSONAL_INFO_CHANGE: chỉ là audit — updatePersonalInfo() đã ghi trực tiếp
-   * vào Employee. ApprovalRequest chỉ mang ý nghĩa duyệt bước cuối; không đụng Employee ở đây.
+   * PERSONAL_INFO_CHANGE: parse snapshot từ `referenceEntityId` (format
+   * `employeeId:JSON_snapshot`) và apply các trường được phép lên Employee.
    */
   private async applyPersonalInfoChangeApproved(
-    _request: ApprovalRequest,
+    request: ApprovalRequest,
   ): Promise<void> {
-    // No-op: data đã được commit sẵn ở updatePersonalInfo() và audit interceptor đã bắt diff.
+    const raw = request.referenceEntityId;
+    if (!raw || !raw.includes(':')) return;
+    const sepIdx = raw.indexOf(':');
+    const employeeId = raw.substring(0, sepIdx);
+    const json = raw.substring(sepIdx + 1);
+
+    let snapshot: Record<string, any>;
+    try {
+      snapshot = JSON.parse(json);
+    } catch {
+      console.warn(
+        `Malformed PERSONAL_INFO_CHANGE snapshot for request#${request.id}`,
+      );
+      return;
+    }
+
+    const employee = await this.employeeRepository.findOne({
+      where: { id: employeeId },
+    });
+    if (!employee) return;
+
+    if (snapshot.email !== undefined && snapshot.email !== employee.email) {
+      const existing = await this.employeeRepository.findOne({
+        where: { email: snapshot.email },
+      });
+      if (existing && existing.id !== employeeId) {
+        console.warn(
+          `Email ${snapshot.email} already used, skip applyPersonalInfoChange`,
+        );
+        return;
+      }
+      employee.email = snapshot.email;
+    }
+    if (snapshot.phone !== undefined) employee.phone = snapshot.phone;
+    if (snapshot.address !== undefined) employee.address = snapshot.address;
+    if (snapshot.bankAccount !== undefined)
+      employee.bankAccount = snapshot.bankAccount;
+    if (snapshot.taxCode !== undefined) employee.taxCode = snapshot.taxCode;
+
+    await this.employeeRepository.save(employee);
   }
 
   /**

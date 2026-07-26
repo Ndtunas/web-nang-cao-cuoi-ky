@@ -39,9 +39,13 @@ export class EmployeesController {
 
   @Patch(':id/personal-info')
   @UseGuards(RolesGuard)
-  @Roles(UserRole.ADMIN, UserRole.DEPT_LEAD)
-  async updatePersonalInfo(@Param('id') id: string, @Body() dto: any) {
-    return this.employeesService.updatePersonalInfo(id, dto);
+  @Roles(UserRole.ADMIN, UserRole.DEPT_LEAD, UserRole.EMPLOYEE)
+  async submitPersonalInfoChange(
+    @Param('id') id: string,
+    @Body() dto: any,
+    @CurrentUser() user: User,
+  ) {
+    return this.employeesService.submitPersonalInfoChange(id, dto, user.id);
   }
 
   @Post('job-transfers')
