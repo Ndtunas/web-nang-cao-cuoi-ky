@@ -255,7 +255,8 @@
       "empRequired": "Vui lòng chọn nhân viên",
       "nameRequired": "Vui lòng nhập họ tên",
       "emailRequired": "Vui lòng nhập email",
-      "emailInvalid": "Email không hợp lệ"
+      "emailInvalid": "Email không hợp lệ",
+      "dobRequired": "Vui lòng chọn ngày sinh"
     },
     "cols": {
       "code": "Mã task",
@@ -633,5 +634,34 @@
     "submitButton": "Đăng nhập",
     "rulesTitle": "Rule mật khẩu:",
     "rulesText": "Mã nhân viên + mật khẩu + ngày tháng năm sinh (Bcrypted). Mật khẩu mặc định hệ thống: [username]123456[YYYYMMDD] (e.g. employee12345619950101)"
+  },
+  "exports": {
+    "button": "Export Excel",
+    "success": "Xuất file thành công",
+    "failed": "Xuất file thất bại",
+    "otSummary": "Export OT Summary"
+  },
+  "onboarding": {
+    "assign": {
+      "title": "Phân công task",
+      "selfAssign": "Tự nhận"
+    },
+    "dashboard": {
+      "title": "Dashboard Onboarding"
+    }
+  },
+  "offboarding": {
+    "settlement": {
+      "title": "Quyết toán cuối cùng",
+      "unusedLeaveDays": "Số ngày phép chưa dùng",
+      "severanceAmount": "Trợ cấp thôi việc",
+      "lastWorkingDay": "Ngày làm việc cuối",
+      "submit": "Xác nhận quyết toán"
+    }
+  },
+  "leave": {
+    "balance": {
+      "insufficient": "Số ngày nghỉ phép năm vượt quá số dư hiện tại"
+    }
   }
 }

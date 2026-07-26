@@ -255,7 +255,8 @@
       "empRequired": "Please select an employee",
       "nameRequired": "Please enter full name",
       "emailRequired": "Please enter email",
-      "emailInvalid": "Invalid email address"
+      "emailInvalid": "Invalid email address",
+      "dobRequired": "Please select date of birth"
     },
     "cols": {
       "code": "Task ID",
@@ -633,5 +634,34 @@
     "submitButton": "Login",
     "rulesTitle": "Password Rules:",
     "rulesText": "Employee Code + password + date of birth (Bcrypted). System default password: [username]123456[YYYYMMDD] (e.g. employee12345619950101)"
+  },
+  "exports": {
+    "button": "Export Excel",
+    "success": "Export completed",
+    "failed": "Export failed",
+    "otSummary": "Export OT Summary"
+  },
+  "onboarding": {
+    "assign": {
+      "title": "Assign Task",
+      "selfAssign": "Self-assign"
+    },
+    "dashboard": {
+      "title": "Onboarding Dashboard"
+    }
+  },
+  "offboarding": {
+    "settlement": {
+      "title": "Final Settlement",
+      "unusedLeaveDays": "Unused leave days",
+      "severanceAmount": "Severance amount",
+      "lastWorkingDay": "Last working day",
+      "submit": "Confirm Settlement"
+    }
+  },
+  "leave": {
+    "balance": {
+      "insufficient": "Requested annual leave exceeds remaining balance"
+    }
   }
 }
