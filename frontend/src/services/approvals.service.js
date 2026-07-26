@@ -26,4 +26,8 @@ export const approvalsService = {
   async getHistory(requestId) {
     return request(`/approval-requests/${requestId}/history`);
   },
+
+  async getDetail(requestId) {
+    return request(`/approval-requests/${requestId}/detail`);
+  },
 };
