@@ -12,6 +12,7 @@ import { WorkRateConfig } from './../src/entities/work-rate-config.entity.js';
 import { UserRole } from './../src/common/enums/business-values.js';
 import { HttpExceptionFilter } from './../src/common/filters/http-exception.filter.js';
 import { TransformInterceptor } from './../src/common/interceptors/transform.interceptor.js';
+import { PinoLogger } from 'nestjs-pino';
 
 describe('Auth, Users & Config System (e2e)', () => {
   let app: INestApplication<App>;
@@ -40,7 +41,8 @@ describe('Auth, Users & Config System (e2e)', () => {
         transform: true,
       }),
     );
-    app.useGlobalFilters(new HttpExceptionFilter());
+    const pinoInstance = await app.resolve<PinoLogger>(PinoLogger);
+    app.useGlobalFilters(new HttpExceptionFilter(pinoInstance));
     app.useGlobalInterceptors(new TransformInterceptor());
 
     await app.init();
