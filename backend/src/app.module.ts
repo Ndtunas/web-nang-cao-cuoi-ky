@@ -24,6 +24,7 @@ import { DepartmentsModule } from './modules/departments/departments.module.js';
 import { PositionsModule } from './modules/positions/positions.module.js';
 import { ProjectsModule } from './modules/projects/projects.module.js';
 import { NotificationsModule } from './modules/notifications/notifications.module.js';
+import { ExportsModule } from './modules/exports/exports.module.js';
 
 @Module({
   imports: [
@@ -51,6 +52,7 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
     PositionsModule,
     ProjectsModule,
     NotificationsModule,
+    ExportsModule, // Phase 4: Export Excel
   ],
   controllers: [AppController],
   providers: [AppService],

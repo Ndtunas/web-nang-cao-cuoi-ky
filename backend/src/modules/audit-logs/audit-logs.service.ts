@@ -51,4 +51,32 @@ export class AuditLogsService {
       newData: log.newData,
     };
   }
+
+  /**
+   * Phase 3.2: Ghi log EXPORT (US-01 spec) khi người dùng xuất Excel/PDF.
+   * Được gọi từ các export endpoint thay vì đi qua HTTP interceptor (vì
+   * download file không nằm trong nhánh `next.handle().pipe(tap())` của
+   * interceptor một cách tự nhiên).
+   */
+  async logExport(payload: {
+    actorId: string;
+    actorRole: string;
+    entityName: string;
+    filters?: Record<string, any>;
+    ipAddress?: string;
+    userAgent?: string;
+  }): Promise<SystemAuditLog> {
+    const log = this.auditLogRepository.create({
+      actorId: payload.actorId,
+      actorRole: payload.actorRole,
+      actionType: 'EXPORT',
+      entityName: payload.entityName,
+      entityId: '0',
+      oldData: null,
+      newData: payload.filters ?? null,
+      ipAddress: payload.ipAddress ?? '',
+      userAgent: payload.userAgent ?? '',
+    });
+    return this.auditLogRepository.save(log);
+  }
 }

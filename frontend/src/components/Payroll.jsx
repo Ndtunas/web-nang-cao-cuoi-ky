@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Card, Space, Table, Tag, Button, InputNumber, Row, Col, Typography } from 'antd';
+import { Card, Space, Table, Tag, Button, InputNumber, Row, Col, Typography, message } from 'antd';
 import AppModal from './AppModal';
-import { CalculatorOutlined, EyeOutlined } from '@ant-design/icons';
+import { CalculatorOutlined, EyeOutlined, DownloadOutlined } from '@ant-design/icons';
 import { useAuth } from '../contexts/AuthContext.jsx';
 import { canDo } from '../constants/roles.js';
+import { exportsService } from '../services/exports.service.js';
 
 const { Text, Title } = Typography;
 
@@ -40,6 +41,19 @@ export default function Payroll({
           <Text>{t('payroll.year')}</Text>
           <InputNumber min={2026} max={2030} value={payrollYear} onChange={setPayrollYear} />
           <Button type="primary" icon={<CalculatorOutlined />} loading={calculatingPayroll} onClick={onCalculatePayroll} disabled={!canCalculate}>{t('payroll.btnCalculate')}</Button>
+          <Button
+            icon={<DownloadOutlined />}
+            onClick={async () => {
+              try {
+                await exportsService.exportSalaries(payrollMonth, payrollYear);
+                message.success(t('exports.success'));
+              } catch (e) {
+                message.error(t('exports.failed'));
+              }
+            }}
+          >
+            {t('exports.button')}
+          </Button>
         </Space>
       </div>
 

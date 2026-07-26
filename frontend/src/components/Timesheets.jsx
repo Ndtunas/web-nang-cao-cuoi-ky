@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, Button, InputNumber, Select, Tag, Typography, Space, Badge, Tooltip, Empty, Progress, Row, Col, Statistic, Alert, Spin, message } from 'antd';
-import { PlusOutlined, SaveOutlined, SendOutlined, ClockCircleOutlined, FireOutlined, BulbOutlined, CalendarOutlined, HomeOutlined, DeleteOutlined, WarningOutlined } from '@ant-design/icons';
+import { PlusOutlined, SaveOutlined, SendOutlined, ClockCircleOutlined, FireOutlined, BulbOutlined, CalendarOutlined, HomeOutlined, DeleteOutlined, WarningOutlined, DownloadOutlined } from '@ant-design/icons';
+import { exportsService } from '../services/exports.service.js';
 
 const { Text, Title } = Typography;
 
@@ -372,6 +373,26 @@ export default function Timesheets({
           </Card>
         </Col>
       </Row>
+
+      <div style={{ marginTop: 16, textAlign: 'right' }}>
+        <Button
+          icon={<DownloadOutlined />}
+          onClick={async () => {
+            const now = new Date();
+            try {
+              await exportsService.exportOtSummary(
+                now.getMonth() + 1,
+                now.getFullYear(),
+              );
+              message.success(t('exports.success'));
+            } catch (e) {
+              message.error(t('exports.failed'));
+            }
+          }}
+        >
+          {t('exports.otSummary')}
+        </Button>
+      </div>
 
       {/* Banner cảnh báo khi có thay đổi chưa lưu */}
       {isEditable && hasUnsavedChanges && (

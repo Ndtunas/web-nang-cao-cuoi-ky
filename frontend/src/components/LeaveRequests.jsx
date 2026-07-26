@@ -3,7 +3,8 @@ import {
   Card, Table, Button, Form, Select, DatePicker, Input, Tag, Space, message, Popconfirm,
 } from 'antd';
 import AppModal from './AppModal.jsx';
-import { PlusOutlined, DeleteOutlined, ReloadOutlined } from '@ant-design/icons';
+import { PlusOutlined, DeleteOutlined, ReloadOutlined, DownloadOutlined } from '@ant-design/icons';
+import { exportsService } from '../services/exports.service.js';
 import dayjs from 'dayjs';
 import { api } from '../api.js';
 
@@ -155,6 +156,23 @@ export default function LeaveRequests({ t, isAdminView = false }) {
               {t('leave.btnNew')}
             </Button>
           )}
+          <Button
+            icon={<DownloadOutlined />}
+            onClick={async () => {
+              const now = new Date();
+              try {
+                await exportsService.exportLeaveRequests(
+                  now.getMonth() + 1,
+                  now.getFullYear(),
+                );
+                message.success(t('exports.success'));
+              } catch (e) {
+                message.error(t('exports.failed'));
+              }
+            }}
+          >
+            {t('exports.button')}
+          </Button>
         </Space>
       }
       style={{ background: 'rgba(30, 41, 59, 0.6)', border: '1px solid rgba(255, 255, 255, 0.05)' }}

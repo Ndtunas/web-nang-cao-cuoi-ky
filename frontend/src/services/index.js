@@ -11,6 +11,7 @@ import { offboardingService } from './offboarding.service.js';
 import { onboardingService } from './onboarding.service.js';
 import { notificationsService } from './notifications.service.js';
 import { attendanceService } from './attendance.service.js';
+import { exportsService } from './exports.service.js';
 
 export {
   authService,
@@ -26,6 +27,7 @@ export {
   onboardingService,
   notificationsService,
   attendanceService,
+  exportsService,
 };
 
 /**
@@ -48,4 +50,5 @@ export const api = {
   onboarding: onboardingService,
   notifications: notificationsService,
   attendance: attendanceService,
+  exports: exportsService,
 };

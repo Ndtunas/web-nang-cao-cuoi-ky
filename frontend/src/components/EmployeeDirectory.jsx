@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Table, Tag, Button, Form, Input, Select, Space, Badge, Tabs, Row, Col } from 'antd';
+import { Table, Tag, Button, Form, Input, Select, Space, Badge, Tabs, Row, Col, message } from 'antd';
 import AppModal from './AppModal';
-import { PlusOutlined, EditOutlined } from '@ant-design/icons';
+import { PlusOutlined, EditOutlined, DownloadOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import { useAuth } from '../contexts/AuthContext.jsx';
 import { canDo } from '../constants/roles.js';
+import { exportsService } from '../services/exports.service.js';
 
 // Custom swap icon
 const SwapOutlined = () => <span className="anticon"><svg viewBox="0 0 1024 1024" width="1em" height="1em" fill="currentColor"><path d="M847.9 592H152c-4.4 0-8 3.6-8 8v60c0 4.4 3.6 8 8 8h605.2L612.9 812c-3.1 3.1-3.1 8.2 0 11.3l42.4 42.4c3.1 3.1 8.2 3.1 11.3 0L882 650.3c1.5-1.5 2.3-3.5 2.3-5.6v-15.3c0-2-0.8-4-2.3-5.5L666.6 408.4c-3.1-3.1-8.2-3.1-11.3 0l-42.4 42.4c-3.1 3.1-3.1 8.2 0 11.3L847.9 592zM176 364h695.9c4.4 0 8-3.6 8-8v-60c0-4.4-3.6-8-8-8H266.7l144.3-144.3c3.1-3.1 3.1-8.2 0-11.3l-42.4-42.4c-3.1-3.1-8.2-3.1-11.3 0L142 305.7c-1.5 1.5-2.3 3.5-2.3 5.6v15.3c0 2 0.8 4 2.3 5.5l215.4 215.4c3.1 3.1 8.2 3.1 11.3 0l42.4-42.4c3.1-3.1 3.1-8.2 0-11.3L176 364z"/></svg></span>;
@@ -118,6 +119,21 @@ export default function EmployeeDirectory({
                   {canDiscipline && (
                     <Button icon={<WarningOutlined />} onClick={() => setIsDisciplineModalOpen(true)}>
                       {t('directory.actions.discipline')}
+                    </Button>
+                  )}
+                  {(role === 'ADMIN' || role === 'DEPT_LEAD' || role === 'DIRECTOR' || role === 'CHAIRMAN') && (
+                    <Button
+                      icon={<DownloadOutlined />}
+                      onClick={async () => {
+                        try {
+                          await exportsService.exportEmployees();
+                          message.success(t('exports.success'));
+                        } catch (e) {
+                          message.error(t('exports.failed'));
+                        }
+                      }}
+                    >
+                      {t('exports.button')}
                     </Button>
                   )}
                 </Space>
