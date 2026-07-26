@@ -343,7 +343,11 @@ export default function Onboarding({ t, departments = [], positions = [] }) {
           </Select>
         </Form.Item>
 
-        <Form.Item label={t('directory.modals.dob')} name="dob">
+        <Form.Item
+          label={t('directory.modals.dob')}
+          name="dob"
+          rules={[{ required: true, message: t('onb.validation.dobRequired') }]}
+        >
           <DatePicker style={{ width: '100%' }} />
         </Form.Item>
 
