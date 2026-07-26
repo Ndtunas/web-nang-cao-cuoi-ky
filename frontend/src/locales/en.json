@@ -11,6 +11,7 @@
     "projects": "Projects",
     "logout": "Log Out",
     "approvals": "Approvals",
+    "myRequests": "My Requests",
     "auditLogs": "Audit Logs",
     "leave": "Leave",
     "onboarding": "Onboarding",
@@ -51,6 +52,7 @@
       "name": "Full Name",
       "email": "Email",
       "phone": "Phone Number",
+      "gender": "Gender",
       "department": "Department",
       "position": "Position",
       "status": "Status"
@@ -87,7 +89,9 @@
       "outsideCheckOutWindow": "Outside check-out hours (only allowed from 00:00 to 23:59). The system will auto-finalize after 23:59:30."
     },
     "common": {
-      "notFound": "Requested resource was not found."
+      "notFound": "Requested resource was not found.",
+      "confirm": "Confirm",
+      "cancel": "Cancel"
     },
     "network": {
       "fetchFailed": "Cannot reach the server. Please try again later."
@@ -214,6 +218,45 @@
     "promoteError": "Error promoting employee",
     "confirmComplete": "Mark this task as completed?",
     "confirmPromote": "Confirm probation passed → move to OFFICIAL?",
+    "step1Title": "Create Employee Profile",
+    "step2Title": "Track Progress",
+    "createdSuccess": "Employee profile created successfully!",
+    "accountCreated": "Account has been created",
+    "employeeInfo": "Employee Information",
+    "tempPassword": "Temporary Password",
+    "checklistProgress": "Checklist Progress",
+    "tasksCompleted": "tasks completed",
+    "noTasksYet": "No checklist yet",
+    "noTasksYetDesc": "Click 'Initiate Onboarding' to create checklist for this employee.",
+    "detailModalTitle": "Onboarding Detail",
+    "joinDate": "Join Date",
+    "dueDate": "Due Date",
+    "bankAccount": "Bank Account",
+    "bankName": "Bank Name",
+    "bankOther": "Other Bank",
+    "placeholder": {
+      "name": "Full name",
+      "email": "email@company.com",
+      "phone": "Phone number",
+      "address": "Permanent address",
+      "taxCode": "Personal tax code",
+      "bankAccount": "Bank account number",
+      "bankName": "Bank Name",
+      "bankOther": "Other Bank",
+      "department": "Select department",
+      "position": "Select position"
+    },
+    "gender": {
+      "male": "Male",
+      "female": "Female",
+      "other": "Other"
+    },
+    "validation": {
+      "empRequired": "Please select an employee",
+      "nameRequired": "Please enter full name",
+      "emailRequired": "Please enter email",
+      "emailInvalid": "Invalid email address"
+    },
     "cols": {
       "code": "Task ID",
       "employee": "Employee",
@@ -222,9 +265,6 @@
       "dueDate": "Due Date",
       "status": "Status",
       "actions": "Actions"
-    },
-    "validation": {
-      "empRequired": "Please select an employee"
     }
   },
   "dashboard": {
@@ -355,6 +395,19 @@
     "btnNew": "New Leave Request",
     "modalTitle": "Create New Leave Request",
     "placeholderType": "Select leave type",
+    "typeLabels": {
+      "ANNUAL_LEAVE": "Annual Leave",
+      "SICK_LEAVE": "Sick Leave",
+      "MATERNITY_LEAVE": "Maternity Leave",
+      "UNPAID_LEAVE": "Unpaid Leave",
+      "COMPASSIONATE_LEAVE": "Compassionate Leave"
+    },
+    "statusLabels": {
+      "PENDING": "Pending",
+      "APPROVED": "Approved",
+      "REJECTED": "Rejected",
+      "CANCELLED": "Cancelled"
+    },
     "cols": {
       "code": "Request ID",
       "type": "Leave Type",
@@ -394,6 +447,16 @@
       "approve": "Approve",
       "reject": "Reject",
       "history": "View History"
+    },
+    "statusLabels": {
+      "PENDING": "Pending",
+      "APPROVED": "Approved",
+      "REJECTED": "Rejected",
+      "CANCELLED": "Cancelled"
+    },
+    "actionLabels": {
+      "APPROVE": "Approve",
+      "REJECT": "Reject"
     },
     "modal": {
       "historyTitle": "Approval Level History",

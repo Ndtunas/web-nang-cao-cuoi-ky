@@ -11,6 +11,7 @@
     "projects": "Dự án",
     "logout": "Đăng xuất",
     "approvals": "Phê duyệt",
+    "myRequests": "Yêu cầu của tôi",
     "auditLogs": "Nhật ký tác động",
     "leave": "Nghỉ phép",
     "onboarding": "Onboarding",
@@ -51,6 +52,7 @@
       "name": "Họ và Tên",
       "email": "Email",
       "phone": "Số điện thoại",
+      "gender": "Giới tính",
       "department": "Phòng ban",
       "position": "Chức vụ",
       "status": "Trạng thái"
@@ -95,6 +97,8 @@
   },
   "common": {
     "back": "Quay lại Tổng quan",
+    "confirm": "Xác nhận",
+    "cancel": "Hủy bỏ",
     "successApprove": "Đã duyệt phiếu yêu cầu thành công!",
     "successReject": "Đã từ chối phiếu yêu cầu!",
     "errorApprove": "Lỗi khi phê duyệt yêu cầu",
@@ -214,6 +218,45 @@
     "promoteError": "Lỗi khi promote nhân viên",
     "confirmComplete": "Đánh dấu task này đã hoàn tất?",
     "confirmPromote": "Xác nhận nhân viên đạt thử việc → chuyển OFFICIAL?",
+    "step1Title": "Tạo hồ sơ nhân viên",
+    "step2Title": "Theo dõi tiến độ",
+    "createdSuccess": "Đã tạo hồ sơ nhân viên thành công!",
+    "accountCreated": "Tài khoản đã được tạo",
+    "employeeInfo": "Thông tin nhân viên",
+    "tempPassword": "Mật khẩu tạm",
+    "checklistProgress": "Tiến độ checklist",
+    "tasksCompleted": "tasks hoàn thành",
+    "noTasksYet": "Chưa có checklist",
+    "noTasksYetDesc": "Nhấn 'Khởi tạo Onboarding' để tạo checklist cho nhân viên này.",
+    "detailModalTitle": "Chi tiết Onboarding",
+    "joinDate": "Ngày vào làm",
+    "dueDate": "Hạn hoàn thành",
+    "bankAccount": "Tài khoản ngân hàng",
+    "bankName": "Tên ngân hàng",
+    "bankOther": "Ngân hàng khác",
+    "placeholder": {
+      "name": "Họ và tên đầy đủ",
+      "email": "email@company.com",
+      "phone": "Số điện thoại",
+      "address": "Địa chỉ thường trú",
+      "taxCode": "Mã số thuế cá nhân",
+      "bankAccount": "Số tài khoản",
+      "bankName": "Tên ngân hàng",
+      "bankOther": "Ngân hàng khác",
+      "department": "Chọn phòng ban",
+      "position": "Chọn chức vụ"
+    },
+    "gender": {
+      "male": "Nam",
+      "female": "Nữ",
+      "other": "Khác"
+    },
+    "validation": {
+      "empRequired": "Vui lòng chọn nhân viên",
+      "nameRequired": "Vui lòng nhập họ tên",
+      "emailRequired": "Vui lòng nhập email",
+      "emailInvalid": "Email không hợp lệ"
+    },
     "cols": {
       "code": "Mã task",
       "employee": "Nhân viên",
@@ -222,9 +265,6 @@
       "dueDate": "Hạn chót",
       "status": "Trạng thái",
       "actions": "Thao tác"
-    },
-    "validation": {
-      "empRequired": "Vui lòng chọn nhân viên"
     }
   },
   "dashboard": {
@@ -355,6 +395,19 @@
     "btnNew": "Tạo đơn nghỉ phép",
     "modalTitle": "Tạo đơn xin nghỉ phép mới",
     "placeholderType": "Chọn loại nghỉ phép",
+    "typeLabels": {
+      "ANNUAL_LEAVE": "Nghỉ phép năm",
+      "SICK_LEAVE": "Nghỉ ốm",
+      "MATERNITY_LEAVE": "Nghỉ thai sản",
+      "UNPAID_LEAVE": "Nghỉ không lương",
+      "COMPASSIONATE_LEAVE": "Nghỉ việc hiếu/hỷ"
+    },
+    "statusLabels": {
+      "PENDING": "Chờ duyệt",
+      "APPROVED": "Đã duyệt",
+      "REJECTED": "Từ chối",
+      "CANCELLED": "Đã hủy"
+    },
     "cols": {
       "code": "Mã đơn",
       "type": "Loại nghỉ phép",
@@ -394,6 +447,16 @@
       "approve": "Phê duyệt",
       "reject": "Từ chối",
       "history": "Lịch sử duyệt"
+    },
+    "statusLabels": {
+      "PENDING": "Chờ duyệt",
+      "APPROVED": "Đã duyệt",
+      "REJECTED": "Từ chối",
+      "CANCELLED": "Đã hủy"
+    },
+    "actionLabels": {
+      "APPROVE": "Phê duyệt",
+      "REJECT": "Từ chối"
     },
     "modal": {
       "historyTitle": "Lịch sử cấp duyệt phiếu",
