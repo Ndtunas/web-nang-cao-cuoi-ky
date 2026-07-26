@@ -222,6 +222,7 @@ CREATE TABLE IF NOT EXISTS employees (
   department_id BIGINT REFERENCES departments(id) ON DELETE RESTRICT,
   position_id BIGINT REFERENCES positions(id) ON DELETE RESTRICT,
   user_id BIGINT UNIQUE REFERENCES users(id) ON DELETE CASCADE,
+  annual_leave_balance INT NOT NULL DEFAULT 12 CHECK (annual_leave_balance >= 0),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
@@ -429,6 +430,8 @@ CREATE TABLE IF NOT EXISTS salaries (
   ot_weekend_hours NUMERIC(5,2) DEFAULT 0.0,
   ot_holiday_hours NUMERIC(5,2) DEFAULT 0.0,
   ot_pay_amount NUMERIC(12,2) DEFAULT 0.0,
+  night_shift_hours NUMERIC(5,2) DEFAULT 0.0,
+  night_shift_bonus NUMERIC(12,2) DEFAULT 0.0,
   allowance NUMERIC(12,2) DEFAULT 0.0,
   deduction NUMERIC(12,2) DEFAULT 0.0,
   net_salary NUMERIC(12,2) NOT NULL,

@@ -74,6 +74,9 @@ export class Employee {
   @Column({ type: 'bigint', nullable: true, unique: true, name: 'user_id' })
   userId: string;
 
+  @Column({ type: 'int', default: 12, name: 'annual_leave_balance' })
+  annualLeaveBalance: number;
+
   @CreateDateColumn({ type: 'timestamptz', name: 'created_at' })
   createdAt: Date;
 

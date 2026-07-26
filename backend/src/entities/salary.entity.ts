@@ -76,6 +76,24 @@ export class Salary {
   })
   otPayAmount: number;
 
+  @Column({
+    type: 'numeric',
+    precision: 5,
+    scale: 2,
+    default: 0.0,
+    name: 'night_shift_hours',
+  })
+  nightShiftHours: number;
+
+  @Column({
+    type: 'numeric',
+    precision: 12,
+    scale: 2,
+    default: 0.0,
+    name: 'night_shift_bonus',
+  })
+  nightShiftBonus: number;
+
   @Column({ type: 'numeric', precision: 12, scale: 2, default: 0.0 })
   allowance: number;
 
