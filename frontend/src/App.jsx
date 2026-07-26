@@ -647,7 +647,7 @@ function AppContent() {
                   fontWeight: 500
                 }}
               >
-                {i18n.language === 'vi' ? 'EN' : 'VI'}
+                {i18n.language === 'vi' ? 'VI' : 'EN'}
               </Button>
 
               <Dropdown

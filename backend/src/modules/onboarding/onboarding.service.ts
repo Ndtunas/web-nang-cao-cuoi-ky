@@ -233,19 +233,112 @@ export class OnboardingService {
 
   /**
    * Hoàn tất task onboarding (US-16/17).
+   * Phòng nào chỉ duyệt được task thuộc đúng phòng đó
+   * (HR chỉ duyệt task target_department = 'HR', IT chỉ duyệt 'IT'...).
+   * ADMIN có quyền override để xử lý task không thuộc phòng nào
+   * (vd target_department = 'ADMIN' không khớp dept_code nào).
    */
   async completeTask(
     taskId: string,
     userId: string,
   ): Promise<OnboardingTask> {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    if (!user) throw new BusinessException('ERR_AUTH_001');
+
     const task = await this.onboardingTaskRepository.findOne({
       where: { id: taskId },
     });
     if (!task) throw new BusinessException('ERR_UNKNOWN');
+
+    // Chỉ xử lý các task còn ở trạng thái PENDING (chống "complete" 2 lần).
+    if (task.status !== 'PENDING') {
+      throw new BusinessException('ERR_APPROVAL_002');
+    }
+
+    // Lấy Employee kèm phòng ban của user đang đăng nhập.
+    // ADMIN: không bắt buộc có Employee record (vì admin user có thể
+    // không liên kết employee). Vẫn lookup để ghi assigneeId nếu có.
+    let employee: Employee | null = null;
+    if (user.role !== UserRole.ADMIN) {
+      employee = await this.employeeRepository.findOne({
+        where: { userId },
+        relations: { department: true },
+      });
+      if (!employee) {
+        throw new BusinessException('ERR_AUTH_003');
+      }
+    } else {
+      employee = await this.employeeRepository.findOne({
+        where: { userId },
+        relations: { department: true },
+      });
+    }
+
+    // Phòng nào chỉ duyệt được task thuộc đúng phòng đó.
+    // ADMIN được bypass để xử lý case đặc biệt (vd target_department = 'ADMIN'
+    // không khớp dept_code nào, hoặc admin không có employee record).
+    if (user.role !== UserRole.ADMIN && employee) {
+      const userDeptCode = employee.department?.deptCode;
+      if (!userDeptCode || userDeptCode !== task.targetDepartment) {
+        throw new BusinessException('ERR_AUTH_002', {
+          targetDepartment: task.targetDepartment,
+        });
+      }
+    }
+
     task.status = 'COMPLETED';
     task.completedAt = new Date();
-    task.assigneeId = userId;
-    return this.onboardingTaskRepository.save(task);
+
+    // assignee_id FK -> employees.id (nullable). Chỉ set khi user có employee record.
+    if (employee) {
+      task.assigneeId = employee.id;
+    }
+
+    const savedTask = await this.onboardingTaskRepository.save(task);
+
+    // Tự động kiểm tra: nếu đây là task cuối cùng và tất cả đã COMPLETED
+    // → chuyển trạng thái nhân viên sang OFFICIAL.
+    await this.autoPromoteIfAllTasksCompleted(task.employeeId);
+
+    return savedTask;
+  }
+
+  /**
+   * Nếu tất cả onboarding tasks của nhân viên đã COMPLETED → tự động
+   * promote sang OFFICIAL (US-18). Bỏ qua nếu nhân viên đã OFFICIAL rồi
+   * hoặc không còn ở trạng thái ONBOARDING/PROBATION.
+   */
+  private async autoPromoteIfAllTasksCompleted(employeeId: string): Promise<void> {
+    try {
+      const allDone = await this.checkAllCompleted(employeeId);
+      if (!allDone) return;
+
+      const employee = await this.employeeRepository.findOne({
+        where: { id: employeeId },
+      });
+      if (!employee) return;
+
+      if (
+        employee.status !== EmployeeStatus.ONBOARDING &&
+        employee.status !== EmployeeStatus.PROBATION
+      ) {
+        return;
+      }
+
+      employee.status = EmployeeStatus.OFFICIAL;
+      await this.employeeRepository.save(employee);
+      this.logger.log(
+        `Employee #${employee.id} (${employee.fullName}) auto-promoted to OFFICIAL (all ${await this.countTasks(employeeId)} tasks completed)`,
+      );
+    } catch (err) {
+      this.logger.warn(
+        `autoPromoteIfAllTasksCompleted failed for emp#${employeeId}: ${(err as Error).message}`,
+      );
+    }
+  }
+
+  private async countTasks(employeeId: string): Promise<number> {
+    return this.onboardingTaskRepository.count({ where: { employeeId } });
   }
 
   /**

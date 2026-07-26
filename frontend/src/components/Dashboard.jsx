@@ -85,7 +85,6 @@ export default function Dashboard({ employees, stats, pendingApprovals, onOpenDe
                     <div key={d.id} style={{ marginBottom: 16 }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
                         <Text>{d.name}</Text>
-                        <Text strong>{d.percent}%</Text>
                       </div>
                       <Progress percent={d.percent} strokeColor={{ '0%': from, '100%': to }} />
                     </div>

@@ -11,6 +11,6 @@ export class LoginDto {
 
   @IsNotEmpty({ message: 'Mật khẩu không được để trống' })
   @IsString({ message: 'Mật khẩu phải là chuỗi ký tự' })
-  @Matches(PASSWORD_REGEX, { message: PASSWORD_MESSAGE })
+  // @Matches(PASSWORD_REGEX, { message: PASSWORD_MESSAGE })
   password: string;
 }
