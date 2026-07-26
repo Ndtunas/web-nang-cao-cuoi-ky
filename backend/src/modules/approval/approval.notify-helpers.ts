@@ -32,6 +32,7 @@ export async function notifyApproversForNextLevel(
         title: 'Có yêu cầu cần duyệt',
         message: `${requesterName} gửi yêu cầu ${txType} chờ bạn duyệt.`,
         linkUrl: '/approvals',
+        referenceEntityId: String(request.id),
         isRead: false,
       }),
     );
@@ -60,6 +61,7 @@ export async function notifyRequesterOfOutcome(
         outcome === 'APPROVED' ? 'phê duyệt' : 'từ chối'
       }.`,
       linkUrl: '/approvals',
+      referenceEntityId: String(request.id),
       isRead: false,
     });
     await deps.notificationRepo.save(notif);

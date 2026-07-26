@@ -26,6 +26,9 @@ export class Notification {
   @Column({ type: 'varchar', length: 255, nullable: true, name: 'link_url' })
   linkUrl: string;
 
+  @Column({ type: 'varchar', length: 100, nullable: true, name: 'reference_entity_id' })
+  referenceEntityId: string;
+
   @Column({ type: 'boolean', default: false, name: 'is_read' })
   isRead: boolean;
 
