@@ -21,24 +21,8 @@ import { UserRole } from '../../common/enums/business-values.js';
 export class ApprovalController {
   constructor(private readonly approvalService: ApprovalService) {}
 
-  @Get('approval-configs')
-  async getApprovalConfigs() {
-    return this.approvalService.getApprovalConfigs();
-  }
-
-  @Put('approval-configs/:transactionType')
-  @UseGuards(RolesGuard)
-  @Roles(UserRole.ADMIN)
-  async updateApprovalConfig(
-    @Param('transactionType') transactionType: string,
-    @Body('requiredLevels') requiredLevels: number,
-  ) {
-    return this.approvalService.updateApprovalConfig(
-      transactionType,
-      requiredLevels,
-    );
-  }
-
+  // Fixed-segment routes MUST come before :id-param routes, otherwise NestJS
+  // matches "detail" as the :id value and returns 404.
   @Get('approval-requests/pending-my-level')
   async getPendingMyLevel(@CurrentUser() user: User) {
     return this.approvalService.getPendingMyLevel(user.id);
@@ -47,6 +31,16 @@ export class ApprovalController {
   @Get('approval-requests/my-submitted')
   async getMySubmitted(@CurrentUser() user: User) {
     return this.approvalService.getMySubmitted(user.id);
+  }
+
+  @Get('approval-requests/:id/detail')
+  async getDetail(@Param('id') id: string) {
+    return this.approvalService.getDetail(id);
+  }
+
+  @Get('approval-requests/:id/history')
+  async getHistory(@Param('id') id: string) {
+    return this.approvalService.getHistory(id);
   }
 
   @Patch('approval-requests/:id/approve')
@@ -67,8 +61,21 @@ export class ApprovalController {
     return this.approvalService.reject(id, comment, user.id);
   }
 
-  @Get('approval-requests/:id/history')
-  async getHistory(@Param('id') id: string) {
-    return this.approvalService.getHistory(id);
+  @Get('approval-configs')
+  async getApprovalConfigs() {
+    return this.approvalService.getApprovalConfigs();
+  }
+
+  @Put('approval-configs/:transactionType')
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN)
+  async updateApprovalConfig(
+    @Param('transactionType') transactionType: string,
+    @Body('requiredLevels') requiredLevels: number,
+  ) {
+    return this.approvalService.updateApprovalConfig(
+      transactionType,
+      requiredLevels,
+    );
   }
 }

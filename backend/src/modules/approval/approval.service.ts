@@ -273,6 +273,110 @@ export class ApprovalService {
     });
   }
 
+  async getDetail(requestId: string): Promise<any> {
+    const request = await this.approvalRequestRepository.findOne({
+      where: { id: requestId },
+      relations: { requester: true },
+    });
+    if (!request) throw new BusinessException('ERR_APPROVAL_003');
+
+    const config = await this.approvalConfigRepository.findOne({
+      where: { transactionType: request.transactionType },
+    });
+
+    let detail: any = { transactionType: request.transactionType };
+
+    switch (request.transactionType) {
+      case 'LEAVE_SHORT':
+      case 'LEAVE_LONG': {
+        const leave = await this.leaveRequestRepository.findOne({
+          where: { approvalRequestId: requestId },
+        });
+        if (!leave) {
+          const candidateId = request.referenceEntityId;
+          if (candidateId && /^\d+$/.test(candidateId)) {
+            const byId = await this.leaveRequestRepository.findOne({ where: { id: candidateId } });
+            if (byId) { detail = { ...detail, ...byId }; break; }
+          }
+        } else {
+          detail = { ...detail, ...leave };
+        }
+        break;
+      }
+      case 'JOB_TRANSFER': {
+        const jh = await this.jobHistoryRepository.findOne({
+          where: { approvalRequestId: requestId },
+          relations: { oldDepartment: true, newDepartment: true, oldPosition: true, newPosition: true },
+        });
+        if (jh) {
+          const emp = jh.employeeId
+            ? await this.employeeRepository.findOne({ where: { id: jh.employeeId } })
+            : null;
+          detail = {
+            ...detail,
+            ...jh,
+            employeeName: emp?.fullName || null,
+            newDepartmentName: jh.newDepartment?.name || null,
+            newPositionName: jh.newPosition?.title || null,
+            oldDepartmentName: jh.oldDepartment?.name || null,
+            oldPositionName: jh.oldPosition?.title || null,
+          };
+        }
+        break;
+      }
+      case 'SALARY_ADJUSTMENT': {
+        const sh = await this.salaryHistoryRepository.findOne({
+          where: { approvalRequestId: requestId },
+        });
+        if (sh) {
+          const emp = sh.employeeId
+            ? await this.employeeRepository.findOne({ where: { id: sh.employeeId } })
+            : null;
+          detail = {
+            ...detail,
+            ...sh,
+            employeeName: emp?.fullName || null,
+            oldSalaryAmount: sh.oldBaseSalary,
+            newSalaryAmount: sh.newBaseSalary,
+          };
+        }
+        break;
+      }
+      case 'TIMESHEET': {
+        const ts = await this.timesheetRepository.findOne({
+          where: { approvalRequestId: requestId },
+        });
+        if (ts) detail = { ...detail, ...ts };
+        break;
+      }
+      case 'OFFBOARDING': {
+        const emp = await this.employeeRepository.findOne({
+          where: { id: request.referenceEntityId },
+          relations: { department: true },
+        });
+        if (emp) {
+          detail = {
+            ...detail,
+            employeeName: emp.fullName,
+            employeeCode: emp.empCode,
+            departmentName: emp.department?.name || emp.departmentId,
+            lastWorkingDay: emp.endDate,
+          };
+        }
+        break;
+      }
+      default:
+        detail = { ...detail, referenceEntityId: request.referenceEntityId };
+        break;
+    }
+
+    return {
+      ...request,
+      config: config ? { requiredLevels: config.requiredLevels, approverRolesSequence: config.approverRolesSequence } : null,
+      detail,
+    };
+  }
+
   /**
    * US-14: Notify next-level approvers khi advance level.
    */
@@ -455,27 +559,33 @@ export class ApprovalService {
 
   /**
    * US-24 (Leave): Đơn nghỉ phép ngắn/dài ngày được duyệt → cập nhật LeaveRequest.status = APPROVED.
-   * Vì LeaveRequest.approvalRequestId hiện chưa được bind khi submit (module leave-requests là stub),
-   * cố gắng tra theo referenceEntityId trước, fallback tra theo requester gần nhất.
+   * Ưu tiên tra theo approvalRequestId (đã được bind khi submit), fallback theo referenceEntityId
+   * nếu dữ liệu cũ chưa bind. Log cảnh báo khi không tìm thấy.
    */
   private async applyLeaveApproved(request: ApprovalRequest): Promise<void> {
-    const candidateId = request.referenceEntityId;
-    let leave: LeaveRequest | null = null;
-    if (candidateId && /^\d+$/.test(candidateId)) {
-      leave = await this.leaveRequestRepository.findOne({
-        where: { id: candidateId },
-      });
-    }
+    let leave: LeaveRequest | null = await this.leaveRequestRepository.findOne({
+      where: { approvalRequestId: request.id },
+    });
+
     if (!leave) {
-      // Tra theo approvalRequestId (khi leave module bind đúng)
-      leave = await this.leaveRequestRepository.findOne({
-        where: { approvalRequestId: request.id },
-      });
+      const candidateId = request.referenceEntityId;
+      if (candidateId && /^\d+$/.test(candidateId)) {
+        leave = await this.leaveRequestRepository.findOne({
+          where: { id: candidateId },
+        });
+      }
     }
-    if (leave) {
-      leave.status = 'APPROVED';
-      await this.leaveRequestRepository.save(leave);
+
+    if (!leave) {
+      console.warn(
+        `[ApprovalService] LeaveRequest not found for approval request ${request.id} ` +
+          `(ref=${request.referenceEntityId}). Leave status will remain unchanged.`,
+      );
+      return;
     }
+
+    leave.status = 'APPROVED';
+    await this.leaveRequestRepository.save(leave);
   }
 
   /**
