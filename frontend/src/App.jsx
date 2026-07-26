@@ -29,7 +29,8 @@ import {
   AuditOutlined,
   ProjectOutlined,
   LogoutOutlined,
-  ClockCircleOutlined
+  ClockCircleOutlined,
+  PlusOutlined
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import weekOfYear from 'dayjs/plugin/weekOfYear.js';
@@ -92,6 +93,15 @@ function AppContent() {
   // Approvals variables
   const [pendingApprovals, setPendingApprovals] = useState([]);
   const [mySubmittedApprovals, setMySubmittedApprovals] = useState([]);
+  const [notificationToView, setNotificationToView] = useState(null);
+
+  const handleNotificationClick = (notification) => {
+    // Notification có linkUrl hoặc chứa referenceEntityId → mở tab APPROVALS
+    if (notification.linkUrl === '/approvals' || notification.referenceEntityId) {
+      setNotificationToView(notification);
+      setActiveTab(TAB_KEYS.APPROVALS);
+    }
+  };
 
   // Audit Logs variables
   const [auditLogs, setAuditLogs] = useState([]);
@@ -142,7 +152,7 @@ function AppContent() {
       loadEmployeesData();
     } else if (activeTab === TAB_KEYS.TIMESHEETS) {
       loadTimesheetData();
-    } else if (activeTab === TAB_KEYS.APPROVALS) {
+    } else if (activeTab === TAB_KEYS.APPROVALS || activeTab === TAB_KEYS.MY_REQUESTS) {
       loadApprovalsData();
     } else if (activeTab === TAB_KEYS.PAYROLL) {
       loadPayrollData();
@@ -584,6 +594,7 @@ function AppContent() {
               checkAccess(TAB_KEYS.EMPLOYEES) && { key: TAB_KEYS.EMPLOYEES, icon: <TeamOutlined />, label: t('nav.employees') },
               checkAccess(TAB_KEYS.PROJECTS) && { key: TAB_KEYS.PROJECTS, icon: <ProjectOutlined />, label: t('nav.projects') },
               checkAccess(TAB_KEYS.TIMESHEETS) && { key: TAB_KEYS.TIMESHEETS, icon: <CalendarOutlined />, label: t('nav.timesheets') },
+              checkAccess(TAB_KEYS.MY_REQUESTS) && { key: TAB_KEYS.MY_REQUESTS, icon: <CheckCircleOutlined />, label: t('nav.myRequests') },
               checkAccess(TAB_KEYS.APPROVALS) && { key: TAB_KEYS.APPROVALS, icon: <CheckCircleOutlined />, label: t('nav.approvals') },
               checkAccess(TAB_KEYS.PAYROLL) && { key: TAB_KEYS.PAYROLL, icon: <DollarOutlined />, label: t('nav.payroll') },
               checkAccess(TAB_KEYS.CONFIG) && { key: TAB_KEYS.CONFIG, icon: <SettingOutlined />, label: t('nav.settings') },
@@ -622,7 +633,7 @@ function AppContent() {
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
-              <NotificationBell t={t} />
+              <NotificationBell t={t} onNotificationClick={handleNotificationClick} />
 
               <Button
                 type="text"
@@ -757,6 +768,23 @@ function AppContent() {
               />
             ))}
 
+            {activeTab === 'MY_REQUESTS' && renderWithGuard('MY_REQUESTS', (
+              <ApprovalCenter
+                pendingApprovals={pendingApprovals}
+                mySubmittedApprovals={mySubmittedApprovals}
+                onApprove={handleApprove}
+                onReject={handleReject}
+                onGetHistory={api.approvals.getHistory}
+                loading={tableLoading.APPROVALS}
+                loadingActions={{
+                  approve: actionLoading.approve,
+                  reject: actionLoading.reject,
+                }}
+                t={t}
+                mode="submitted-only"
+              />
+            ))}
+
             {activeTab === 'APPROVALS' && renderWithGuard('APPROVALS', (
               <ApprovalCenter
                 pendingApprovals={pendingApprovals}
@@ -770,6 +798,8 @@ function AppContent() {
                   reject: actionLoading.reject,
                 }}
                 t={t}
+                mode="full"
+                initialRequestId={notificationToView?.referenceEntityId}
               />
             ))}
 
@@ -832,7 +862,11 @@ function AppContent() {
             ))}
 
             {activeTab === 'ONBOARDING' && renderWithGuard('ONBOARDING', (
-              <Onboarding t={t} />
+              <Onboarding
+                t={t}
+                departments={departments}
+                positions={positions}
+              />
             ))}
 
             {activeTab === 'ATTENDANCE' && renderWithGuard('ATTENDANCE', (
