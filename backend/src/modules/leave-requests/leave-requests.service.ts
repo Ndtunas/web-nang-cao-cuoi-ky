@@ -1,7 +1,4 @@
-import {
-  Injectable,
-  Logger,
-} from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import { LeaveRequest } from '../../entities/leave-request.entity.js';
@@ -9,11 +6,10 @@ import { Employee } from '../../entities/employee.entity.js';
 import { User } from '../../entities/user.entity.js';
 import { ApprovalRequest } from '../../entities/approval-request.entity.js';
 import { ApprovalConfig } from '../../entities/approval-config.entity.js';
-import {
-  TransactionType,
-  UserRole,
-} from '../../common/enums/business-values.js';
+import { Notification } from '../../entities/notification.entity.js';
+import { TransactionType } from '../../common/enums/business-values.js';
 import { BusinessException } from '../../common/exceptions/business.exception.js';
+import { notifyApproversForNextLevel } from '../approval/approval.notify-helpers.js';
 
 interface SubmitLeaveDto {
   leaveType: string;
@@ -37,6 +33,8 @@ export class LeaveRequestsService {
     private readonly approvalRequestRepository: Repository<ApprovalRequest>,
     @InjectRepository(ApprovalConfig)
     private readonly approvalConfigRepository: Repository<ApprovalConfig>,
+    @InjectRepository(Notification)
+    private readonly notificationRepository: Repository<Notification>,
     private readonly dataSource: DataSource,
   ) {}
 
@@ -77,14 +75,35 @@ export class LeaveRequestsService {
       where: { transactionType: txType },
     });
     const totalLevels = config?.requiredLevels ?? (days <= 2 ? 1 : 2);
+    const approverRolesSequence =
+      config?.approverRolesSequence ?? (days <= 2 ? ['DEPT_LEAD'] : ['DEPT_LEAD', 'DIRECTOR']);
 
     return this.dataSource.transaction(async (manager) => {
       const approvalRepo = manager.getRepository(ApprovalRequest);
       const leaveRepo = manager.getRepository(LeaveRequest);
+      const notifRepo = manager.getRepository(Notification);
+
+      // Insert and get generated ID via RETURNING
+      const result = await manager
+        .createQueryBuilder()
+        .insert()
+        .into(LeaveRequest)
+        .values({
+          employeeId: employee.id,
+          leaveType: dto.leaveType,
+          startDate: start,
+          endDate: end,
+          reason: dto.reason,
+          status: 'PENDING',
+        })
+        .returning('*')
+        .execute();
+      
+      const savedLeave = result.generatedMaps[0] as LeaveRequest;
 
       const approvalReq = approvalRepo.create({
         transactionType: txType,
-        referenceEntityId: '',
+        referenceEntityId: String(savedLeave.id),
         requesterId: employee.id,
         currentLevel: 1,
         totalLevels,
@@ -92,19 +111,25 @@ export class LeaveRequestsService {
       });
       const savedApproval = await approvalRepo.save(approvalReq);
 
-      const leave = leaveRepo.create({
-        employeeId: employee.id,
-        leaveType: dto.leaveType,
-        startDate: start,
-        endDate: end,
-        reason: dto.reason,
-        status: 'PENDING',
-        approvalRequestId: savedApproval.id,
-      });
-      const savedLeave = await leaveRepo.save(leave);
+      savedLeave.approvalRequestId = savedApproval.id;
+      await leaveRepo.save(savedLeave);
 
-      savedApproval.referenceEntityId = savedLeave.id;
-      await approvalRepo.save(savedApproval);
+      // Gửi notification cho approver cấp 1
+      const firstApproverRole = Array.isArray(approverRolesSequence)
+        ? approverRolesSequence[0]
+        : approverRolesSequence;
+      if (firstApproverRole) {
+        await notifyApproversForNextLevel(
+          {
+            notificationRepo: notifRepo,
+            userRepo: manager.getRepository(User),
+            employeeRepo: manager.getRepository(Employee),
+          },
+          savedApproval,
+          firstApproverRole,
+          txType,
+        );
+      }
 
       this.logger.log(
         `Leave submitted: ${savedLeave.id} (${days} ngày, ${txType}, ${totalLevels} cấp)`,
