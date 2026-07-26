@@ -107,9 +107,11 @@ export class PayrollService {
     );
 
     const standardWorkDays = configMap.get('STANDARD_WORK_DAYS_MONTH') || 22.0;
+    const standardWorkHoursDay = configMap.get('STANDARD_WORK_HOURS_DAY') || 8.0;
     const otRateWeekday = configMap.get('OT_RATE_WEEKDAY') || 1.5;
     const otRateWeekend = configMap.get('OT_RATE_WEEKEND') || 2.0;
     const otRateHoliday = configMap.get('OT_RATE_HOLIDAY') || 3.0;
+    const nightShiftBonusRate = configMap.get('NIGHT_SHIFT_BONUS') || 0.3;
 
     const results: Salary[] = [];
 
@@ -143,6 +145,7 @@ export class PayrollService {
       let otNormalHours = 0;
       let otWeekendHours = 0;
       let otHolidayHours = 0;
+      let nightShiftHours = 0;
 
       for (const t of monthTimesheets) {
         // Query entries
@@ -160,19 +163,23 @@ export class PayrollService {
           } else if (entry.workType === 'OT_HOLIDAY') {
             otHolidayHours += hours;
           } else if (entry.workType === 'NIGHT_SHIFT') {
-            totalNormalHours += hours; // Night shift adds to work hours, wait, can be simple normal
+            nightShiftHours += hours;
           }
         }
       }
 
-      const workDays = totalNormalHours / 8.0;
+      const workDays = totalNormalHours / standardWorkHoursDay;
 
       // Calculate hourly rate
-      const hourlyRate = baseSalary / (standardWorkDays * 8.0);
+      const hourlyRate = baseSalary / (standardWorkDays * standardWorkHoursDay);
+      // OT Pay = sum over each OT type of (hours * hourlyRate * rate)
       const otPay =
         otNormalHours * hourlyRate * otRateWeekday +
         otWeekendHours * hourlyRate * otRateWeekend +
         otHolidayHours * hourlyRate * otRateHoliday;
+      // Night shift bonus per spec §10: NIGHT_HOURS * NIGHT_SHIFT_BONUS
+      // applied to the hourly rate as a bonus.
+      const nightShiftBonus = nightShiftHours * hourlyRate * nightShiftBonusRate;
 
       const allowance = 1500000; // Standard food/transport allowance
       const deduction = 500000; // Standard social insurance deduction
@@ -181,6 +188,7 @@ export class PayrollService {
         0,
         baseSalary * (workDays / standardWorkDays) +
           otPay +
+          nightShiftBonus +
           allowance -
           deduction,
       );
@@ -200,6 +208,8 @@ export class PayrollService {
           otWeekendHours,
           otHolidayHours,
           otPayAmount: otPay,
+          nightShiftHours,
+          nightShiftBonus,
           allowance,
           deduction,
           netSalary,
@@ -212,6 +222,8 @@ export class PayrollService {
         salary.otWeekendHours = otWeekendHours;
         salary.otHolidayHours = otHolidayHours;
         salary.otPayAmount = otPay;
+        salary.nightShiftHours = nightShiftHours;
+        salary.nightShiftBonus = nightShiftBonus;
         salary.netSalary = netSalary;
       }
 
