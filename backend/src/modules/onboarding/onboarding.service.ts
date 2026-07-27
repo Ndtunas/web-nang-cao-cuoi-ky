@@ -2,15 +2,15 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { OnboardingTask } from '../../entities/onboarding-task.entity.js';
-import { Employee } from '../../entities/employee.entity.js';
-import { User } from '../../entities/user.entity.js';
-import { EmployeeStatus, UserRole } from '../../common/enums/business-values.js';
-import { BusinessException } from '../../common/exceptions/business.exception.js';
+import { OnboardingTask } from '../../entities/onboarding-task.entity';
+import { Employee } from '../../entities/employee.entity';
+import { User } from '../../entities/user.entity';
+import { EmployeeStatus, UserRole } from '../../common/enums/business-values';
+import { BusinessException } from '../../common/exceptions/business.exception';
 import {
   InitiateEmployeeDto,
   InitiateOnboardingDto,
-} from './dto/initiate-onboarding.dto.js';
+} from './dto/initiate-onboarding.dto';
 
 type EmployeeDto = InitiateEmployeeDto;
 
@@ -395,6 +395,7 @@ export class OnboardingService {
   /**
    * US-16: IT Lead (hoặc Admin) phân công task cho nhân viên IT Support cụ thể,
    * hoặc tự nhận task (selfAssign=true).
+   * Phòng nào chỉ được assign task thuộc đúng phòng đó.
    */
   async assignTask(
     taskId: string,
@@ -405,6 +406,29 @@ export class OnboardingService {
       where: { id: taskId },
     });
     if (!task) throw new BusinessException('ERR_UNKNOWN');
+
+    const requester = await this.userRepository.findOne({
+      where: { id: requesterUserId },
+    });
+    if (!requester) throw new BusinessException('ERR_AUTH_001');
+
+    // Phòng nào chỉ được assign task thuộc đúng phòng đó.
+    // ADMIN được bypass để xử lý case đặc biệt.
+    if (requester.role !== UserRole.ADMIN) {
+      const requesterEmp = await this.employeeRepository.findOne({
+        where: { userId: requesterUserId },
+        relations: { department: true },
+      });
+      if (!requesterEmp) {
+        throw new BusinessException('ERR_AUTH_003');
+      }
+      const userDeptCode = requesterEmp.department?.deptCode;
+      if (!userDeptCode || userDeptCode !== task.targetDepartment) {
+        throw new BusinessException('ERR_AUTH_002', {
+          targetDepartment: task.targetDepartment,
+        });
+      }
+    }
 
     let targetAssigneeId: string | null = null;
     if (dto.selfAssign) {
@@ -426,7 +450,9 @@ export class OnboardingService {
 
   /**
    * US-16/17: Cập nhật trạng thái task (IN_PROGRESS hoặc COMPLETED).
-   * Chỉ assignee hiện tại hoặc Admin mới được cập nhật.
+   * Phòng nào chỉ được cập nhật task thuộc đúng phòng đó
+   * (HR chỉ update task target_department = 'HR', IT chỉ update 'IT'...).
+   * ADMIN có quyền override để xử lý task không thuộc phòng nào.
    */
   async updateTaskStatus(
     taskId: string,
@@ -441,17 +467,30 @@ export class OnboardingService {
     const requester = await this.userRepository.findOne({
       where: { id: requesterUserId },
     });
-    const requesterEmp = requester
-      ? await this.employeeRepository.findOne({
-          where: { userId: requester.id },
-        })
-      : null;
+    if (!requester) throw new BusinessException('ERR_AUTH_001');
 
-    const isAdmin = requester?.role === UserRole.ADMIN;
+    // Lấy Employee của requester để check department
+    const requesterEmp = await this.employeeRepository.findOne({
+      where: { userId: requester.id },
+      relations: { department: true },
+    });
+
+    const isAdmin = requester.role === UserRole.ADMIN;
     const isAssignee =
       task.assigneeId && requesterEmp?.id === task.assigneeId;
+
+    // Phòng nào chỉ update được task thuộc đúng phòng đó.
+    // ADMIN hoặc assignee hiện tại được bypass.
     if (!isAdmin && !isAssignee) {
-      throw new BusinessException('ERR_AUTH_002');
+      if (!requesterEmp) {
+        throw new BusinessException('ERR_AUTH_003');
+      }
+      const userDeptCode = requesterEmp.department?.deptCode;
+      if (!userDeptCode || userDeptCode !== task.targetDepartment) {
+        throw new BusinessException('ERR_AUTH_002', {
+          targetDepartment: task.targetDepartment,
+        });
+      }
     }
 
     task.status = status;
