@@ -100,35 +100,59 @@ export class ApprovalService {
   // ============== REQUESTS ==============
 
   async getPendingMyLevel(userId: string): Promise<any[]> {
+    this.logger.log(`[DEBUG] getPendingMyLevel called for userId=${userId}`);
     const user = await this.userRepository.findOne({ where: { id: userId } });
     if (!user) throw new BusinessException('ERR_AUTH_001');
+    this.logger.log(`[DEBUG] user.role=${user.role}, user.username=${user.username}`);
 
     const allPending = await this.approvalRequestRepository.find({
       where: { status: 'PENDING' },
       relations: { requester: true },
     });
+    this.logger.log(`[DEBUG] allPending count=${allPending.length}`);
 
     const configs = await this.approvalConfigRepository.find();
+    this.logger.log(`[DEBUG] configs count=${configs.length}, raw=${JSON.stringify(configs.map(c => ({tx: c.transactionType, seq: c.approverRolesSequence, type: typeof c.approverRolesSequence})))}`);
     const configMap = new Map(configs.map((c) => [c.transactionType, c]));
 
     const result: any[] = [];
     for (const req of allPending) {
+      this.logger.log(`[DEBUG] checking req ${req.id} tx=${req.transactionType} level=${req.currentLevel}/${req.totalLevels} requesterId=${req.requesterId}`);
       const config = configMap.get(req.transactionType);
-      if (!config) continue;
+      if (!config) {
+        this.logger.warn(`[DEBUG] no config for tx=${req.transactionType}, skipping`);
+        continue;
+      }
 
-      const sequence = (config.approverRolesSequence as string[]) || [];
+      // Defensive: approverRolesSequence có thể là array hoặc JSON string (driver phụ thuộc).
+      let sequence: string[];
+      const rawSeq = config.approverRolesSequence;
+      if (Array.isArray(rawSeq)) {
+        sequence = rawSeq;
+      } else if (typeof rawSeq === 'string') {
+        try { sequence = JSON.parse(rawSeq); } catch { sequence = []; }
+      } else {
+        sequence = [];
+      }
+      this.logger.log(`[DEBUG] parsed sequence for ${req.transactionType} = ${JSON.stringify(sequence)}`);
+
       const currentRequiredRole = sequence[req.currentLevel - 1];
-
-      if (!currentRequiredRole) continue;
+      if (!currentRequiredRole) {
+        this.logger.warn(`[DEBUG] no role at level ${req.currentLevel} (seq len=${sequence.length}), skipping`);
+        continue;
+      }
 
       // Match nếu user đúng role, hoặc ADMIN override
-      if (user.role === currentRequiredRole || user.role === 'ADMIN') {
+      const matches = user.role === currentRequiredRole || user.role === 'ADMIN';
+      this.logger.log(`[DEBUG] currentRequiredRole=${currentRequiredRole} matches=${matches}`);
+      if (matches) {
         result.push({
           ...req,
           requiredRole: currentRequiredRole,
         });
       }
     }
+    this.logger.log(`[DEBUG] result count=${result.length}`);
     return result;
   }
 
@@ -195,7 +219,16 @@ export class ApprovalService {
     if (request.currentLevel < request.totalLevels) {
       request.currentLevel += 1;
       // US-14: notify next approver level
-      await this.notifyNextApprovers(request, config);
+      try {
+        this.logger.log(
+          `[ApprovalService] advance level ${request.currentLevel - 1} → ${request.currentLevel} for request ${request.id}`,
+        );
+        await this.notifyNextApprovers(request, config);
+      } catch (err) {
+        this.logger.error(
+          `Failed to notify next approvers for request ${request.id}: ${(err as Error).message}`,
+        );
+      }
     } else {
       request.status = 'APPROVED';
       await this.executeFinalAction(request);
