@@ -208,9 +208,9 @@ describe('Auth, Users & Config System (e2e)', () => {
         where: { username: 'deptlead' },
       });
       const leadEmp = await employeeRepository.findOne({
-        where: { userId: leadUser.id },
+        where: { userId: leadUser!.id },
       });
-      const originalDeptId = leadEmp.departmentId;
+      const originalDeptId = leadEmp!.departmentId;
 
       // Find non-HR Department
       const nonHrDept = await departmentRepository.findOne({
@@ -218,8 +218,8 @@ describe('Auth, Users & Config System (e2e)', () => {
       });
 
       // Temporarily change deptlead's department to BOD (non-HR)
-      leadEmp.departmentId = nonHrDept.id;
-      await employeeRepository.save(leadEmp);
+      leadEmp!.departmentId = nonHrDept!.id;
+      await employeeRepository.save(leadEmp!);
 
       const response = await request(app.getHttpServer())
         .post('/api/v1/auth/reset-password/request')
@@ -233,8 +233,8 @@ describe('Auth, Users & Config System (e2e)', () => {
       expect(response.body.errorCode).toBe('ERR_AUTH_002');
 
       // Revert deptlead department
-      leadEmp.departmentId = originalDeptId;
-      await employeeRepository.save(leadEmp);
+      leadEmp!.departmentId = originalDeptId!;
+      await employeeRepository.save(leadEmp!);
     });
 
     it('should accept reset request from HR Department Lead and create approval request', async () => {
@@ -243,9 +243,9 @@ describe('Auth, Users & Config System (e2e)', () => {
         where: { username: 'deptlead' },
       });
       const leadEmp = await employeeRepository.findOne({
-        where: { userId: leadUser.id },
+        where: { userId: leadUser!.id },
       });
-      const originalDeptId = leadEmp.departmentId;
+      const originalDeptId = leadEmp!.departmentId;
 
       // Find HR Department ID
       const hrDept = await departmentRepository.findOne({
@@ -253,8 +253,8 @@ describe('Auth, Users & Config System (e2e)', () => {
       });
 
       // Temporarily promote IT Lead to HR Department Lead
-      leadEmp.departmentId = hrDept.id;
-      await employeeRepository.save(leadEmp);
+      leadEmp!.departmentId = hrDept!.id;
+      await employeeRepository.save(leadEmp!);
 
       // Make password reset request as HR Department Lead
       const response = await request(app.getHttpServer())
@@ -270,19 +270,19 @@ describe('Auth, Users & Config System (e2e)', () => {
       expect(response.body.data.message).toContain('Admin phê duyệt');
 
       // Revert IT Lead department
-      leadEmp.departmentId = originalDeptId;
-      await employeeRepository.save(leadEmp);
+      leadEmp!.departmentId = originalDeptId!;
+      await employeeRepository.save(leadEmp!);
 
       // Find the generated approval request in the database
       const appRequest = await approvalRequestRepository.findOne({
         where: { transactionType: 'RESET_PASSWORD', status: 'PENDING' },
       });
-      expect(appRequest).toBeDefined();
-      expect(appRequest.referenceEntityId).toContain(employeeUserId);
+      expect(appRequest).not.toBeNull();
+      expect(appRequest!.referenceEntityId).toContain(employeeUserId);
 
       // Admin approves the request
       const approveResponse = await request(app.getHttpServer())
-        .post(`/api/v1/auth/reset-password/approve/${appRequest.id}`)
+        .post(`/api/v1/auth/reset-password/approve/${appRequest!.id}`)
         .set('Authorization', `Bearer ${adminToken}`)
         .expect(201);
 
