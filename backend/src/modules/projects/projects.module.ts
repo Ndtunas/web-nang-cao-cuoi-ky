@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ProjectsController } from './projects.controller.js';
-import { ProjectsService } from './projects.service.js';
-import { Project } from '../../entities/project.entity.js';
-import { ProjectTask } from '../../entities/project-task.entity.js';
-import { TimesheetEntry } from '../../entities/timesheet-entry.entity.js';
+import { ProjectsController } from './projects.controller';
+import { ProjectsService } from './projects.service';
+import { Project } from '../../entities/project.entity';
+import { ProjectTask } from '../../entities/project-task.entity';
+import { TimesheetEntry } from '../../entities/timesheet-entry.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Project, ProjectTask, TimesheetEntry])],

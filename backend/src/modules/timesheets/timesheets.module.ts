@@ -1,18 +1,18 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { TimesheetsController } from './timesheets.controller.js';
-import { TimesheetsService } from './timesheets.service.js';
-import { Timesheet } from '../../entities/timesheet.entity.js';
-import { TimesheetEntry } from '../../entities/timesheet-entry.entity.js';
-import { Employee } from '../../entities/employee.entity.js';
-import { ApprovalRequest } from '../../entities/approval-request.entity.js';
-import { Project } from '../../entities/project.entity.js';
-import { ProjectTask } from '../../entities/project-task.entity.js';
-import { Attendance } from '../../entities/attendance.entity.js';
-import { WorkRateConfig } from '../../entities/work-rate-config.entity.js';
-import { LoggerModule } from '../../common/logger/logger.module.js';
-import { ApprovalModule } from '../approval/approval.module.js';
-import { AttendanceModule } from '../attendance/attendance.module.js';
+import { TimesheetsController } from './timesheets.controller';
+import { TimesheetsService } from './timesheets.service';
+import { Timesheet } from '../../entities/timesheet.entity';
+import { TimesheetEntry } from '../../entities/timesheet-entry.entity';
+import { Employee } from '../../entities/employee.entity';
+import { ApprovalRequest } from '../../entities/approval-request.entity';
+import { Project } from '../../entities/project.entity';
+import { ProjectTask } from '../../entities/project-task.entity';
+import { Attendance } from '../../entities/attendance.entity';
+import { WorkRateConfig } from '../../entities/work-rate-config.entity';
+import { LoggerModule } from '../../common/logger/logger.module';
+import { ApprovalModule } from '../approval/approval.module';
+import { AttendanceModule } from '../attendance/attendance.module';
 
 @Module({
   imports: [

@@ -9,10 +9,10 @@ import {
   Patch,
   UseGuards,
 } from '@nestjs/common';
-import { TimesheetsService } from './timesheets.service.js';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
-import { CurrentUser } from '../auth/decorators/current-user.decorator.js';
-import { User } from '../../entities/user.entity.js';
+import { TimesheetsService } from './timesheets.service';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { User } from '../../entities/user.entity';
 
 /**
  * Ref: business/04_architecture.md mục 2.3 (Timesheet endpoints)

@@ -1,5 +1,5 @@
 import { IsEnum, IsNotEmpty } from 'class-validator';
-import { UserRole } from '../../../common/enums/business-values.js';
+import { UserRole } from '../../../common/enums/business-values';
 
 export class UpdateRoleDto {
   @IsNotEmpty({ message: 'Vai trò không được để trống' })

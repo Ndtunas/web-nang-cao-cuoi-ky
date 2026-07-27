@@ -1,17 +1,17 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
-import { OffboardingTask } from '../../entities/offboarding-task.entity.js';
-import { Employee } from '../../entities/employee.entity.js';
-import { User } from '../../entities/user.entity.js';
-import { ApprovalRequest } from '../../entities/approval-request.entity.js';
-import { ApprovalConfig } from '../../entities/approval-config.entity.js';
+import { OffboardingTask } from '../../entities/offboarding-task.entity';
+import { Employee } from '../../entities/employee.entity';
+import { User } from '../../entities/user.entity';
+import { ApprovalRequest } from '../../entities/approval-request.entity';
+import { ApprovalConfig } from '../../entities/approval-config.entity';
 import {
   EmployeeStatus,
   TransactionType,
   UserRole,
-} from '../../common/enums/business-values.js';
-import { BusinessException } from '../../common/exceptions/business.exception.js';
+} from '../../common/enums/business-values';
+import { BusinessException } from '../../common/exceptions/business.exception';
 
 @Injectable()
 export class OffboardingService {

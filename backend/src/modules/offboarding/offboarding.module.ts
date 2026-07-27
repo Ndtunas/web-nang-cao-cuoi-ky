@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { OffboardingController } from './offboarding.controller.js';
-import { OffboardingService } from './offboarding.service.js';
-import { OffboardingTask } from '../../entities/offboarding-task.entity.js';
-import { Employee } from '../../entities/employee.entity.js';
-import { User } from '../../entities/user.entity.js';
-import { ApprovalRequest } from '../../entities/approval-request.entity.js';
-import { ApprovalConfig } from '../../entities/approval-config.entity.js';
+import { OffboardingController } from './offboarding.controller';
+import { OffboardingService } from './offboarding.service';
+import { OffboardingTask } from '../../entities/offboarding-task.entity';
+import { Employee } from '../../entities/employee.entity';
+import { User } from '../../entities/user.entity';
+import { ApprovalRequest } from '../../entities/approval-request.entity';
+import { ApprovalConfig } from '../../entities/approval-config.entity';
 
 @Module({
   imports: [

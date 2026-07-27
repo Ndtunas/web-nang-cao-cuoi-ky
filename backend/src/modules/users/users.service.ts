@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from '../../entities/user.entity.js';
-import { UpdateRoleDto } from './dto/update-role.dto.js';
-import { BusinessException } from '../../common/exceptions/business.exception.js';
+import { User } from '../../entities/user.entity';
+import { UpdateRoleDto } from './dto/update-role.dto';
+import { BusinessException } from '../../common/exceptions/business.exception';
 
 @Injectable()
 export class UsersService {

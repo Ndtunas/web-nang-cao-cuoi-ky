@@ -1,10 +1,10 @@
 import { Controller, Get, Post, Patch, Body, Query, UseGuards } from '@nestjs/common';
-import { PayrollService } from './payroll.service.js';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
-import { RolesGuard } from '../auth/guards/roles.guard.js';
-import { Roles } from '../auth/decorators/roles.decorator.js';
-import { CurrentUser } from '../auth/decorators/current-user.decorator.js';
-import { UserRole } from '../../common/enums/business-values.js';
+import { PayrollService } from './payroll.service';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { UserRole } from '../../common/enums/business-values';
 
 @Controller('payroll')
 @UseGuards(JwtAuthGuard, RolesGuard)

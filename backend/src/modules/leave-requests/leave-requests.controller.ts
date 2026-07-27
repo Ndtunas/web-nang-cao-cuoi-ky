@@ -7,13 +7,13 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
-import { LeaveRequestsService } from './leave-requests.service.js';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
-import { RolesGuard } from '../auth/guards/roles.guard.js';
-import { Roles } from '../auth/decorators/roles.decorator.js';
-import { CurrentUser } from '../auth/decorators/current-user.decorator.js';
-import { UserRole } from '../../common/enums/business-values.js';
-import { User } from '../../entities/user.entity.js';
+import { LeaveRequestsService } from './leave-requests.service';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { UserRole } from '../../common/enums/business-values';
+import { User } from '../../entities/user.entity';
 
 @Controller('leave-requests')
 @UseGuards(JwtAuthGuard, RolesGuard)

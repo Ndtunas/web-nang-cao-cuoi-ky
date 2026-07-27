@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { PayrollController } from './payroll.controller.js';
-import { PayrollService } from './payroll.service.js';
-import { Salary } from '../../entities/salary.entity.js';
-import { Employee } from '../../entities/employee.entity.js';
-import { WorkRateConfig } from '../../entities/work-rate-config.entity.js';
-import { Timesheet } from '../../entities/timesheet.entity.js';
-import { TimesheetEntry } from '../../entities/timesheet-entry.entity.js';
-import { ApprovalRequest } from '../../entities/approval-request.entity.js';
+import { PayrollController } from './payroll.controller';
+import { PayrollService } from './payroll.service';
+import { Salary } from '../../entities/salary.entity';
+import { Employee } from '../../entities/employee.entity';
+import { WorkRateConfig } from '../../entities/work-rate-config.entity';
+import { Timesheet } from '../../entities/timesheet.entity';
+import { TimesheetEntry } from '../../entities/timesheet-entry.entity';
+import { ApprovalRequest } from '../../entities/approval-request.entity';
 
 @Module({
   imports: [

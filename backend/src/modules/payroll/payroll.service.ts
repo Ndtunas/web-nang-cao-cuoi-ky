@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Salary } from '../../entities/salary.entity.js';
-import { Employee } from '../../entities/employee.entity.js';
-import { WorkRateConfig } from '../../entities/work-rate-config.entity.js';
-import { Timesheet } from '../../entities/timesheet.entity.js';
-import { TimesheetEntry } from '../../entities/timesheet-entry.entity.js';
-import { BusinessException } from '../../common/exceptions/business.exception.js';
+import { Salary } from '../../entities/salary.entity';
+import { Employee } from '../../entities/employee.entity';
+import { WorkRateConfig } from '../../entities/work-rate-config.entity';
+import { Timesheet } from '../../entities/timesheet.entity';
+import { TimesheetEntry } from '../../entities/timesheet-entry.entity';
+import { BusinessException } from '../../common/exceptions/business.exception';
 
 @Injectable()
 export class PayrollService {

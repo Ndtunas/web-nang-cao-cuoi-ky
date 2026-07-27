@@ -1,10 +1,10 @@
 import {
   Controller, Get, Patch, Param, UseGuards,
 } from '@nestjs/common';
-import { NotificationsService } from './notifications.service.js';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
-import { CurrentUser } from '../auth/decorators/current-user.decorator.js';
-import { User } from '../../entities/user.entity.js';
+import { NotificationsService } from './notifications.service';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { User } from '../../entities/user.entity';
 
 @Controller('notifications')
 @UseGuards(JwtAuthGuard)

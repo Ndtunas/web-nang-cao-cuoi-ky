@@ -1,17 +1,17 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Project } from '../../entities/project.entity.js';
-import { ProjectTask } from '../../entities/project-task.entity.js';
-import { TimesheetEntry } from '../../entities/timesheet-entry.entity.js';
+import { Project } from '../../entities/project.entity';
+import { ProjectTask } from '../../entities/project-task.entity';
+import { TimesheetEntry } from '../../entities/timesheet-entry.entity';
 import {
   CreateProjectDto,
   UpdateProjectDto,
-} from './dto/create-project.dto.js';
+} from './dto/create-project.dto';
 import {
   CreateProjectTaskDto,
   UpdateProjectTaskDto,
-} from './dto/create-project-task.dto.js';
+} from './dto/create-project-task.dto';
 
 /**
  * Service quản lý Dự án & Task thuộc dự án

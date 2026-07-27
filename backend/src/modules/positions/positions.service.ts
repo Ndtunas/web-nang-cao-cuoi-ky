@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeepPartial, Repository } from 'typeorm';
-import { Position } from '../../entities/position.entity.js';
-import { Employee } from '../../entities/employee.entity.js';
-import { BusinessException } from '../../common/exceptions/business.exception.js';
+import { Position } from '../../entities/position.entity';
+import { Employee } from '../../entities/employee.entity';
+import { BusinessException } from '../../common/exceptions/business.exception';
 
 @Injectable()
 export class PositionsService {

@@ -9,19 +9,19 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { ProjectsService } from './projects.service.js';
+import { ProjectsService } from './projects.service';
 import {
   CreateProjectDto,
   UpdateProjectDto,
-} from './dto/create-project.dto.js';
+} from './dto/create-project.dto';
 import {
   CreateProjectTaskDto,
   UpdateProjectTaskDto,
-} from './dto/create-project-task.dto.js';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
-import { RolesGuard } from '../auth/guards/roles.guard.js';
-import { Roles } from '../auth/decorators/roles.decorator.js';
-import { UserRole } from '../../common/enums/business-values.js';
+} from './dto/create-project-task.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { UserRole } from '../../common/enums/business-values';
 
 /**
  * Controller cho Dự án & Task
