@@ -1,24 +1,24 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ApprovalRequest } from '../../entities/approval-request.entity.js';
-import { ApprovalStepHistory } from '../../entities/approval-step-history.entity.js';
-import { ApprovalConfig } from '../../entities/approval-config.entity.js';
-import { Employee } from '../../entities/employee.entity.js';
-import { Timesheet } from '../../entities/timesheet.entity.js';
-import { User } from '../../entities/user.entity.js';
-import { JobHistory } from '../../entities/job-history.entity.js';
-import { SalaryHistory } from '../../entities/salary-history.entity.js';
-import { Salary } from '../../entities/salary.entity.js';
-import { LeaveRequest } from '../../entities/leave-request.entity.js';
-import { OffboardingTask } from '../../entities/offboarding-task.entity.js';
-import { Notification } from '../../entities/notification.entity.js';
-import { EmployeeStatus } from '../../common/enums/business-values.js';
-import { BusinessException } from '../../common/exceptions/business.exception.js';
+import { ApprovalRequest } from '../../entities/approval-request.entity';
+import { ApprovalStepHistory } from '../../entities/approval-step-history.entity';
+import { ApprovalConfig } from '../../entities/approval-config.entity';
+import { Employee } from '../../entities/employee.entity';
+import { Timesheet } from '../../entities/timesheet.entity';
+import { User } from '../../entities/user.entity';
+import { JobHistory } from '../../entities/job-history.entity';
+import { SalaryHistory } from '../../entities/salary-history.entity';
+import { Salary } from '../../entities/salary.entity';
+import { LeaveRequest } from '../../entities/leave-request.entity';
+import { OffboardingTask } from '../../entities/offboarding-task.entity';
+import { Notification } from '../../entities/notification.entity';
+import { EmployeeStatus } from '../../common/enums/business-values';
+import { BusinessException } from '../../common/exceptions/business.exception';
 import {
   notifyApproversForNextLevel,
   notifyRequesterOfOutcome,
-} from './approval.notify-helpers.js';
+} from './approval.notify-helpers';
 
 /**
  * Service phê duyệt đa cấp
@@ -503,21 +503,7 @@ export class ApprovalService {
 
     // Offboarding: nếu đã chuyển NOTICE_PERIOD thì revert lại OFFICIAL
     if (request.transactionType === 'OFFBOARDING') {
-      const refId = request.referenceEntityId;
-      const employeeIdMatch = refId?.match?.(/^EMP-([\w-]+)/);
-      if (refId) {
-        const employee = await this.employeeRepository.findOne({
-          where: { id: refId },
-        });
-        if (employee && employee.status === EmployeeStatus.NOTICE_PERIOD) {
-          employee.status = EmployeeStatus.OFFICIAL;
-          await this.employeeRepository.save(employee);
-        }
-      }
-      // Remove any auto-created OffboardingTask
-      await this.offboardingTaskRepository.delete({
-        employeeId: request.referenceEntityId,
-      });
+      await this.revertOffboardingApproved(request);
     }
   }
 
@@ -726,5 +712,22 @@ export class ApprovalService {
       });
       await this.offboardingTaskRepository.save(task);
     }
+  }
+
+  /** Revert offboarding: restore employee to OFFICIAL and remove auto-created tasks */
+  private async revertOffboardingApproved(request: ApprovalRequest): Promise<void> {
+    const refId = request.referenceEntityId;
+    if (refId) {
+      const employee = await this.employeeRepository.findOne({
+        where: { id: refId },
+      });
+      if (employee && employee.status === EmployeeStatus.NOTICE_PERIOD) {
+        employee.status = EmployeeStatus.OFFICIAL;
+        await this.employeeRepository.save(employee);
+      }
+    }
+    await this.offboardingTaskRepository.delete({
+      employeeId: refId,
+    } as any);
   }
 }
