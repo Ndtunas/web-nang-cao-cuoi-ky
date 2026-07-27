@@ -7,7 +7,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Employee } from './employee.entity.js';
+import { Employee } from './employee.entity';
 
 /** Bảng 15: offboarding_tasks — Ref: schema.sql line 338-349 */
 @Entity('offboarding_tasks')

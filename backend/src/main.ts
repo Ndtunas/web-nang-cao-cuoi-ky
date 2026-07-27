@@ -1,11 +1,11 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { Logger as PinoLoggerWrapper, PinoLogger } from 'nestjs-pino';
-import { AppModule } from './app.module.js';
-import { HttpExceptionFilter } from './common/filters/http-exception.filter.js';
-import { TransformInterceptor } from './common/interceptors/transform.interceptor.js';
-import { LoggingInterceptor } from './common/interceptors/logging.interceptor.js';
-import { FilteredLogger } from './common/logger/logger.module.js';
+import { AppModule } from './app.module';
+import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+import { TransformInterceptor } from './common/interceptors/transform.interceptor';
+import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
+import { FilteredLogger } from './common/logger/logger.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {

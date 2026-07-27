@@ -6,8 +6,8 @@ import {
   JoinColumn,
   CreateDateColumn,
 } from 'typeorm';
-import { Employee } from './employee.entity.js';
-import { ApprovalRequest } from './approval-request.entity.js';
+import { Employee } from './employee.entity';
+import { ApprovalRequest } from './approval-request.entity';
 
 /** Bảng 18: salary_histories — Ref: schema.sql line 377-388 */
 @Entity('salary_histories')

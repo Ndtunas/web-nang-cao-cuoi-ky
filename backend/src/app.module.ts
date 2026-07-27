@@ -1,30 +1,30 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { AppController } from './app.controller.js';
-import { AppService } from './app.service.js';
-import { DatabaseModule } from './database/database.module.js';
-import { LoggerModule } from './common/logger/logger.module.js';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { DatabaseModule } from './database/database.module';
+import { LoggerModule } from './common/logger/logger.module';
 
 // 8 Mô-đun Nghiệp Vụ (theo 04_architecture.md)
-import { AuditLogsModule } from './modules/audit-logs/audit-logs.module.js';
-import { AuthModule } from './modules/auth/auth.module.js';
-import { UsersModule } from './modules/users/users.module.js';
-import { WorkRateConfigModule } from './modules/config/work-rate-config.module.js';
-import { TimesheetsModule } from './modules/timesheets/timesheets.module.js';
-import { ApprovalModule } from './modules/approval/approval.module.js';
-import { OnboardingModule } from './modules/onboarding/onboarding.module.js';
-import { OffboardingModule } from './modules/offboarding/offboarding.module.js';
-import { EmployeesModule } from './modules/employees/employees.module.js';
-import { AttendanceModule } from './modules/attendance/attendance.module.js';
-import { LeaveRequestsModule } from './modules/leave-requests/leave-requests.module.js';
-import { PayrollModule } from './modules/payroll/payroll.module.js';
+import { AuditLogsModule } from './modules/audit-logs/audit-logs.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { UsersModule } from './modules/users/users.module';
+import { WorkRateConfigModule } from './modules/config/work-rate-config.module';
+import { TimesheetsModule } from './modules/timesheets/timesheets.module';
+import { ApprovalModule } from './modules/approval/approval.module';
+import { OnboardingModule } from './modules/onboarding/onboarding.module';
+import { OffboardingModule } from './modules/offboarding/offboarding.module';
+import { EmployeesModule } from './modules/employees/employees.module';
+import { AttendanceModule } from './modules/attendance/attendance.module';
+import { LeaveRequestsModule } from './modules/leave-requests/leave-requests.module';
+import { PayrollModule } from './modules/payroll/payroll.module';
 
 // Supporting Modules (Master Data)
-import { DepartmentsModule } from './modules/departments/departments.module.js';
-import { PositionsModule } from './modules/positions/positions.module.js';
-import { ProjectsModule } from './modules/projects/projects.module.js';
-import { NotificationsModule } from './modules/notifications/notifications.module.js';
-import { ExportsModule } from './modules/exports/exports.module.js';
+import { DepartmentsModule } from './modules/departments/departments.module';
+import { PositionsModule } from './modules/positions/positions.module';
+import { ProjectsModule } from './modules/projects/projects.module';
+import { NotificationsModule } from './modules/notifications/notifications.module';
+import { ExportsModule } from './modules/exports/exports.module';
 
 @Module({
   imports: [

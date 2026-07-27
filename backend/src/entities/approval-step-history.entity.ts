@@ -1,6 +1,6 @@
 import { Entity, PrimaryColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
-import { ApprovalRequest } from './approval-request.entity.js';
-import { Employee } from './employee.entity.js';
+import { ApprovalRequest } from './approval-request.entity';
+import { Employee } from './employee.entity';
 
 /**
  * Bảng 11: approval_step_histories — Lịch sử các cấp duyệt

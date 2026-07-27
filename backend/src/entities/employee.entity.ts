@@ -7,9 +7,9 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { User } from './user.entity.js';
-import { Department } from './department.entity.js';
-import { Position } from './position.entity.js';
+import { User } from './user.entity';
+import { Department } from './department.entity';
+import { Position } from './position.entity';
 
 /**
  * Bảng 6: employees — Hồ sơ nhân viên (Thực thể Trung tâm)

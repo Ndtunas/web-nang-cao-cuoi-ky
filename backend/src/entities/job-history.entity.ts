@@ -6,10 +6,10 @@ import {
   JoinColumn,
   CreateDateColumn,
 } from 'typeorm';
-import { Employee } from './employee.entity.js';
-import { Department } from './department.entity.js';
-import { Position } from './position.entity.js';
-import { ApprovalRequest } from './approval-request.entity.js';
+import { Employee } from './employee.entity';
+import { Department } from './department.entity';
+import { Position } from './position.entity';
+import { ApprovalRequest } from './approval-request.entity';
 
 /** Bảng 17: job_histories — Ref: schema.sql line 363-374 */
 @Entity('job_histories')

@@ -1,5 +1,5 @@
 import { Entity, PrimaryColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
-import { User } from './user.entity.js';
+import { User } from './user.entity';
 
 /** Bảng 2: system_audit_logs — Ref: schema.sql line 157-169 */
 @Entity('system_audit_logs')

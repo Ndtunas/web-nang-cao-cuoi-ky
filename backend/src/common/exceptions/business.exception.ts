@@ -1,5 +1,5 @@
 import { HttpException } from '@nestjs/common';
-import type { BusinessErrorPayload } from '../enums/business-values.js';
+import type { BusinessErrorPayload } from '../enums/business-values';
 
 /**
  * Custom Business Exception theo chuẩn 05_business_values.md mục 4.

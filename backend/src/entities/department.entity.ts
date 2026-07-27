@@ -7,7 +7,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Employee } from './employee.entity.js';
+import { Employee } from './employee.entity';
 
 /**
  * Bảng 5: departments — Phòng ban

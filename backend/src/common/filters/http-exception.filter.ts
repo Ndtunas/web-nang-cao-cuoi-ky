@@ -7,8 +7,8 @@ import {
 } from '@nestjs/common';
 import type { Request, Response } from 'express';
 import { PinoLogger } from 'nestjs-pino';
-import type { BusinessErrorPayload } from '../enums/business-values.js';
-import { BusinessException } from '../exceptions/business.exception.js';
+import type { BusinessErrorPayload } from '../enums/business-values';
+import { BusinessException } from '../exceptions/business.exception';
 
 /**
  * Global Exception Filter — chuẩn theo 05_business_values.md mục 4.

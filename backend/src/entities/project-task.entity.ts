@@ -7,7 +7,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Project } from './project.entity.js';
+import { Project } from './project.entity';
 
 /**
  * Bảng 8: project_tasks — Công việc thuộc dự án

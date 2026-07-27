@@ -7,7 +7,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { User } from './user.entity.js';
+import { User } from './user.entity';
 
 /** Bảng 3: work_rate_configs — Ref: schema.sql line 172-182 */
 @Entity('work_rate_configs')

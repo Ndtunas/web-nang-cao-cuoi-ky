@@ -6,7 +6,7 @@ import {
   JoinColumn,
   CreateDateColumn,
 } from 'typeorm';
-import { User } from './user.entity.js';
+import { User } from './user.entity';
 
 /** Bảng 16: notifications — Ref: schema.sql line 352-360 */
 @Entity('notifications')

@@ -2,9 +2,9 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PinoLogger } from 'nestjs-pino';
-import * as entities from '../entities/index.js';
-import { LoggerModule } from '../common/logger/logger.module.js';
-import { DatabaseLogger } from './database.logger.js';
+import * as entities from '../entities/index';
+import { LoggerModule } from '../common/logger/logger.module';
+import { DatabaseLogger } from './database.logger';
 
 /**
  * Database Module — TypeORM + PostgreSQL

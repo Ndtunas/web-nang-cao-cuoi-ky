@@ -7,9 +7,9 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Timesheet } from './timesheet.entity.js';
-import { Project } from './project.entity.js';
-import { ProjectTask } from './project-task.entity.js';
+import { Timesheet } from './timesheet.entity';
+import { Project } from './project.entity';
+import { ProjectTask } from './project-task.entity';
 
 /**
  * Bảng 13: timesheet_entries — Chi tiết dòng khai giờ công từng ngày

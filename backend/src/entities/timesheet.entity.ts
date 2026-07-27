@@ -7,8 +7,8 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Employee } from './employee.entity.js';
-import { ApprovalRequest } from './approval-request.entity.js';
+import { Employee } from './employee.entity';
+import { ApprovalRequest } from './approval-request.entity';
 
 /**
  * Bảng 12: timesheets — Bảng Timesheet tuần

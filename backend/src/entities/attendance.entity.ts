@@ -6,7 +6,7 @@ import {
   JoinColumn,
   CreateDateColumn,
 } from 'typeorm';
-import { Employee } from './employee.entity.js';
+import { Employee } from './employee.entity';
 
 /** Bảng 19: attendances — Ref: schema.sql line 391-401 */
 @Entity('attendances')

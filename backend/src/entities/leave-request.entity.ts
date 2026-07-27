@@ -7,8 +7,8 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Employee } from './employee.entity.js';
-import { ApprovalRequest } from './approval-request.entity.js';
+import { Employee } from './employee.entity';
+import { ApprovalRequest } from './approval-request.entity';
 
 /** Bảng 20: leave_requests — Ref: schema.sql line 404-415 */
 @Entity('leave_requests')
