@@ -140,14 +140,11 @@ INSERT INTO work_rate_configs (config_key, config_name, value_multiplier, status
 -- ====================================================================
 -- 4. FIX PASSWORD HASHES (Idempotent - chạy an toàn nhiều lần)
 -- Cơ chế đơn giản: hash trực tiếp từ password thuần.
---   admin:    "Admin@123"
---   director: "Admin@123"
---   deptlead: "Admin@123"
---   employee: "Admin@123"
--- Tất cả 4 user dùng cùng hash (hash của "Admin@123").
+--   admin:    "12345678"
+--   director: "12345678"
+--   deptlead: "12345678"
+--   employee: "12345678"
+-- Tất cả 4 user dùng cùng hash (hash của "12345678").
 -- Nếu muốn generate lại hash mới, chạy: cd backend && node scripts/hash-seed.mjs
 -- ====================================================================
-UPDATE users SET password_hash = '$2b$10$mb3MIld6wfeadkoFUA0d7utssBQHLTe9y0HZfoeBnSesa8uM3MTIq' WHERE username = 'admin';
-UPDATE users SET password_hash = '$2b$10$mb3MIld6wfeadkoFUA0d7utssBQHLTe9y0HZfoeBnSesa8uM3MTIq' WHERE username = 'director';
-UPDATE users SET password_hash = '$2b$10$mb3MIld6wfeadkoFUA0d7utssBQHLTe9y0HZfoeBnSesa8uM3MTIq' WHERE username = 'deptlead';
-UPDATE users SET password_hash = '$2b$10$mb3MIld6wfeadkoFUA0d7utssBQHLTe9y0HZfoeBnSesa8uM3MTIq' WHERE username = 'employee';
+UPDATE users SET password_hash = '$2b$10$3RPOZCMxowfoicfjmziO0.VoGRuKMsi0NU0hKnCgBnnC3bwHdMJkO' WHERE username IN ('admin', 'director', 'deptlead', 'employee');

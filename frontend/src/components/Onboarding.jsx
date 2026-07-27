@@ -260,7 +260,7 @@ export default function Onboarding({ t, departments = [], positions = [] }) {
             {employee.department?.name || '-'}
           </Descriptions.Item>
           <Descriptions.Item label={t('modal.fields.position')}>
-            {employee.position?.name || '-'}
+            {employee.position?.title || '-'}
           </Descriptions.Item>
           <Descriptions.Item label={t('directory.modals.taxCode')}>
             {employee.taxCode || '-'}
@@ -406,7 +406,7 @@ export default function Onboarding({ t, departments = [], positions = [] }) {
         <Form.Item label={t('modal.fields.position')} name="positionId">
           <Select placeholder={t('onb.placeholder.position')} allowClear showSearch>
             {positions.map((p) => (
-              <Select.Option key={p.id} value={p.id}>{p.name}</Select.Option>
+              <Select.Option key={p.id} value={p.id}>{p.title}</Select.Option>
             ))}
           </Select>
         </Form.Item>
@@ -484,7 +484,7 @@ export default function Onboarding({ t, departments = [], positions = [] }) {
             {detailEmployee.department?.name || '-'}
           </Descriptions.Item>
           <Descriptions.Item label={t('modal.fields.position')}>
-            {detailEmployee.position?.name || '-'}
+            {detailEmployee.position?.title || '-'}
           </Descriptions.Item>
         </Descriptions>
 

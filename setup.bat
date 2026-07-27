@@ -177,6 +177,19 @@ if errorlevel 1 (
         exit /b 1
     )
     echo [OK] Database seeded from database/05_migration_annual_leave.sql
+    echo Running database/04b_seed_extended.sql via psql...
+    pushd "%PROJECT_ROOT%"
+    psql -h %DB_HOST% -p %DB_PORT% -U %DB_USERNAME% -d %DB_DATABASE% -v ON_ERROR_STOP=1 -f "database\04b_seed_extended.sql"
+    set PSQL_EXIT=%errorlevel%
+    popd
+    if not "%PSQL_EXIT%"=="0" (
+        echo.
+        echo [WARNING] Extended seed failed with exit code %PSQL_EXIT%. Continuing anyway.
+        echo HR/FIN/SALES/MKT/ADMIN/BOD test users may be missing.
+        pause
+    ) else (
+        echo [OK] Extended test users seeded (HR/FIN/SALES/MKT/ADMIN/BOD)
+    )
 )
 
 :: ==================== CREATE ACCOUNTS FILE ====================
@@ -199,30 +212,42 @@ echo ================================================
     echo SYSTEM ACCOUNTS:
     echo --------------------------------
     echo Username    : admin
-    echo Password    : Admin@123
+    echo Password    : 12345678
     echo Role        : ADMIN
     echo Department  : BOD
     echo.
     echo Username    : director
-    echo Password    : Admin@123
+    echo Password    : 12345678
     echo Role        : DIRECTOR
     echo Department  : BOD
     echo.
     echo IT DEPARTMENT:
     echo --------------------------------
-    echo Username    : deptlead
-    echo Password    : Admin@123
+    echo Username    : deptlead / it_lead
+    echo Password    : 12345678
     echo Role        : DEPT_LEAD
     echo Department  : IT
     echo.
-    echo Username    : employee
-    echo Password    : Admin@123
+    echo Username    : employee / it_dev1 / it_dev2
+    echo Password    : 12345678
     echo Role        : EMPLOYEE
     echo Department  : IT
+    echo.
+    echo EXTENDED TEST USERS (from 04b_seed_extended.sql):
+    echo --------------------------------
+    echo HR     : hr_lead, hr_staff1, hr_staff2       ^(DEPT_LEAD/EMPLOYEE^)
+    echo ADMIN  : admin_lead, admin_staff1, admin_staff2
+    echo FIN    : fin_lead, fin_acct1, fin_acct2
+    echo SALES  : sales_lead, sales_exec1, sales_exec2
+    echo MKT    : mkt_lead, mkt_exec1, mkt_exec2
+    echo BOD    : bod_lead
+    echo.
+    echo All passwords: 12345678
     echo.
     echo ===============================================
     echo   PASSWORD FORMAT: hash^(password^)
     echo   User chỉ cần nhập đúng password như trên là login được.
+    echo   Extended users: see database/04b_seed_extended.sql ^(HR/FIN/SALES/MKT/ADMIN/BOD^)
     echo ===============================================
 )
 

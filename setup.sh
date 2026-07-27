@@ -154,26 +154,37 @@ cat > "$ACCOUNTS_FILE" << 'EOF'
 SYSTEM ACCOUNTS:
 --------------------------------
 Username    : admin
-Password    : Admin@123
+Password    : 12345678
 Role       : ADMIN
 Department : BOD
 
 Username    : director
-Password    : Admin@123
+Password    : 12345678
 Role       : DIRECTOR
 Department : BOD
 
 IT DEPARTMENT:
 --------------------------------
-Username    : deptlead
-Password    : Admin@123
+Username    : deptlead / it_lead
+Password    : 12345678
 Role       : DEPT_LEAD
 Department : IT
 
-Username    : employee
-Password    : Admin@123
+Username    : employee / it_dev1 / it_dev2
+Password    : 12345678
 Role       : EMPLOYEE
 Department : IT
+
+EXTENDED TEST USERS (from 04b_seed_extended.sql):
+--------------------------------
+HR     : hr_lead, hr_staff1, hr_staff2       (DEPT_LEAD/EMPLOYEE)
+ADMIN  : admin_lead, admin_staff1, admin_staff2
+FIN    : fin_lead, fin_acct1, fin_acct2
+SALES  : sales_lead, sales_exec1, sales_exec2
+MKT    : mkt_lead, mkt_exec1, mkt_exec2
+BOD    : bod_lead
+
+All passwords: 12345678
 
 Username    : it_support
 Password    : ItPVTTemp@ItPVT1993-05-10
@@ -200,7 +211,9 @@ Role       : EMPLOYEE
 Department : ADMIN
 
 ================================================
-  PASSWORD FORMAT: empCode + Temp@ + empCode + dob
+  PASSWORD FORMAT: hash(plain password)
+  Tất cả user dùng password: 12345678
+  Extended users: HR/FIN/SALES/MKT/ADMIN/BOD (see 04b_seed_extended.sql)
 ================================================
 EOF
 
