@@ -1,0 +1,472 @@
+
+> backend@0.0.1 test:e2e
+> jest --config ./test/jest-e2e.json
+
+PASS test/app.e2e-spec.ts
+[00:11:58.861] [32mINFO[39m: [36m | GET / 200[39m
+    [35mreq[39m: {
+      "method": "GET",
+      "url": "/",
+      "requestId": "req-b9f0b33c-3810-4b21-9c9f-bb3bed6756f4",
+      "remoteAddress": "::ffff:127.0.0.1"
+    }
+    [35mres[39m: {
+      "statusCode": 200
+    }
+    [35mduration_ms[39m: 7
+[00:11:59.004] [32mINFO[39m: [36m | POST /api/v1/auth/login 201[39m
+    [35mreq[39m: {
+      "method": "POST",
+      "url": "/api/v1/auth/login",
+      "requestId": "req-3717619b-ff0c-4471-be69-2deb846cf88d",
+      "remoteAddress": "::ffff:127.0.0.1"
+    }
+    [35mres[39m: {
+      "statusCode": 201
+    }
+    [35mduration_ms[39m: 136
+[00:11:59.097] [32mINFO[39m: [36m | POST /api/v1/auth/login 201[39m
+    [35mreq[39m: {
+      "method": "POST",
+      "url": "/api/v1/auth/login",
+      "requestId": "req-3c56b9dd-bac9-450f-b337-dc675bc9f2a8",
+      "remoteAddress": "::ffff:127.0.0.1"
+    }
+    [35mres[39m: {
+      "statusCode": 201
+    }
+    [35mduration_ms[39m: 80
+[00:11:59.176] [32mINFO[39m: [36m | POST /api/v1/auth/login 201[39m
+    [35mreq[39m: {
+      "method": "POST",
+      "url": "/api/v1/auth/login",
+      "requestId": "req-dd9935aa-6802-40d4-9987-793fe709b265",
+      "remoteAddress": "::ffff:127.0.0.1"
+    }
+    [35mres[39m: {
+      "statusCode": 201
+    }
+    [35mduration_ms[39m: 75
+[00:11:59.256] [31mERROR[39m: [36m | POST /api/v1/auth/login 500 - failed with status code 500[39m
+    [35mreq[39m: {
+      "method": "POST",
+      "url": "/api/v1/auth/login",
+      "requestId": "req-15463999-4e82-48fd-b445-5000c153e241",
+      "remoteAddress": "::ffff:127.0.0.1"
+    }
+    [35mres[39m: {
+      "statusCode": 500
+    }
+    [35mduration_ms[39m: 76
+    err: {
+      "type": "Object",
+      "message": "failed with status code 500",
+      "stack":
+          Error: failed with status code 500
+              at onResFinished (/mnt/workspace/999_personal/000-zon-web-nang-cao-cuoi-ky/backend/node_modules/.pnpm/pino-http@11.0.0/node_modules/pino-http/logger.js:115:39)
+              at ServerResponse.onResponseComplete (/mnt/workspace/999_personal/000-zon-web-nang-cao-cuoi-ky/backend/node_modules/.pnpm/pino-http@11.0.0/node_modules/pino-http/logger.js:178:14)
+              at ServerResponse.emit (node:events:521:24)
+              at onFinish (node:_http_outgoing:1026:10)
+              at callback (node:internal/streams/writable:764:21)
+              at afterWrite (node:internal/streams/writable:708:5)
+              at afterWriteTick (node:internal/streams/writable:694:10)
+              at processTicksAndRejections (node:internal/process/task_queues:89:21)
+    }
+[00:11:59.272] [32mINFO[39m: [36m | GET /api/v1/auth/profile 200[39m
+    [35mreq[39m: {
+      "method": "GET",
+      "url": "/api/v1/auth/profile",
+      "requestId": "req-cd837965-6558-4a9f-b5c1-90e3211a3f75",
+      "remoteAddress": "::ffff:127.0.0.1"
+    }
+    [35mres[39m: {
+      "statusCode": 200
+    }
+    [35mduration_ms[39m: 8
+[00:11:59.281] [31mERROR[39m: [36m | GET /api/v1/auth/profile 500 - failed with status code 500[39m
+    [35mreq[39m: {
+      "method": "GET",
+      "url": "/api/v1/auth/profile",
+      "requestId": "req-9c59aa1a-f639-4ac8-bd0c-2cbe6afd99ef",
+      "remoteAddress": "::ffff:127.0.0.1"
+    }
+    [35mres[39m: {
+      "statusCode": 500
+    }
+    [35mduration_ms[39m: 4
+    err: {
+      "type": "Object",
+      "message": "failed with status code 500",
+      "stack":
+          Error: failed with status code 500
+              at onResFinished (/mnt/workspace/999_personal/000-zon-web-nang-cao-cuoi-ky/backend/node_modules/.pnpm/pino-http@11.0.0/node_modules/pino-http/logger.js:115:39)
+              at ServerResponse.onResponseComplete (/mnt/workspace/999_personal/000-zon-web-nang-cao-cuoi-ky/backend/node_modules/.pnpm/pino-http@11.0.0/node_modules/pino-http/logger.js:178:14)
+              at ServerResponse.emit (node:events:521:24)
+              at onFinish (node:_http_outgoing:1026:10)
+              at callback (node:internal/streams/writable:764:21)
+              at afterWrite (node:internal/streams/writable:708:5)
+              at afterWriteTick (node:internal/streams/writable:694:10)
+              at processTicksAndRejections (node:internal/process/task_queues:89:21)
+    }
+[00:11:59.439] [32mINFO[39m: [36m | POST /api/v1/auth/change-password 201[39m
+    [35mreq[39m: {
+      "method": "POST",
+      "url": "/api/v1/auth/change-password",
+      "requestId": "req-a68e42e7-580d-4d98-95ac-6ed06ee3a0dc",
+      "remoteAddress": "::ffff:127.0.0.1"
+    }
+    [35mres[39m: {
+      "statusCode": 201
+    }
+    [35mduration_ms[39m: 151
+[00:11:59.517] [32mINFO[39m: [36m | POST /api/v1/auth/login 201[39m
+    [35mreq[39m: {
+      "method": "POST",
+      "url": "/api/v1/auth/login",
+      "requestId": "req-aea0d911-06d3-4e58-a474-6a05a8ee93e4",
+      "remoteAddress": "::ffff:127.0.0.1"
+    }
+    [35mres[39m: {
+      "statusCode": 201
+    }
+    [35mduration_ms[39m: 74
+[00:11:59.671] [32mINFO[39m: [36m | POST /api/v1/auth/change-password 201[39m
+    [35mreq[39m: {
+      "method": "POST",
+      "url": "/api/v1/auth/change-password",
+      "requestId": "req-d73adb58-818d-4936-9af4-9371057fc1ff",
+      "remoteAddress": "::ffff:127.0.0.1"
+    }
+    [35mres[39m: {
+      "statusCode": 201
+    }
+    [35mduration_ms[39m: 149
+[00:11:59.747] [32mINFO[39m: [36m | POST /api/v1/auth/login 201[39m
+    [35mreq[39m: {
+      "method": "POST",
+      "url": "/api/v1/auth/login",
+      "requestId": "req-836b3a50-9cac-4a92-9d10-3b1df51b3e79",
+      "remoteAddress": "::ffff:127.0.0.1"
+    }
+    [35mres[39m: {
+      "statusCode": 201
+    }
+    [35mduration_ms[39m: 71
+[00:11:59.761] [32mINFO[39m: [36m | POST /api/v1/auth/refresh 201[39m
+    [35mreq[39m: {
+      "method": "POST",
+      "url": "/api/v1/auth/refresh",
+      "requestId": "req-9a964501-d476-473f-918e-29566c10191f",
+      "remoteAddress": "::ffff:127.0.0.1"
+    }
+    [35mres[39m: {
+      "statusCode": 201
+    }
+    [35mduration_ms[39m: 8
+[00:11:59.836] [32mINFO[39m: [36m | POST /api/v1/auth/login 201[39m
+    [35mreq[39m: {
+      "method": "POST",
+      "url": "/api/v1/auth/login",
+      "requestId": "req-66b1baf7-9964-47eb-ba13-114782cb30ad",
+      "remoteAddress": "::ffff:127.0.0.1"
+    }
+    [35mres[39m: {
+      "statusCode": 201
+    }
+    [35mduration_ms[39m: 70
+[00:11:59.863] [32mINFO[39m: [36m | POST /api/v1/auth/logout 201[39m
+    [35mreq[39m: {
+      "method": "POST",
+      "url": "/api/v1/auth/logout",
+      "requestId": "req-96deea8b-4b47-4d9a-b0f2-c91bda008873",
+      "remoteAddress": "::ffff:127.0.0.1"
+    }
+    [35mres[39m: {
+      "statusCode": 201
+    }
+    [35mduration_ms[39m: 24
+[00:11:59.869] [31mERROR[39m: [36m | POST /api/v1/auth/refresh 500 - failed with status code 500[39m
+    [35mreq[39m: {
+      "method": "POST",
+      "url": "/api/v1/auth/refresh",
+      "requestId": "req-31fed8f4-7bb7-4421-a8d4-2cad468b402b",
+      "remoteAddress": "::ffff:127.0.0.1"
+    }
+    [35mres[39m: {
+      "statusCode": 500
+    }
+    [35mduration_ms[39m: 4
+    err: {
+      "type": "Object",
+      "message": "failed with status code 500",
+      "stack":
+          Error: failed with status code 500
+              at onResFinished (/mnt/workspace/999_personal/000-zon-web-nang-cao-cuoi-ky/backend/node_modules/.pnpm/pino-http@11.0.0/node_modules/pino-http/logger.js:115:39)
+              at ServerResponse.onResponseComplete (/mnt/workspace/999_personal/000-zon-web-nang-cao-cuoi-ky/backend/node_modules/.pnpm/pino-http@11.0.0/node_modules/pino-http/logger.js:178:14)
+              at ServerResponse.emit (node:events:521:24)
+              at onFinish (node:_http_outgoing:1026:10)
+              at callback (node:internal/streams/writable:764:21)
+              at afterWrite (node:internal/streams/writable:708:5)
+              at afterWriteTick (node:internal/streams/writable:694:10)
+              at processTicksAndRejections (node:internal/process/task_queues:89:21)
+    }
+[00:11:59.970] [31mERROR[39m: [36m | POST /api/v1/auth/reset-password/request 500 - failed with status code 500[39m
+    [35mreq[39m: {
+      "method": "POST",
+      "url": "/api/v1/auth/reset-password/request",
+      "requestId": "req-eda90ae2-1a09-48f8-82e7-69aee60c9ff8",
+      "remoteAddress": "::ffff:127.0.0.1"
+    }
+    [35mres[39m: {
+      "statusCode": 500
+    }
+    [35mduration_ms[39m: 82
+    err: {
+      "type": "Object",
+      "message": "failed with status code 500",
+      "stack":
+          Error: failed with status code 500
+              at onResFinished (/mnt/workspace/999_personal/000-zon-web-nang-cao-cuoi-ky/backend/node_modules/.pnpm/pino-http@11.0.0/node_modules/pino-http/logger.js:115:39)
+              at ServerResponse.onResponseComplete (/mnt/workspace/999_personal/000-zon-web-nang-cao-cuoi-ky/backend/node_modules/.pnpm/pino-http@11.0.0/node_modules/pino-http/logger.js:178:14)
+              at ServerResponse.emit (node:events:521:24)
+              at onFinish (node:_http_outgoing:1026:10)
+              at callback (node:internal/streams/writable:764:21)
+              at afterWrite (node:internal/streams/writable:708:5)
+              at afterWriteTick (node:internal/streams/writable:694:10)
+              at processTicksAndRejections (node:internal/process/task_queues:89:21)
+    }
+[00:12:00.074] [32mINFO[39m: [36m | POST /api/v1/auth/reset-password/request 201[39m
+    [35mreq[39m: {
+      "method": "POST",
+      "url": "/api/v1/auth/reset-password/request",
+      "requestId": "req-f69833c3-86bf-474d-9686-789c60e841ce",
+      "remoteAddress": "::ffff:127.0.0.1"
+    }
+    [35mres[39m: {
+      "statusCode": 201
+    }
+    [35mduration_ms[39m: 85
+[00:12:00.122] [32mINFO[39m: [36m | POST /api/v1/auth/reset-password/approve/74911611881525809 201[39m
+    [35mreq[39m: {
+      "method": "POST",
+      "url": "/api/v1/auth/reset-password/approve/74911611881525809",
+      "requestId": "req-436abd55-32a3-4d38-887f-303d1f560c58",
+      "remoteAddress": "::ffff:127.0.0.1"
+    }
+    [35mres[39m: {
+      "statusCode": 201
+    }
+    [35mduration_ms[39m: 27
+[00:12:00.201] [32mINFO[39m: [36m | POST /api/v1/auth/login 201[39m
+    [35mreq[39m: {
+      "method": "POST",
+      "url": "/api/v1/auth/login",
+      "requestId": "req-544bc2df-3200-40d1-9f01-3af32b343b3f",
+      "remoteAddress": "::ffff:127.0.0.1"
+    }
+    [35mres[39m: {
+      "statusCode": 201
+    }
+    [35mduration_ms[39m: 75
+[00:12:00.355] [32mINFO[39m: [36m | POST /api/v1/auth/change-password 201[39m
+    [35mreq[39m: {
+      "method": "POST",
+      "url": "/api/v1/auth/change-password",
+      "requestId": "req-6856d15c-c703-4314-b8de-93f5d7e2a258",
+      "remoteAddress": "::ffff:127.0.0.1"
+    }
+    [35mres[39m: {
+      "statusCode": 201
+    }
+    [35mduration_ms[39m: 151
+[00:12:00.374] [32mINFO[39m: [36m | PATCH /api/v1/users/73242549581516927/role 200[39m
+    [35mreq[39m: {
+      "method": "PATCH",
+      "url": "/api/v1/users/73242549581516927/role",
+      "requestId": "req-276e2afb-420b-4e77-b703-d3475008fe78",
+      "remoteAddress": "::ffff:127.0.0.1"
+    }
+    [35mres[39m: {
+      "statusCode": 200
+    }
+    [35mduration_ms[39m: 13
+[00:12:00.386] [32mINFO[39m: [36m | PATCH /api/v1/users/73242549581516927/role 200[39m
+    [35mreq[39m: {
+      "method": "PATCH",
+      "url": "/api/v1/users/73242549581516927/role",
+      "requestId": "req-4a609c20-d366-4836-bc36-52d16c4b7796",
+      "remoteAddress": "::ffff:127.0.0.1"
+    }
+    [35mres[39m: {
+      "statusCode": 200
+    }
+    [35mduration_ms[39m: 8
+[00:12:00.396] [31mERROR[39m: [36m | PATCH /api/v1/users/73242549581516927/role 500 - failed with status code 500[39m
+    [35mreq[39m: {
+      "method": "PATCH",
+      "url": "/api/v1/users/73242549581516927/role",
+      "requestId": "req-c3f62638-a144-4b05-b2c2-d4c1b47c2c7d",
+      "remoteAddress": "::ffff:127.0.0.1"
+    }
+    [35mres[39m: {
+      "statusCode": 500
+    }
+    [35mduration_ms[39m: 4
+    err: {
+      "type": "Object",
+      "message": "failed with status code 500",
+      "stack":
+          Error: failed with status code 500
+              at onResFinished (/mnt/workspace/999_personal/000-zon-web-nang-cao-cuoi-ky/backend/node_modules/.pnpm/pino-http@11.0.0/node_modules/pino-http/logger.js:115:39)
+              at ServerResponse.onResponseComplete (/mnt/workspace/999_personal/000-zon-web-nang-cao-cuoi-ky/backend/node_modules/.pnpm/pino-http@11.0.0/node_modules/pino-http/logger.js:178:14)
+              at ServerResponse.emit (node:events:521:24)
+              at onFinish (node:_http_outgoing:1026:10)
+              at callback (node:internal/streams/writable:764:21)
+              at afterWrite (node:internal/streams/writable:708:5)
+              at afterWriteTick (node:internal/streams/writable:694:10)
+              at processTicksAndRejections (node:internal/process/task_queues:89:21)
+    }
+[00:12:00.409] [32mINFO[39m: [36m | GET /api/v1/config/work-rates 200[39m
+    [35mreq[39m: {
+      "method": "GET",
+      "url": "/api/v1/config/work-rates",
+      "requestId": "req-82c785e9-87da-4633-ab7d-52320af21932",
+      "remoteAddress": "::ffff:127.0.0.1"
+    }
+    [35mres[39m: {
+      "statusCode": 200
+    }
+    [35mduration_ms[39m: 8
+[00:12:00.429] [32mINFO[39m: [36m | PUT /api/v1/config/work-rates/MAX_ANNUAL_LEAVE_DAYS 200[39m
+    [35mreq[39m: {
+      "method": "PUT",
+      "url": "/api/v1/config/work-rates/MAX_ANNUAL_LEAVE_DAYS",
+      "requestId": "req-08c65692-3818-4821-972f-8ee80a2acfd6",
+      "remoteAddress": "::ffff:127.0.0.1"
+    }
+    [35mres[39m: {
+      "statusCode": 200
+    }
+    [35mduration_ms[39m: 16
+[00:12:00.446] [32mINFO[39m: [36m | PUT /api/v1/config/work-rates/MAX_ANNUAL_LEAVE_DAYS 200[39m
+    [35mreq[39m: {
+      "method": "PUT",
+      "url": "/api/v1/config/work-rates/MAX_ANNUAL_LEAVE_DAYS",
+      "requestId": "req-8984826d-3228-4299-b4ba-8f67695f553d",
+      "remoteAddress": "::ffff:127.0.0.1"
+    }
+    [35mres[39m: {
+      "statusCode": 200
+    }
+    [35mduration_ms[39m: 12
+FAIL test/auth.e2e-spec.ts
+  ● Auth, Users & Config System (e2e) › 1. Authentication Flows › should reject login with wrong password
+
+    expected 401 "Unauthorized", got 500 "Internal Server Error"
+
+      100 |         .post('/api/v1/auth/login')
+      101 |         .send({ username: 'employee', password: 'WrongPassword@123' })
+    > 102 |         .expect(401);
+          |          ^
+      103 |
+      104 |       expect(response.body.errorCode).toBe('ERR_AUTH_001');
+      105 |     });
+
+      at Object.<anonymous> (auth.e2e-spec.ts:102:10)
+      ----
+      at Test._assertStatus (../node_modules/.pnpm/supertest@7.2.2/node_modules/supertest/lib/test.js:309:14)
+      at ../node_modules/.pnpm/supertest@7.2.2/node_modules/supertest/lib/test.js:365:13
+      at Test._assertFunction (../node_modules/.pnpm/supertest@7.2.2/node_modules/supertest/lib/test.js:342:13)
+      at Test.assert (../node_modules/.pnpm/supertest@7.2.2/node_modules/supertest/lib/test.js:195:23)
+      at localAssert (../node_modules/.pnpm/supertest@7.2.2/node_modules/supertest/lib/test.js:138:14)
+      at Server.<anonymous> (../node_modules/.pnpm/supertest@7.2.2/node_modules/supertest/lib/test.js:152:11)
+
+  ● Auth, Users & Config System (e2e) › 1. Authentication Flows › should reject profile request without JWT
+
+    expected 401 "Unauthorized", got 500 "Internal Server Error"
+
+      118 |       await request(app.getHttpServer())
+      119 |         .get('/api/v1/auth/profile')
+    > 120 |         .expect(401);
+          |          ^
+      121 |     });
+      122 |
+      123 |     it('should support changing password directly by the employee', async () => {
+
+      at Object.<anonymous> (auth.e2e-spec.ts:120:10)
+      ----
+      at Test._assertStatus (../node_modules/.pnpm/supertest@7.2.2/node_modules/supertest/lib/test.js:309:14)
+      at ../node_modules/.pnpm/supertest@7.2.2/node_modules/supertest/lib/test.js:365:13
+      at Test._assertFunction (../node_modules/.pnpm/supertest@7.2.2/node_modules/supertest/lib/test.js:342:13)
+      at Test.assert (../node_modules/.pnpm/supertest@7.2.2/node_modules/supertest/lib/test.js:195:23)
+      at localAssert (../node_modules/.pnpm/supertest@7.2.2/node_modules/supertest/lib/test.js:138:14)
+      at Server.<anonymous> (../node_modules/.pnpm/supertest@7.2.2/node_modules/supertest/lib/test.js:152:11)
+
+  ● Auth, Users & Config System (e2e) › 1.1. Refresh Token & Logout Flows › should support logging out and clearing the stored refresh token
+
+    expected 401 "Unauthorized", got 500 "Internal Server Error"
+
+      196 |         .post('/api/v1/auth/refresh')
+      197 |         .send({ refreshToken })
+    > 198 |         .expect(401);
+          |          ^
+      199 |     });
+      200 |   });
+      201 |
+
+      at Object.<anonymous> (auth.e2e-spec.ts:198:10)
+      ----
+      at Test._assertStatus (../node_modules/.pnpm/supertest@7.2.2/node_modules/supertest/lib/test.js:309:14)
+      at ../node_modules/.pnpm/supertest@7.2.2/node_modules/supertest/lib/test.js:365:13
+      at Test._assertFunction (../node_modules/.pnpm/supertest@7.2.2/node_modules/supertest/lib/test.js:342:13)
+      at Test.assert (../node_modules/.pnpm/supertest@7.2.2/node_modules/supertest/lib/test.js:195:23)
+      at localAssert (../node_modules/.pnpm/supertest@7.2.2/node_modules/supertest/lib/test.js:138:14)
+      at Server.<anonymous> (../node_modules/.pnpm/supertest@7.2.2/node_modules/supertest/lib/test.js:152:11)
+
+  ● Auth, Users & Config System (e2e) › 2. Password Reset Approval Workflow › should reject reset request from non-HR Department Lead
+
+    expected 403 "Forbidden", got 500 "Internal Server Error"
+
+      227 |           newPassword: 'ResetPassword@123',
+      228 |         })
+    > 229 |         .expect(403);
+          |          ^
+      230 |
+      231 |       expect(response.body.errorCode).toBe('ERR_AUTH_002');
+      232 |
+
+      at Object.<anonymous> (auth.e2e-spec.ts:229:10)
+      ----
+      at Test._assertStatus (../node_modules/.pnpm/supertest@7.2.2/node_modules/supertest/lib/test.js:309:14)
+      at ../node_modules/.pnpm/supertest@7.2.2/node_modules/supertest/lib/test.js:365:13
+      at Test._assertFunction (../node_modules/.pnpm/supertest@7.2.2/node_modules/supertest/lib/test.js:342:13)
+      at Test.assert (../node_modules/.pnpm/supertest@7.2.2/node_modules/supertest/lib/test.js:195:23)
+      at localAssert (../node_modules/.pnpm/supertest@7.2.2/node_modules/supertest/lib/test.js:138:14)
+      at Server.<anonymous> (../node_modules/.pnpm/supertest@7.2.2/node_modules/supertest/lib/test.js:152:11)
+
+  ● Auth, Users & Config System (e2e) › 3. Users Role Management › should reject role update requests from normal employees
+
+    expected 403 "Forbidden", got 500 "Internal Server Error"
+
+      328 |         .set('Authorization', `Bearer ${employeeToken}`)
+      329 |         .send({ role: UserRole.ADMIN })
+    > 330 |         .expect(403);
+          |          ^
+      331 |     });
+      332 |   });
+      333 |
+
+      at Object.<anonymous> (auth.e2e-spec.ts:330:10)
+      ----
+      at Test._assertStatus (../node_modules/.pnpm/supertest@7.2.2/node_modules/supertest/lib/test.js:309:14)
+      at ../node_modules/.pnpm/supertest@7.2.2/node_modules/supertest/lib/test.js:365:13
+      at Test._assertFunction (../node_modules/.pnpm/supertest@7.2.2/node_modules/supertest/lib/test.js:342:13)
+      at Test.assert (../node_modules/.pnpm/supertest@7.2.2/node_modules/supertest/lib/test.js:195:23)
+      at localAssert (../node_modules/.pnpm/supertest@7.2.2/node_modules/supertest/lib/test.js:138:14)
+      at Server.<anonymous> (../node_modules/.pnpm/supertest@7.2.2/node_modules/supertest/lib/test.js:152:11)
+
+Test Suites: 1 failed, 1 passed, 2 total
+Tests:       5 failed, 12 passed, 17 total
+Snapshots:   0 total
+Time:        4.783 s, estimated 5 s
+Ran all test suites.
