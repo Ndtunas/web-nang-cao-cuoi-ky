@@ -1,0 +1,695 @@
+{
+  "appTitle": "Hệ Thống Quản Lý Nhân Sự (HRM)",
+  "nav": {
+    "dashboard": "Tổng quan",
+    "employees": "Danh sách Nhân viên",
+    "departments": "Phòng ban",
+    "timesheets": "Giờ công",
+    "attendance": "Chấm công",
+    "payroll": "Bảng lương",
+    "settings": "Cài đặt",
+    "projects": "Dự án",
+    "logout": "Đăng xuất",
+    "approvals": "Phê duyệt",
+    "myRequests": "Yêu cầu của tôi",
+    "auditLogs": "Nhật ký tác động",
+    "leave": "Nghỉ phép",
+    "onboarding": "Onboarding",
+    "offboarding": "Offboarding"
+  },
+  "header": {
+    "searchPlaceholder": "Tìm kiếm nhân viên, phòng ban...",
+    "language": "Ngôn ngữ",
+    "admin": "Quản trị viên"
+  },
+  "stats": {
+    "totalEmployees": "Tổng số nhân viên",
+    "activeEmployees": "Nhân viên đang làm",
+    "onLeave": "Nghỉ phép hôm nay",
+    "newHires": "Tuyển dụng mới (tháng)"
+  },
+  "employeeTable": {
+    "title": "Danh sách Nhân viên",
+    "addEmployee": "Thêm Nhân viên",
+    "id": "Mã NV",
+    "name": "Họ và Tên",
+    "department": "Phòng ban",
+    "position": "Chức vụ",
+    "status": "Trạng thái",
+    "actions": "Thao tác",
+    "active": "Đang làm việc",
+    "onLeave": "Nghỉ phép",
+    "terminated": "Đã nghỉ việc",
+    "edit": "Sửa",
+    "delete": "Xóa",
+    "statusLabels": {
+      "ONBOARDING": "Đang onboarding",
+      "PROBATION": "Thử việc",
+      "OFFICIAL": "Chính thức",
+      "SUSPENDED": "Tạm hoãn HĐLĐ",
+      "NOTICE_PERIOD": "Báo trước nghỉ việc",
+      "TERMINATED": "Đã thôi việc"
+    }
+  },
+  "modal": {
+    "titleAdd": "Thêm Nhân Viên Mới",
+    "titleEdit": "Chỉnh Sửa Thông Tin Nhân Viên",
+    "save": "Lưu thông tin",
+    "cancel": "Hủy bỏ",
+    "fields": {
+      "name": "Họ và Tên",
+      "email": "Email",
+      "phone": "Số điện thoại",
+      "gender": "Giới tính",
+      "department": "Phòng ban",
+      "position": "Chức vụ",
+      "status": "Trạng thái"
+    }
+  },
+  "error": {
+    "auth": {
+      "invalidCredentials": "Tên đăng nhập hoặc mật khẩu không chính xác.",
+      "accessDenied": "Bạn không có quyền truy cập vào tài nguyên này."
+    },
+    "employee": {
+      "codeOrEmailExists": "Mã nhân viên hoặc Email đã tồn tại trong hệ thống.",
+      "cannotTransferNoticePeriod": "Nhân viên đang trong thời gian báo trước nghỉ việc, không thể điều chuyển."
+    },
+    "leave": {
+      "insufficientBalance": "Số ngày phép còn lại không đủ để đăng ký.",
+      "invalidDateRange": "Ngày bắt đầu nghỉ phải nhỏ hơn hoặc bằng ngày kết thúc.",
+      "cannotCancel": "Chỉ có thể hủy đơn nghỉ phép khi còn ở trạng thái Chờ duyệt."
+    },
+    "approval": {
+      "unauthorizedLevel": "Bạn không có thẩm quyền phê duyệt ở cấp hiện tại.",
+      "alreadyRejected": "Phiếu yêu cầu đã bị từ chối trước đó, không thể duyệt tiếp."
+    },
+    "timesheet": {
+      "alreadyApproved": "Bảng Timesheet tuần đã được phê duyệt, không thể chỉnh sửa.",
+      "notFound": "Không tìm thấy bảng Timesheet yêu cầu.",
+      "noEntriesToSubmit": "Không có giờ công nào để nộp. Vui lòng nhập ít nhất một dòng công việc."
+    },
+    "payroll": {
+      "alreadyFinalized": "Bảng lương tháng đã chốt phê duyệt, không thể tính toán lại."
+    },
+    "attendance": {
+      "outsideCheckInWindow": "Ngoài giờ chấm công vào (chỉ chấp nhận từ 07:30 đến 23:59).",
+      "outsideCheckOutWindow": "Ngoài giờ chấm công ra (chỉ chấp nhận từ 00:00 đến 23:59). Hệ thống sẽ tự động chốt sau 23:59:30."
+    },
+    "common": {
+      "notFound": "Không tìm thấy tài nguyên yêu cầu."
+    },
+    "network": {
+      "fetchFailed": "Không thể kết nối tới máy chủ. Vui lòng thử lại sau."
+    }
+  },
+  "common": {
+    "back": "Quay lại Tổng quan",
+    "confirm": "Xác nhận",
+    "cancel": "Hủy bỏ",
+    "successApprove": "Đã duyệt phiếu yêu cầu thành công!",
+    "successReject": "Đã từ chối phiếu yêu cầu!",
+    "errorApprove": "Lỗi khi phê duyệt yêu cầu",
+    "errorReject": "Lỗi khi từ chối yêu cầu",
+    "errorSaveEmployee": "Lỗi khi lưu hồ sơ nhân viên",
+    "errorTransfer": "Lỗi khi gửi yêu cầu điều chuyển",
+    "errorSalaryAdjust": "Lỗi khi gửi yêu cầu điều chỉnh lương",
+    "errorDiscipline": "Lỗi khi ghi nhận khen thưởng/kỷ luật",
+    "errorCalculatePayroll": "Lỗi khi tính bảng lương",
+    "successTransfer": "Đã gửi yêu cầu điều chuyển công tác lên ma trận duyệt!",
+    "successSalaryAdjust": "Đã gửi yêu cầu điều chỉnh lương lên ma trận duyệt!",
+    "successDiscipline": "Ghi nhận khen thưởng/kỷ luật thành công!",
+    "successUpdateWorkRate": "Cập nhật hệ số công thành công!",
+    "errorUpdateWorkRate": "Lỗi khi cập nhật hệ số công",
+    "successUpdateApprovalMatrix": "Cập nhật ma trận duyệt thành công!",
+    "errorUpdateApprovalMatrix": "Lỗi khi cập nhật ma trận duyệt",
+    "errorLoadEmployees": "Không thể tải danh sách nhân viên",
+    "errorLoadTimesheets": "Không thể tải bảng chấm công tuần",
+    "errorLoadApprovals": "Không thể tải danh sách phê duyệt",
+    "errorLoadConfigs": "Không thể tải cấu hình hệ thống",
+    "errorLoadAuditLogs": "Không thể tải nhật ký tác động",
+    "errorSaveTimesheet": "Lỗi khi lưu bảng chấm công",
+    "errorSubmitTimesheet": "Lỗi khi nộp bảng chấm công",
+    "submittedByLabel": "bởi",
+    "placeholderSelectProject": "Chọn dự án",
+    "placeholderSelectTask": "Chọn công việc",
+    "placeholderUsernameExample": "Ví dụ: admin, employee",
+    "refresh": "Tải lại",
+    "submit": "Gửi",
+    "cancel": "Hủy",
+    "errorLoadLeaveRequests": "Không thể tải danh sách đơn nghỉ phép",
+    "errorLoadOffboarding": "Không thể tải danh sách offboarding",
+    "errorLoadOnboarding": "Không thể tải danh sách onboarding",
+    "successCreate": "Đã tạo yêu cầu thành công!",
+    "successApproveOffb": "Đã duyệt đơn thôi việc thành công!",
+    "errorResign": "Lỗi khi nộp đơn thôi việc",
+    "errorInitOnboarding": "Lỗi khi khởi tạo onboarding",
+    "errorCompleteTask": "Lỗi khi hoàn tất task onboarding/offboarding",
+    "successCompleteTask": "Đã hoàn tất task!"
+  },
+  "offb": {
+    "cardTitle": "Quy trình Offboarding",
+    "btnResign": "Nộp đơn xin thôi việc",
+    "btnComplete": "Hoàn tất task",
+    "btnSubmit": "Gửi đơn",
+    "modalResignTitle": "Nộp đơn xin thôi việc",
+    "employeeHint": "Nhấn \"Nộp đơn xin thôi việc\" để khởi tạo luồng duyệt 3 cấp (DEPT_LEAD → DIRECTOR → CHAIRMAN). Khi được duyệt, trạng thái nhân viên sẽ chuyển sang TERMINATED.",
+    "confirmComplete": "Đánh dấu task này đã hoàn tất?",
+    "cols": {
+      "code": "Mã task",
+      "employee": "Nhân viên",
+      "taskTitle": "Tên task",
+      "department": "Phòng ban phụ trách",
+      "status": "Trạng thái",
+      "actions": "Thao tác",
+      "reason": "Lý do thôi việc"
+    },
+    "validation": {
+      "reasonRequired": "Vui lòng nhập lý do thôi việc"
+    }
+  },
+  "notif": {
+    "title": "Thông báo",
+    "empty": "Bạn không có thông báo nào",
+    "markAllRead": "Đánh dấu tất cả đã đọc"
+  },
+  "att": {
+    "cardTitle": "Chấm công (Attendance)",
+    "checkIn": "Chấm công vào",
+    "checkOut": "Chấm công ra",
+    "checkedIn": "Đã chấm công vào",
+    "checkedOut": "Đã chấm công ra",
+    "today": "Hôm nay",
+    "myHistory": "Lịch sử của tôi",
+    "statsTitle": "Thống kê tháng này",
+    "cols": {
+      "date": "Ngày",
+      "checkIn": "Giờ vào",
+      "checkOut": "Giờ ra",
+      "workHours": "Số giờ",
+      "status": "Trạng thái",
+      "employee": "Nhân viên"
+    },
+    "statusLabels": {
+      "PRESENT": "Đúng giờ",
+      "LATE": "Đi muộn",
+      "HALF_DAY": "Nửa ngày",
+      "ABSENT": "Vắng mặt",
+      "OVERTIME": "Tăng ca",
+      "INCOMPLETE": "Chưa đủ"
+    },
+    "msgCheckInSuccess": "Chấm công vào thành công!",
+    "msgCheckOutSuccess": "Chấm công ra thành công!",
+    "msgCheckInError": "Không thể chấm công vào. Bạn có thể đã chấm công hôm nay rồi.",
+    "msgCheckOutError": "Không thể chấm công ra. Bạn cần chấm công vào trước.",
+    "confirmCheckIn": "Xác nhận chấm công vào lúc này?",
+    "confirmCheckOut": "Xác nhận chấm công ra lúc này?",
+    "confirmCheckInBeforeWindow": "Ngoài giờ chấm công vào (chỉ cho phép từ 07:30 đến 23:59).",
+    "confirmCheckOutAfterWindow": "Ngoài giờ chấm công ra (sau 23:59). Hệ thống sẽ tự động chốt.",
+    "confirmCheckOutEarly": "Chấm công ra trước 15:30 — xác nhận?",
+    "confirmCheckOutEarlyDesc": "Sẽ được tính là HALF_DAY (off nửa buổi).",
+    "warnCheckoutEarly": "Bạn đang chấm công ra trước 15:30 — sẽ tính HALF_DAY",
+    "warnHalfDayAbsent": "Đã quá 12:30 mà chưa chấm công vào — sẽ tính HALF_DAY nếu tiếp tục vắng.",
+    "warnAbsent": "Đã quá 13:30 mà chưa chấm công vào — ngày hôm nay tính ABSENT.",
+    "msgCheckOutOvertime": "Chấm công ra ghi nhận OVERTIME — tổng {{hours}}h.",
+    "msgCheckOutEarlyHalf": "Chấm công ra trước 15:30 — tính HALF_DAY."
+  },
+  "onb": {
+    "cardTitle": "Quy trình Onboarding",
+    "btnInitiate": "Khởi tạo Onboarding",
+    "btnComplete": "Hoàn tất task",
+    "btnPromote": "Đánh giá → OFFICIAL",
+    "modalInitTitle": "Khởi tạo onboarding cho nhân viên mới",
+    "placeholderEmployee": "Chọn nhân viên (đang ONBOARDING/PROBATION)",
+    "initSuccess": "Đã khởi tạo onboarding + 4 tasks cho HR/IT/Admin.",
+    "promoteSuccess": "Đã chuyển trạng thái nhân viên sang OFFICIAL!",
+    "promoteError": "Lỗi khi promote nhân viên",
+    "confirmComplete": "Đánh dấu task này đã hoàn tất?",
+    "confirmPromote": "Xác nhận nhân viên đạt thử việc → chuyển OFFICIAL?",
+    "step1Title": "Tạo hồ sơ nhân viên",
+    "step2Title": "Theo dõi tiến độ",
+    "createdSuccess": "Đã tạo hồ sơ nhân viên thành công!",
+    "accountCreated": "Tài khoản đã được tạo",
+    "employeeInfo": "Thông tin nhân viên",
+    "tempPassword": "Mật khẩu tạm",
+    "checklistProgress": "Tiến độ checklist",
+    "tasksCompleted": "tasks hoàn thành",
+    "noTasksYet": "Chưa có checklist",
+    "noTasksYetDesc": "Nhấn 'Khởi tạo Onboarding' để tạo checklist cho nhân viên này.",
+    "detailModalTitle": "Chi tiết Onboarding",
+    "joinDate": "Ngày vào làm",
+    "dueDate": "Hạn hoàn thành",
+    "bankAccount": "Tài khoản ngân hàng",
+    "bankName": "Tên ngân hàng",
+    "bankOther": "Ngân hàng khác",
+    "placeholder": {
+      "name": "Họ và tên đầy đủ",
+      "email": "email@company.com",
+      "phone": "Số điện thoại",
+      "address": "Địa chỉ thường trú",
+      "taxCode": "Mã số thuế cá nhân",
+      "bankAccount": "Số tài khoản",
+      "bankName": "Tên ngân hàng",
+      "bankOther": "Ngân hàng khác",
+      "department": "Chọn phòng ban",
+      "position": "Chọn chức vụ"
+    },
+    "gender": {
+      "male": "Nam",
+      "female": "Nữ",
+      "other": "Khác"
+    },
+    "validation": {
+      "empRequired": "Vui lòng chọn nhân viên",
+      "nameRequired": "Vui lòng nhập họ tên",
+      "emailRequired": "Vui lòng nhập email",
+      "emailInvalid": "Email không hợp lệ",
+      "dobRequired": "Vui lòng chọn ngày sinh"
+    },
+    "cols": {
+      "code": "Mã task",
+      "employee": "Nhân viên",
+      "taskTitle": "Tên task",
+      "department": "Phòng ban",
+      "dueDate": "Hạn chót",
+      "status": "Trạng thái",
+      "actions": "Thao tác"
+    }
+  },
+  "dashboard": {
+    "recruitmentChart": "Tuyển dụng mới & Cơ cấu nhân sự (Tháng)",
+    "pendingQuick": "Yêu cầu cần duyệt nhanh",
+    "viewAll": "Xem tất cả",
+    "noPending": "Không có yêu cầu chờ duyệt nào",
+    "noDepartments": "Chưa có dữ liệu cơ cấu phòng ban",
+    "submittedBy": "bởi",
+    "errorLoad": "Lỗi khi tải dữ liệu Dashboard. Vui lòng thử lại."
+  },
+  "directory": {
+    "tabs": {
+      "profiles": "Hồ sơ nhân viên",
+      "onboarding": "Onboarding Checklist",
+      "offboarding": "Offboarding Checklist"
+    },
+    "actions": {
+      "transfer": "Điều chuyển công tác",
+      "salary": "Điều chỉnh lương",
+      "discipline": "Khen thưởng/Kỷ luật"
+    },
+    "onboardingCols": {
+      "contract": "Nộp hợp đồng lao động",
+      "device": "Bàn giao thiết bị IT",
+      "account": "Tạo tài khoản nghiệp vụ",
+      "done": "Đã hoàn thành",
+      "pendingDevice": "Chờ bàn giao",
+      "pendingAccount": "Chờ kích hoạt"
+    },
+    "offboardingCols": {
+      "assets": "Thu hồi tài sản công",
+      "handover": "Bàn giao công việc",
+      "settlement": "Tất toán lương & BHXH",
+      "refused": "Chưa thực hiện",
+      "returning": "Đang thu hồi",
+      "handingOver": "Đang bàn giao"
+    },
+    "modals": {
+      "dob": "Ngày sinh",
+      "address": "Địa chỉ liên hệ",
+      "taxCode": "Mã số thuế cá nhân",
+      "bankAccount": "Tài khoản ngân hàng",
+      "transferTitle": "Đề xuất điều chuyển công tác",
+      "transferEmp": "Nhân viên đề xuất điều chuyển",
+      "newDept": "Phòng ban mới",
+      "newPos": "Chức danh/vị trí mới",
+      "effectiveDate": "Ngày có hiệu lực",
+      "salaryTitle": "Đề xuất điều chỉnh lương",
+      "salaryEmp": "Nhân viên đề xuất thay đổi lương",
+      "newSalary": "Mức lương cơ bản mới (VND)",
+      "newRatio": "Hệ số lương chức danh mới (Ratio)",
+      "applyDate": "Ngày áp dụng hiệu lực",
+      "disciplineTitle": "Ghi nhận khen thưởng hoặc kỷ luật",
+      "disciplineType": "Phân loại",
+      "amount": "Giá trị số tiền phạt/thưởng (VND)",
+      "reason": "Lý do chi tiết",
+      "reward": "KHEN THƯỞNG (REWARD)",
+      "discipline": "KỶ LUẬT (DISCIPLINE)",
+      "disciplineTypeLabels": {
+        "REWARD": "Khen thưởng",
+        "DISCIPLINE": "Kỷ luật"
+      }
+    }
+  },
+  "timesheets": {
+    "weeklyCard": "Ghi nhận chấm công tuần",
+    "week": "Tuần",
+    "year": "Năm",
+    "currentWeek": "Hiện tại",
+    "status": "Trạng thái:",
+    "notCreated": "Chưa tạo",
+    "addRow": "Thêm dòng chấm công",
+    "saveDraft": "Lưu nháp",
+    "submit": "Nộp phê duyệt",
+    "totalHours": "Tổng giờ làm",
+    "otHours": "Giờ OT",
+    "workTypes": "Phân loại giờ công",
+    "noData": "Chưa có dữ liệu chấm công tuần này.",
+    "addFirstRow": "Nhấn 'Thêm dòng công việc' để bắt đầu ghi nhận.",
+    "addWorkRow": "Thêm dòng công việc",
+    "weekSummary": "Tuần {week}/{year}",
+    "totalHoursLabel": "Tổng giờ làm",
+    "otHoursLabel": "Giờ làm thêm",
+    "workTypeCount": "Số loại giờ công",
+    "noOtHours": "Chưa có giờ OT",
+    "noWorkTypes": "Chưa ghi nhận giờ công",
+    "addWorkRowBtn": "Thêm dòng công việc",
+    "saveDraftBtn": "Lưu nháp",
+    "submitApprovalBtn": "Nộp phê duyệt",
+    "weeklyTimesheet": "Bảng chấm công tuần",
+    "noTimesheetData": "Chưa có dữ liệu chấm công tuần này.",
+    "clickToStart": "Nhấn 'Thêm dòng công việc' để bắt đầu.",
+    "projectTask": "Dự án / Công việc",
+    "weekday": "Ngày thường",
+    "weekend": "Cuối tuần",
+    "holiday": "Ngày lễ",
+    "total": "Tổng",
+    "workType": "Loại công",
+    "normalHours": "Thường",
+    "otWeekday": "OT thường",
+    "otWeekend": "OT cuối tuần",
+    "otHoliday": "OT lễ",
+    "nightShift": "Ca đêm",
+    "msgNoValidEntries": "Không có dòng chấm công hợp lệ (giờ > 0)",
+    "msgDraftSaved": "Lưu nháp thành công!",
+    "msgSubmitted": "Đã nộp bảng chấm công tuần lên quản lý duyệt!",
+    "unsavedChangesBanner": "Bạn có thay đổi chưa được lưu",
+    "unsavedChangesHint": "Nhấn \"Lưu nháp\" hoặc \"Nộp duyệt\" để cập nhật bảng chấm công.",
+    "workTypeLabels": {
+      "NORMAL": "Giờ thường",
+      "OT_WEEKDAY": "OT ngày thường",
+      "OT_WEEKEND": "OT cuối tuần",
+      "OT_HOLIDAY": "OT ngày lễ",
+      "NIGHT_SHIFT": "Ca đêm"
+    },
+    "statusLabels": {
+      "DRAFT": "Nháp",
+      "SUBMITTED": "Đã nộp",
+      "APPROVED": "Đã duyệt",
+      "REJECTED": "Bị từ chối"
+    },
+    "prefillTitle": "Tuần này chưa có khai báo giờ công",
+    "prefillDesc": "Đã có {{count}} ngày chấm công — muốn tự động thêm 8h/ngày vào giờ công để đối soát?",
+    "prefillAccept": "Chấp nhận",
+    "prefillAccepted": "Đã thêm các dòng pre-fill, bạn có thể chỉnh project/task và lưu.",
+    "reconciliationTitle": "Đối soát giờ công: khai {{declared}}h / dự kiến {{target}}h",
+    "reconciliationWarning": "Có {{count}} cảnh báo đối soát — kiểm tra trước khi submit."
+  },
+  "leave": {
+    "cardTitle": "Đơn xin nghỉ phép (Leave Requests)",
+    "btnNew": "Tạo đơn nghỉ phép",
+    "modalTitle": "Tạo đơn xin nghỉ phép mới",
+    "placeholderType": "Chọn loại nghỉ phép",
+    "typeLabels": {
+      "ANNUAL_LEAVE": "Nghỉ phép năm",
+      "SICK_LEAVE": "Nghỉ ốm",
+      "MATERNITY_LEAVE": "Nghỉ thai sản",
+      "UNPAID_LEAVE": "Nghỉ không lương",
+      "COMPASSIONATE_LEAVE": "Nghỉ việc hiếu/hỷ"
+    },
+    "statusLabels": {
+      "PENDING": "Chờ duyệt",
+      "APPROVED": "Đã duyệt",
+      "REJECTED": "Từ chối",
+      "CANCELLED": "Đã hủy"
+    },
+    "cols": {
+      "code": "Mã đơn",
+      "type": "Loại nghỉ phép",
+      "range": "Thời gian nghỉ",
+      "days": "Số ngày",
+      "requester": "Người xin",
+      "status": "Trạng thái",
+      "reason": "Lý do",
+      "actions": "Thao tác"
+    },
+    "validation": {
+      "typeRequired": "Vui lòng chọn loại nghỉ phép",
+      "rangeRequired": "Vui lòng chọn ngày bắt đầu và kết thúc"
+    },
+    "confirmCancel": "Hủy đơn nghỉ phép này?",
+    "msgSubmitted": "Đã gửi đơn nghỉ phép lên ma trận duyệt!",
+    "msgCancelled": "Đã hủy đơn nghỉ phép.",
+    "msgSubmitError": "Lỗi khi nộp đơn nghỉ phép",
+    "msgCancelError": "Lỗi khi hủy đơn nghỉ phép",
+    "balance": {
+      "insufficient": "Số ngày nghỉ phép năm vượt quá số dư hiện tại"
+    }
+  },
+  "approvals": {
+    "tabs": {
+      "pending": "Cần tôi duyệt",
+      "submitted": "Yêu cầu tôi đã gửi"
+    },
+    "cols": {
+      "code": "Mã yêu cầu",
+      "type": "Loại giao dịch",
+      "requester": "Người đề xuất",
+      "currentLevel": "Cấp duyệt hiện tại",
+      "requiredRole": "Vai trò cần duyệt",
+      "actions": "Thao tác",
+      "status": "Trạng thái phiếu",
+      "history": "Chi tiết cấp duyệt"
+    },
+    "actions": {
+      "approve": "Phê duyệt",
+      "reject": "Từ chối",
+      "history": "Lịch sử duyệt"
+    },
+    "statusLabels": {
+      "PENDING": "Chờ duyệt",
+      "APPROVED": "Đã duyệt",
+      "REJECTED": "Từ chối",
+      "CANCELLED": "Đã hủy"
+    },
+    "actionLabels": {
+      "APPROVE": "Phê duyệt",
+      "REJECT": "Từ chối"
+    },
+    "modal": {
+      "historyTitle": "Lịch sử cấp duyệt phiếu",
+      "commentTitle": "Nhập ý kiến phê duyệt",
+      "progress": "Tiến trình phê duyệt:",
+      "approver": "Người duyệt",
+      "noProgress": "Chưa có tiến trình duyệt nào được ghi nhận tại các cấp dưới.",
+      "commentLabel": "Ý kiến của bạn (Comment)",
+      "commentPlaceholder": "Nhập ý kiến phê duyệt hoặc lý do từ chối..."
+    }
+  },
+  "payroll": {
+    "cardTitle": "Tính toán và kết chuyển bảng lương",
+    "month": "Tháng lương:",
+    "year": "Năm:",
+    "btnCalculate": "Tính bảng lương tháng",
+    "cols": {
+      "code": "Mã nhân viên",
+      "name": "Họ và tên",
+      "baseSalary": "Lương cơ bản",
+      "workDays": "Công thực tế (ngày)",
+      "netSalary": "Lương thực lĩnh",
+      "status": "Trạng thái",
+      "action": "Chi tiết phiếu lương"
+    },
+    "viewPayslip": "Xem Phiếu lương",
+    "modalTitle": "Phiếu Lương Chi Tiết Nhân Viên",
+    "btnPrint": "In Phiếu Lương",
+    "btnClose": "Đóng",
+    "payslipHeader": "PHIẾU THANH TOÁN LƯƠNG",
+    "payslipMonth": "Tháng",
+    "fullName": "Họ và tên:",
+    "empCode": "Mã nhân viên:",
+    "department": "Phòng ban:",
+    "position": "Chức vụ:",
+    "baseSalaryLabel": "Lương cơ bản chức danh:",
+    "workDaysLabel": "Số ngày công thực tế:",
+    "otPayLabel": "Tổng tiền làm thêm giờ (Overtime):",
+    "allowanceLabel": "Các khoản phụ cấp phúc lợi:",
+    "deductionLabel": "Các khoản khấu trừ & BHXH:",
+    "netLabel": "THỰC LĨNH CHUYỂN KHOẢN (NET):",
+    "statusLabels": {
+      "DRAFT": "Bảng nháp",
+      "PENDING_APPROVAL": "Chờ duyệt",
+      "APPROVED": "Đã duyệt",
+      "PAID": "Đã chi trả"
+    }
+  },
+  "config": {
+    "cardTitle": "Cấu hình hệ thống",
+    "ratesCard": "Hệ số làm việc & Đơn giá công",
+    "matrixCard": "Ma trận phê duyệt (Cấp phê duyệt)",
+    "ratesCols": {
+      "key": "Khóa cấu hình",
+      "name": "Mô tả",
+      "multiplier": "Hệ số multiplier"
+    },
+    "matrixCols": {
+      "type": "Loại nghiệp vụ",
+      "levels": "Số cấp duyệt yêu cầu",
+      "sequence": "Luồng vai trò duyệt"
+    },
+    "levelsSelect": "cấp"
+  },
+  "audit": {
+    "cardTitle": "Nhật ký tác động hệ thống (System Audit Logs)",
+    "actionFilterAll": "Tất cả thao tác",
+    "actionFilterInsert": "Thêm mới (INSERT)",
+    "actionFilterUpdate": "Cập nhật (UPDATE)",
+    "actionFilterDelete": "Xóa (DELETE)",
+    "actionFilterPlaceholder": "Bộ lọc thao tác",
+    "entityFilterPlaceholder": "Tên bảng dữ liệu (e.g. employees, users)",
+    "errorLoadDiff": "Không thể tải chi tiết thay đổi trạng thái",
+    "cols": {
+      "time": "Thời gian",
+      "action": "Thao tác",
+      "table": "Bảng chịu tác động",
+      "recordId": "ID bản ghi",
+      "actor": "Người thực hiện",
+      "diff": "So sánh thay đổi"
+    },
+    "viewDiff": "Xem thay đổi",
+    "modalTitle": "Chi tiết Thay đổi Trạng thái Dữ liệu (State Diff)",
+    "oldState": "Trạng thái TRƯỚC thay đổi (OLD STATE)",
+    "newState": "Trạng thái SAU thay đổi (NEW STATE)",
+    "btnClose": "Đóng"
+  },
+  "projects": {
+    "cardTitle": "Quản lý Dự án & Công việc",
+    "btn": {
+      "addProject": "Thêm Dự án",
+      "addTask": "Thêm Công việc",
+      "refresh": "Tải lại"
+    },
+    "cols": {
+      "name": "Tên dự án",
+      "status": "Trạng thái",
+      "tasks": "Công việc",
+      "actions": "Thao tác",
+      "taskName": "Tên công việc",
+      "estimatedHours": "Giờ ước lượng"
+    },
+    "statusLabels": {
+      "PLANNING": "Đang lên kế hoạch",
+      "ACTIVE": "Đang triển khai",
+      "COMPLETED": "Đã hoàn thành",
+      "SUSPENDED": "Tạm dừng"
+    },
+    "tooltips": {
+      "edit": "Sửa",
+      "delete": "Xóa",
+      "taskCount": "{{count}} công việc"
+    },
+    "detail": {
+      "pm": "Project Manager",
+      "unassigned": "Chưa phân công",
+      "totalLabor": "Tổng giờ đã khai",
+      "entries": "Số dòng timesheet",
+      "startDate": "Ngày bắt đầu",
+      "endDate": "Ngày kết thúc",
+      "ongoing": "Đang triển khai",
+      "estimatedVsActual": "Tiến độ giờ công (Thực tế / Ước lượng)",
+      "tasksTitle": "Danh sách công việc"
+    },
+    "empty": {
+      "projects": "Chưa có dự án nào. Nhấn 'Thêm Dự án' để bắt đầu.",
+      "tasks": "Dự án này chưa có công việc nào.",
+      "selectProject": "Chọn một dự án ở danh sách bên trái để xem chi tiết."
+    },
+    "confirm": {
+      "deleteProject": "Xóa dự án này? Toàn bộ công việc thuộc dự án và timesheet liên quan sẽ bị ảnh hưởng.",
+      "deleteTask": "Xóa công việc này?"
+    },
+    "msg": {
+      "created": "Đã tạo dự án!",
+      "updated": "Đã cập nhật dự án!",
+      "deleted": "Đã xóa dự án!",
+      "taskCreated": "Đã thêm công việc!",
+      "taskUpdated": "Đã cập nhật công việc!",
+      "taskDeleted": "Đã xóa công việc!"
+    },
+    "modal": {
+      "titleAddProject": "Tạo Dự án Mới",
+      "titleEditProject": "Chỉnh Sửa Dự Án",
+      "titleAddTask": "Thêm Công Việc Mới",
+      "titleEditTask": "Chỉnh Sửa Công Việc",
+      "ok": "Lưu",
+      "cancel": "Hủy",
+      "fields": {
+        "name": "Tên dự án",
+        "startDate": "Ngày bắt đầu",
+        "endDate": "Ngày kết thúc (tùy chọn)",
+        "pm": "Project Manager (PM)",
+        "status": "Trạng thái",
+        "taskName": "Tên công việc",
+        "description": "Mô tả chi tiết",
+        "estimatedHours": "Giờ ước lượng"
+      },
+      "placeholders": {
+        "name": "Nhập tên dự án (2-150 ký tự)...",
+        "pm": "Chọn PM phụ trách...",
+        "taskName": "Nhập tên công việc...",
+        "description": "Mô tả chi tiết về công việc..."
+      },
+      "validation": {
+        "nameRequired": "Vui lòng nhập tên dự án",
+        "nameMin": "Tên phải có ít nhất 2 ký tự",
+        "nameMax": "Tên không quá 150 ký tự",
+        "startDateRequired": "Vui lòng chọn ngày bắt đầu",
+        "taskNameRequired": "Vui lòng nhập tên công việc"
+      }
+    }
+  },
+  "login": {
+    "subtitle": "Vui lòng đăng nhập để bắt đầu phiên làm việc",
+    "username": "Tên đăng nhập / Email",
+    "usernameRequired": "Nhập tên đăng nhập hoặc email",
+    "password": "Mật khẩu",
+    "passwordRequired": "Nhập mật khẩu",
+    "submitButton": "Đăng nhập",
+    "rulesTitle": "Rule mật khẩu:",
+    "rulesText": "Mã nhân viên + mật khẩu + ngày tháng năm sinh (Bcrypted). Mật khẩu mặc định hệ thống: [username]123456[YYYYMMDD] (e.g. employee12345619950101)"
+  },
+  "exports": {
+    "button": "Export Excel",
+    "success": "Xuất file thành công",
+    "failed": "Xuất file thất bại",
+    "otSummary": "Export OT Summary"
+  },
+  "onboarding": {
+    "assign": {
+      "title": "Phân công task",
+      "selfAssign": "Tự nhận"
+    },
+    "dashboard": {
+      "title": "Dashboard Onboarding"
+    }
+  },
+  "offboarding": {
+    "settlement": {
+      "title": "Quyết toán cuối cùng",
+      "unusedLeaveDays": "Số ngày phép chưa dùng",
+      "severanceAmount": "Trợ cấp thôi việc",
+      "lastWorkingDay": "Ngày làm việc cuối",
+      "submit": "Xác nhận quyết toán"
+    }
+  },
+  "onbOffb": {
+    "taskStatusLabels": {
+      "PENDING": "Chờ xử lý",
+      "IN_PROGRESS": "Đang thực hiện",
+      "COMPLETED": "Hoàn tất"
+    },
+    "taskDepartments": {
+      "HR": "Nhân sự",
+      "IT": "Công nghệ thông tin",
+      "ADMIN": "Hành chính"
+    }
+  }
+}

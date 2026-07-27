@@ -1,0 +1,22 @@
+/** Barrel export tất cả 21 entities */
+export { User } from './user.entity';
+export { Employee } from './employee.entity';
+export { Department } from './department.entity';
+export { Position } from './position.entity';
+export { Project } from './project.entity';
+export { ProjectTask } from './project-task.entity';
+export { Timesheet } from './timesheet.entity';
+export { TimesheetEntry } from './timesheet-entry.entity';
+export { ApprovalConfig } from './approval-config.entity';
+export { ApprovalRequest } from './approval-request.entity';
+export { ApprovalStepHistory } from './approval-step-history.entity';
+export { OnboardingTask } from './onboarding-task.entity';
+export { OffboardingTask } from './offboarding-task.entity';
+export { Notification } from './notification.entity';
+export { JobHistory } from './job-history.entity';
+export { SalaryHistory } from './salary-history.entity';
+export { Attendance } from './attendance.entity';
+export { LeaveRequest } from './leave-request.entity';
+export { Salary } from './salary.entity';
+export { SystemAuditLog } from './system-audit-log.entity';
+export { WorkRateConfig } from './work-rate-config.entity';

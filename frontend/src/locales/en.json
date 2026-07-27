@@ -1,0 +1,695 @@
+{
+  "appTitle": "Human Resource Management (HRM)",
+  "nav": {
+    "dashboard": "Dashboard",
+    "employees": "Employees",
+    "departments": "Departments",
+    "timesheets": "Timesheet",
+    "attendance": "Attendance",
+    "payroll": "Payroll",
+    "settings": "Settings",
+    "projects": "Projects",
+    "logout": "Log Out",
+    "approvals": "Approvals",
+    "myRequests": "My Requests",
+    "auditLogs": "Audit Logs",
+    "leave": "Leave",
+    "onboarding": "Onboarding",
+    "offboarding": "Offboarding"
+  },
+  "header": {
+    "searchPlaceholder": "Search employees, departments...",
+    "language": "Language",
+    "admin": "Administrator"
+  },
+  "stats": {
+    "totalEmployees": "Total Employees",
+    "activeEmployees": "Active Staff",
+    "onLeave": "On Leave Today",
+    "newHires": "New Hires (Month)"
+  },
+  "employeeTable": {
+    "title": "Employee Directory",
+    "addEmployee": "Add Employee",
+    "id": "EMP ID",
+    "name": "Full Name",
+    "department": "Department",
+    "position": "Position",
+    "status": "Status",
+    "actions": "Actions",
+    "active": "Active",
+    "onLeave": "On Leave",
+    "terminated": "Terminated",
+    "edit": "Edit",
+    "delete": "Delete",
+    "statusLabels": {
+      "ONBOARDING": "Onboarding",
+      "PROBATION": "Probation",
+      "OFFICIAL": "Official",
+      "SUSPENDED": "Suspended",
+      "NOTICE_PERIOD": "Notice Period",
+      "TERMINATED": "Terminated"
+    }
+  },
+  "modal": {
+    "titleAdd": "Add New Employee",
+    "titleEdit": "Edit Employee Info",
+    "save": "Save Details",
+    "cancel": "Cancel",
+    "fields": {
+      "name": "Full Name",
+      "email": "Email",
+      "phone": "Phone Number",
+      "gender": "Gender",
+      "department": "Department",
+      "position": "Position",
+      "status": "Status"
+    }
+  },
+  "error": {
+    "auth": {
+      "invalidCredentials": "Invalid email or password.",
+      "accessDenied": "You do not have permission to access this resource."
+    },
+    "employee": {
+      "codeOrEmailExists": "Employee Code or Email already exists in the system.",
+      "cannotTransferNoticePeriod": "Employee is currently in notice period and cannot be transferred."
+    },
+    "leave": {
+      "insufficientBalance": "Insufficient leave balance for this request.",
+      "invalidDateRange": "Start date must be less than or equal to end date.",
+      "cannotCancel": "Only pending leave requests can be cancelled."
+    },
+    "approval": {
+      "unauthorizedLevel": "You are not authorized to approve at the current level.",
+      "alreadyRejected": "Request was already rejected and cannot be approved further."
+    },
+    "timesheet": {
+      "alreadyApproved": "Weekly timesheet has already been approved and cannot be edited.",
+      "notFound": "The requested timesheet was not found.",
+      "noEntriesToSubmit": "No work hours to submit. Please enter at least one work entry."
+    },
+    "payroll": {
+      "alreadyFinalized": "Monthly payroll has been finalized and cannot be recalculated."
+    },
+    "attendance": {
+      "outsideCheckInWindow": "Outside check-in hours (only allowed from 07:30 to 23:59).",
+      "outsideCheckOutWindow": "Outside check-out hours (only allowed from 00:00 to 23:59). The system will auto-finalize after 23:59:30."
+    },
+    "common": {
+      "notFound": "Requested resource was not found.",
+      "confirm": "Confirm",
+      "cancel": "Cancel"
+    },
+    "network": {
+      "fetchFailed": "Cannot reach the server. Please try again later."
+    }
+  },
+  "common": {
+    "back": "Back to Dashboard",
+    "successApprove": "Approval request approved successfully!",
+    "successReject": "Approval request rejected successfully!",
+    "errorApprove": "Error approving request",
+    "errorReject": "Error rejecting request",
+    "errorSaveEmployee": "Error saving employee profile",
+    "errorTransfer": "Error submitting transfer request",
+    "errorSalaryAdjust": "Error submitting salary adjustment",
+    "errorDiscipline": "Error submitting discipline/reward",
+    "errorCalculatePayroll": "Error calculating payroll",
+    "successTransfer": "Job transfer request submitted for approval!",
+    "successSalaryAdjust": "Salary adjustment request submitted for approval!",
+    "successDiscipline": "Discipline/reward recorded successfully!",
+    "successUpdateWorkRate": "Work rate updated successfully!",
+    "errorUpdateWorkRate": "Error updating work rate",
+    "successUpdateApprovalMatrix": "Approval matrix updated successfully!",
+    "errorUpdateApprovalMatrix": "Error updating approval matrix",
+    "errorLoadEmployees": "Failed to load employee master lists",
+    "errorLoadTimesheets": "Failed to load weekly timesheets",
+    "errorLoadApprovals": "Failed to load approvals lists",
+    "errorLoadConfigs": "Failed to load system configurations",
+    "errorLoadAuditLogs": "Failed to load system audit logs",
+    "errorSaveTimesheet": "Error saving timesheet",
+    "errorSubmitTimesheet": "Error submitting timesheet",
+    "submittedByLabel": "by",
+    "placeholderSelectProject": "Select project",
+    "placeholderSelectTask": "Select task",
+    "placeholderUsernameExample": "e.g. admin, employee",
+    "refresh": "Refresh",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "errorLoadLeaveRequests": "Failed to load leave requests",
+    "errorLoadOffboarding": "Failed to load offboarding tasks",
+    "errorLoadOnboarding": "Failed to load onboarding tasks",
+    "successCreate": "Request created successfully!",
+    "successApproveOffb": "Resignation approved!",
+    "errorResign": "Error submitting resignation",
+    "errorInitOnboarding": "Error initiating onboarding",
+    "errorCompleteTask": "Error completing task",
+    "successCompleteTask": "Task completed!"
+  },
+  "offb": {
+    "cardTitle": "Offboarding Workflow",
+    "btnResign": "Submit Resignation",
+    "btnComplete": "Complete Task",
+    "btnSubmit": "Submit",
+    "modalResignTitle": "Submit Resignation Request",
+    "employeeHint": "Click \"Submit Resignation\" to start the 3-level approval flow (DEPT_LEAD → DIRECTOR → CHAIRMAN). Once approved, the employee status will change to TERMINATED.",
+    "confirmComplete": "Mark this task as completed?",
+    "cols": {
+      "code": "Task ID",
+      "employee": "Employee",
+      "taskTitle": "Task Title",
+      "department": "Owner Department",
+      "status": "Status",
+      "actions": "Actions",
+      "reason": "Resignation Reason"
+    },
+    "validation": {
+      "reasonRequired": "Please provide a resignation reason"
+    }
+  },
+  "notif": {
+    "title": "Notifications",
+    "empty": "You have no notifications",
+    "markAllRead": "Mark all as read"
+  },
+  "att": {
+    "cardTitle": "Attendance",
+    "checkIn": "Check In",
+    "checkOut": "Check Out",
+    "checkedIn": "Checked In",
+    "checkedOut": "Checked Out",
+    "today": "Today",
+    "myHistory": "My History",
+    "statsTitle": "This Month",
+    "cols": {
+      "date": "Date",
+      "checkIn": "Check In",
+      "checkOut": "Check Out",
+      "workHours": "Hours",
+      "status": "Status",
+      "employee": "Employee"
+    },
+    "statusLabels": {
+      "PRESENT": "On Time",
+      "LATE": "Late",
+      "HALF_DAY": "Half Day",
+      "ABSENT": "Absent",
+      "OVERTIME": "Overtime",
+      "INCOMPLETE": "Incomplete"
+    },
+    "msgCheckInSuccess": "Checked in successfully!",
+    "msgCheckOutSuccess": "Checked out successfully!",
+    "msgCheckInError": "Unable to check in. You may have already checked in today.",
+    "msgCheckOutError": "Unable to check out. You need to check in first.",
+    "confirmCheckIn": "Confirm check in at this time?",
+    "confirmCheckOut": "Confirm check out at this time?",
+    "confirmCheckInBeforeWindow": "Outside check-in window (only allowed from 07:30 to 23:59).",
+    "confirmCheckOutAfterWindow": "Outside check-out window (after 23:59). The system will auto-finalize.",
+    "confirmCheckOutEarly": "Check out before 15:30 — confirm?",
+    "confirmCheckOutEarlyDesc": "This will be recorded as HALF_DAY (early off).",
+    "warnCheckoutEarly": "You are checking out before 15:30 — counted as HALF_DAY",
+    "warnHalfDayAbsent": "It is past 12:30 with no check-in yet — will count as HALF_DAY if still absent.",
+    "warnAbsent": "It is past 13:30 with no check-in yet — today will be marked ABSENT.",
+    "msgCheckOutOvertime": "Check-out recorded as OVERTIME — total {{hours}}h.",
+    "msgCheckOutEarlyHalf": "Early check-out (before 15:30) — counted as HALF_DAY."
+  },
+  "onb": {
+    "cardTitle": "Onboarding Workflow",
+    "btnInitiate": "Initiate Onboarding",
+    "btnComplete": "Complete Task",
+    "btnPromote": "Evaluate → OFFICIAL",
+    "modalInitTitle": "Initiate onboarding for new employee",
+    "placeholderEmployee": "Pick employee (currently ONBOARDING/PROBATION)",
+    "initSuccess": "Onboarding initiated with 4 tasks for HR/IT/Admin.",
+    "promoteSuccess": "Employee promoted to OFFICIAL!",
+    "promoteError": "Error promoting employee",
+    "confirmComplete": "Mark this task as completed?",
+    "confirmPromote": "Confirm probation passed → move to OFFICIAL?",
+    "step1Title": "Create Employee Profile",
+    "step2Title": "Track Progress",
+    "createdSuccess": "Employee profile created successfully!",
+    "accountCreated": "Account has been created",
+    "employeeInfo": "Employee Information",
+    "tempPassword": "Temporary Password",
+    "checklistProgress": "Checklist Progress",
+    "tasksCompleted": "tasks completed",
+    "noTasksYet": "No checklist yet",
+    "noTasksYetDesc": "Click 'Initiate Onboarding' to create checklist for this employee.",
+    "detailModalTitle": "Onboarding Detail",
+    "joinDate": "Join Date",
+    "dueDate": "Due Date",
+    "bankAccount": "Bank Account",
+    "bankName": "Bank Name",
+    "bankOther": "Other Bank",
+    "placeholder": {
+      "name": "Full name",
+      "email": "email@company.com",
+      "phone": "Phone number",
+      "address": "Permanent address",
+      "taxCode": "Personal tax code",
+      "bankAccount": "Bank account number",
+      "bankName": "Bank Name",
+      "bankOther": "Other Bank",
+      "department": "Select department",
+      "position": "Select position"
+    },
+    "gender": {
+      "male": "Male",
+      "female": "Female",
+      "other": "Other"
+    },
+    "validation": {
+      "empRequired": "Please select an employee",
+      "nameRequired": "Please enter full name",
+      "emailRequired": "Please enter email",
+      "emailInvalid": "Invalid email address",
+      "dobRequired": "Please select date of birth"
+    },
+    "cols": {
+      "code": "Task ID",
+      "employee": "Employee",
+      "taskTitle": "Task Title",
+      "department": "Department",
+      "dueDate": "Due Date",
+      "status": "Status",
+      "actions": "Actions"
+    }
+  },
+  "dashboard": {
+    "recruitmentChart": "New Hires & Department Structure (Monthly)",
+    "pendingQuick": "Quick Action Required",
+    "viewAll": "View All",
+    "noPending": "No pending approval requests",
+    "noDepartments": "No department breakdown available",
+    "submittedBy": "by",
+    "errorLoad": "Failed to load dashboard data. Please retry."
+  },
+  "directory": {
+    "tabs": {
+      "profiles": "Employee Profiles",
+      "onboarding": "Onboarding Checklist",
+      "offboarding": "Offboarding Checklist"
+    },
+    "actions": {
+      "transfer": "Job Transfer Request",
+      "salary": "Salary Adjustment",
+      "discipline": "Discipline/Reward"
+    },
+    "onboardingCols": {
+      "contract": "Submit Labor Contract",
+      "device": "Deliver IT Devices",
+      "account": "Create Enterprise Account",
+      "done": "Completed",
+      "pendingDevice": "Awaiting handover",
+      "pendingAccount": "Awaiting activation"
+    },
+    "offboardingCols": {
+      "assets": "Return Public Assets",
+      "handover": "Handover Workflow",
+      "settlement": "Settle Salary & Insurance",
+      "refused": "Not started",
+      "returning": "Recovering assets",
+      "handingOver": "Banding handover"
+    },
+    "modals": {
+      "dob": "Date of Birth",
+      "address": "Contact Address",
+      "taxCode": "Personal Tax Code",
+      "bankAccount": "Bank Account Number",
+      "transferTitle": "Propose Job Transfer",
+      "transferEmp": "Select target employee",
+      "newDept": "New Department",
+      "newPos": "New Position",
+      "effectiveDate": "Effective Date",
+      "salaryTitle": "Propose Salary Adjustment",
+      "salaryEmp": "Select target employee",
+      "newSalary": "New Base Salary (VND)",
+      "newRatio": "New Position Ratio",
+      "applyDate": "Apply Date",
+      "disciplineTitle": "Record Reward or Discipline",
+      "disciplineType": "Type",
+      "amount": "Fine/Reward Value (VND)",
+      "reason": "Detailed Reason",
+      "reward": "REWARD",
+      "discipline": "DISCIPLINE",
+      "disciplineTypeLabels": {
+        "REWARD": "Reward",
+        "DISCIPLINE": "Discipline"
+      }
+    }
+  },
+  "timesheets": {
+    "weeklyCard": "Log Weekly Attendance",
+    "week": "Week",
+    "year": "Year",
+    "currentWeek": "Current Week",
+    "status": "Timesheet Status:",
+    "notCreated": "Not Created",
+    "addRow": "Add Attendance Row",
+    "saveDraft": "Save Draft",
+    "submit": "Submit For Approval",
+    "totalHours": "Total Hours",
+    "otHours": "Overtime Hours",
+    "workTypes": "Work Types",
+    "noData": "No attendance data for this week.",
+    "addFirstRow": "Click 'Add work row' to start logging.",
+    "addWorkRow": "Add work row",
+    "weekSummary": "Week {week}/{year}",
+    "totalHoursLabel": "Total Working Hours",
+    "otHoursLabel": "Overtime Hours",
+    "workTypeCount": "Work Type Count",
+    "noOtHours": "No OT hours",
+    "noWorkTypes": "No work types recorded",
+    "addWorkRowBtn": "Add work row",
+    "saveDraftBtn": "Save Draft",
+    "submitApprovalBtn": "Submit For Approval",
+    "weeklyTimesheet": "Weekly Timesheet",
+    "noTimesheetData": "No attendance data for this week.",
+    "clickToStart": "Click 'Add work row' to start logging.",
+    "projectTask": "Project / Task",
+    "weekday": "Weekday",
+    "weekend": "Weekend",
+    "holiday": "Holiday",
+    "total": "Total",
+    "workType": "Work Type",
+    "normalHours": "Normal",
+    "otWeekday": "Weekday OT",
+    "otWeekend": "Weekend OT",
+    "otHoliday": "Holiday OT",
+    "nightShift": "Night Shift",
+    "msgNoValidEntries": "No valid attendance entries (hours > 0)",
+    "msgDraftSaved": "Timesheet draft saved successfully!",
+    "msgSubmitted": "Weekly timesheet submitted for approval!",
+    "unsavedChangesBanner": "You have unsaved changes",
+    "unsavedChangesHint": "Click \"Save Draft\" or \"Submit for Approval\" to update the timesheet.",
+    "workTypeLabels": {
+      "NORMAL": "Normal Hours",
+      "OT_WEEKDAY": "OT Weekday",
+      "OT_WEEKEND": "OT Weekend",
+      "OT_HOLIDAY": "OT Holiday",
+      "NIGHT_SHIFT": "Night Shift"
+    },
+    "statusLabels": {
+      "DRAFT": "Draft",
+      "SUBMITTED": "Submitted",
+      "APPROVED": "Approved",
+      "REJECTED": "Rejected"
+    },
+    "prefillTitle": "No entries this week yet",
+    "prefillDesc": "There are {{count}} attendance days — auto-add 8h/day entries for reconciliation?",
+    "prefillAccept": "Accept",
+    "prefillAccepted": "Pre-filled entries added. Adjust project/task and save.",
+    "reconciliationTitle": "Reconciliation: declared {{declared}}h / expected {{target}}h",
+    "reconciliationWarning": "{{count}} reconciliation warnings — please review before submitting."
+  },
+  "leave": {
+    "cardTitle": "Leave Requests",
+    "btnNew": "New Leave Request",
+    "modalTitle": "Create New Leave Request",
+    "placeholderType": "Select leave type",
+    "typeLabels": {
+      "ANNUAL_LEAVE": "Annual Leave",
+      "SICK_LEAVE": "Sick Leave",
+      "MATERNITY_LEAVE": "Maternity Leave",
+      "UNPAID_LEAVE": "Unpaid Leave",
+      "COMPASSIONATE_LEAVE": "Compassionate Leave"
+    },
+    "statusLabels": {
+      "PENDING": "Pending",
+      "APPROVED": "Approved",
+      "REJECTED": "Rejected",
+      "CANCELLED": "Cancelled"
+    },
+    "cols": {
+      "code": "Request ID",
+      "type": "Leave Type",
+      "range": "Period",
+      "days": "Days",
+      "requester": "Requester",
+      "status": "Status",
+      "reason": "Reason",
+      "actions": "Actions"
+    },
+    "validation": {
+      "typeRequired": "Please select a leave type",
+      "rangeRequired": "Please pick start and end dates"
+    },
+    "confirmCancel": "Cancel this leave request?",
+    "msgSubmitted": "Leave request submitted for approval!",
+    "msgCancelled": "Leave request cancelled.",
+    "msgSubmitError": "Error submitting leave request",
+    "msgCancelError": "Error cancelling leave request",
+    "balance": {
+      "insufficient": "Requested annual leave exceeds remaining balance"
+    }
+  },
+  "approvals": {
+    "tabs": {
+      "pending": "Pending My Actions",
+      "submitted": "My Submitted Requests"
+    },
+    "cols": {
+      "code": "Req Code",
+      "type": "Transaction Type",
+      "requester": "Requester",
+      "currentLevel": "Current Level",
+      "requiredRole": "Required Approver Role",
+      "actions": "Actions",
+      "status": "Request Status",
+      "history": "Approval Levels"
+    },
+    "actions": {
+      "approve": "Approve",
+      "reject": "Reject",
+      "history": "View History"
+    },
+    "statusLabels": {
+      "PENDING": "Pending",
+      "APPROVED": "Approved",
+      "REJECTED": "Rejected",
+      "CANCELLED": "Cancelled"
+    },
+    "actionLabels": {
+      "APPROVE": "Approve",
+      "REJECT": "Reject"
+    },
+    "modal": {
+      "historyTitle": "Approval Level History",
+      "commentTitle": "Enter Decision Remarks",
+      "progress": "Approval Progress:",
+      "approver": "Approver",
+      "noProgress": "No prior levels approved yet.",
+      "commentLabel": "Your comment",
+      "commentPlaceholder": "Enter decision comment or rejection explanation..."
+    }
+  },
+  "payroll": {
+    "cardTitle": "Payroll Calculation and Ledger",
+    "month": "Payroll Month:",
+    "year": "Year:",
+    "btnCalculate": "Calculate Salary",
+    "cols": {
+      "code": "Emp Code",
+      "name": "Full Name",
+      "baseSalary": "Base Salary",
+      "workDays": "Work Days",
+      "netSalary": "Net Salary",
+      "status": "Status",
+      "action": "Payslip Details"
+    },
+    "viewPayslip": "View Payslip",
+    "modalTitle": "Employee Monthly Payslip Details",
+    "btnPrint": "Print Payslip",
+    "btnClose": "Close",
+    "payslipHeader": "MONTHLY PAYSLIP RECORD",
+    "payslipMonth": "Month",
+    "fullName": "Full Name:",
+    "empCode": "Emp Code:",
+    "department": "Department:",
+    "position": "Position:",
+    "baseSalaryLabel": "Base Position Salary:",
+    "workDaysLabel": "Actual Work Days:",
+    "otPayLabel": "Total Overtime Compensation:",
+    "allowanceLabel": "Welfare & Allowance Benefits:",
+    "deductionLabel": "Tax Deductions & Insurance:",
+    "netLabel": "NET TRANSFERRED SALARY:",
+    "statusLabels": {
+      "DRAFT": "Draft",
+      "PENDING_APPROVAL": "Pending Approval",
+      "APPROVED": "Approved",
+      "PAID": "Paid"
+    }
+  },
+  "config": {
+    "cardTitle": "System Configurations",
+    "ratesCard": "Work Rates & Coefficients",
+    "matrixCard": "Approval Request Levels Routing Matrix",
+    "ratesCols": {
+      "key": "Config Key",
+      "name": "Description",
+      "multiplier": "Value Multiplier"
+    },
+    "matrixCols": {
+      "type": "Business Type",
+      "levels": "Required Levels count",
+      "sequence": "Approver Roles Flow"
+    },
+    "levelsSelect": "level"
+  },
+  "audit": {
+    "cardTitle": "System Audit Activity logs",
+    "actionFilterAll": "All Actions",
+    "actionFilterInsert": "Insertions (INSERT)",
+    "actionFilterUpdate": "Updates (UPDATE)",
+    "actionFilterDelete": "Deletes (DELETE)",
+    "actionFilterPlaceholder": "Action filter",
+    "entityFilterPlaceholder": "Target data table (e.g. employees, users)",
+    "errorLoadDiff": "Failed to load state difference",
+    "cols": {
+      "time": "Timestamp",
+      "action": "Action",
+      "table": "Impacted Table",
+      "recordId": "Record Primary Key",
+      "actor": "Executed By",
+      "diff": "State Differences"
+    },
+    "viewDiff": "View Diff",
+    "modalTitle": "State Change Detailed View (State Diff)",
+    "oldState": "Old Record State (OLD)",
+    "newState": "New Record State (NEW)",
+    "btnClose": "Close"
+  },
+  "projects": {
+    "cardTitle": "Project & Task Management",
+    "btn": {
+      "addProject": "Add Project",
+      "addTask": "Add Task",
+      "refresh": "Refresh"
+    },
+    "cols": {
+      "name": "Project Name",
+      "status": "Status",
+      "tasks": "Tasks",
+      "actions": "Actions",
+      "taskName": "Task Name",
+      "estimatedHours": "Estimated Hours"
+    },
+    "statusLabels": {
+      "PLANNING": "Planning",
+      "ACTIVE": "Active",
+      "COMPLETED": "Completed",
+      "SUSPENDED": "Suspended"
+    },
+    "tooltips": {
+      "edit": "Edit",
+      "delete": "Delete",
+      "taskCount": "{{count}} tasks"
+    },
+    "detail": {
+      "pm": "Project Manager",
+      "unassigned": "Unassigned",
+      "totalLabor": "Total Labor Logged",
+      "entries": "Timesheet Entries",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "ongoing": "Ongoing",
+      "estimatedVsActual": "Labor Progress (Actual / Estimated)",
+      "tasksTitle": "Tasks List"
+    },
+    "empty": {
+      "projects": "No projects yet. Click 'Add Project' to begin.",
+      "tasks": "This project has no tasks yet.",
+      "selectProject": "Select a project from the list on the left to see details."
+    },
+    "confirm": {
+      "deleteProject": "Delete this project? All its tasks and related timesheet entries will be affected.",
+      "deleteTask": "Delete this task?"
+    },
+    "msg": {
+      "created": "Project created!",
+      "updated": "Project updated!",
+      "deleted": "Project deleted!",
+      "taskCreated": "Task added!",
+      "taskUpdated": "Task updated!",
+      "taskDeleted": "Task deleted!"
+    },
+    "modal": {
+      "titleAddProject": "Create New Project",
+      "titleEditProject": "Edit Project",
+      "titleAddTask": "Add New Task",
+      "titleEditTask": "Edit Task",
+      "ok": "Save",
+      "cancel": "Cancel",
+      "fields": {
+        "name": "Project Name",
+        "startDate": "Start Date",
+        "endDate": "End Date (optional)",
+        "pm": "Project Manager (PM)",
+        "status": "Status",
+        "taskName": "Task Name",
+        "description": "Detailed Description",
+        "estimatedHours": "Estimated Hours"
+      },
+      "placeholders": {
+        "name": "Enter project name (2-150 chars)...",
+        "pm": "Choose a PM...",
+        "taskName": "Enter task name...",
+        "description": "Detailed description of the task..."
+      },
+      "validation": {
+        "nameRequired": "Project name is required",
+        "nameMin": "Name must be at least 2 characters",
+        "nameMax": "Name must not exceed 150 characters",
+        "startDateRequired": "Start date is required",
+        "taskNameRequired": "Task name is required"
+      }
+    }
+  },
+  "login": {
+    "subtitle": "Please log in to start your work session",
+    "username": "Username / Email",
+    "usernameRequired": "Please enter your username or email",
+    "password": "Password",
+    "passwordRequired": "Please enter your password",
+    "submitButton": "Login",
+    "rulesTitle": "Password Rules:",
+    "rulesText": "Employee Code + password + date of birth (Bcrypted). System default password: [username]123456[YYYYMMDD] (e.g. employee12345619950101)"
+  },
+  "exports": {
+    "button": "Export Excel",
+    "success": "Export completed",
+    "failed": "Export failed",
+    "otSummary": "Export OT Summary"
+  },
+  "onboarding": {
+    "assign": {
+      "title": "Assign Task",
+      "selfAssign": "Self-assign"
+    },
+    "dashboard": {
+      "title": "Onboarding Dashboard"
+    }
+  },
+  "offboarding": {
+    "settlement": {
+      "title": "Final Settlement",
+      "unusedLeaveDays": "Unused leave days",
+      "severanceAmount": "Severance amount",
+      "lastWorkingDay": "Last working day",
+      "submit": "Confirm Settlement"
+    }
+  },
+  "onbOffb": {
+    "taskStatusLabels": {
+      "PENDING": "Pending",
+      "IN_PROGRESS": "In Progress",
+      "COMPLETED": "Completed"
+    },
+    "taskDepartments": {
+      "HR": "Human Resources",
+      "IT": "Information Technology",
+      "ADMIN": "Administration"
+    }
+  }
+}
