@@ -2,10 +2,10 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Attendance } from '../../entities/attendance.entity.js';
-import { Employee } from '../../entities/employee.entity.js';
-import { AttendanceService } from './attendance.service.js';
-import { ATTENDANCE_RULES } from './attendance.constants.js';
+import { Attendance } from '../../entities/attendance.entity';
+import { Employee } from '../../entities/employee.entity';
+import { AttendanceService } from './attendance.service';
+import { ATTENDANCE_RULES } from './attendance.constants';
 
 /**
  * Cron job: 23:59:30 daily — finalize all un-checked-out attendance records

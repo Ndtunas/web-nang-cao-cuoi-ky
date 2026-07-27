@@ -8,14 +8,14 @@ import { Observable, from, of, switchMap, tap, catchError } from 'rxjs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PinoLogger } from 'nestjs-pino';
-import { SystemAuditLog } from '../../entities/system-audit-log.entity.js';
-import { Employee } from '../../entities/employee.entity.js';
-import { LeaveRequest } from '../../entities/leave-request.entity.js';
-import { Timesheet } from '../../entities/timesheet.entity.js';
-import { Department } from '../../entities/department.entity.js';
-import { Position } from '../../entities/position.entity.js';
-import { Project } from '../../entities/project.entity.js';
-import { User } from '../../entities/user.entity.js';
+import { SystemAuditLog } from '../../entities/system-audit-log.entity';
+import { Employee } from '../../entities/employee.entity';
+import { LeaveRequest } from '../../entities/leave-request.entity';
+import { Timesheet } from '../../entities/timesheet.entity';
+import { Department } from '../../entities/department.entity';
+import { Position } from '../../entities/position.entity';
+import { Project } from '../../entities/project.entity';
+import { User } from '../../entities/user.entity';
 
 /**
  * Audit Log Interceptor — theo 03_workflows.md mục 1.

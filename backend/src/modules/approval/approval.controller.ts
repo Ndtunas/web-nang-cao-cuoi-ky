@@ -8,13 +8,13 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { ApprovalService } from './approval.service.js';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
-import { RolesGuard } from '../auth/guards/roles.guard.js';
-import { Roles } from '../auth/decorators/roles.decorator.js';
-import { CurrentUser } from '../auth/decorators/current-user.decorator.js';
-import { User } from '../../entities/user.entity.js';
-import { UserRole } from '../../common/enums/business-values.js';
+import { ApprovalService } from './approval.service';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { User } from '../../entities/user.entity';
+import { UserRole } from '../../common/enums/business-values';
 
 @Controller()
 @UseGuards(JwtAuthGuard)

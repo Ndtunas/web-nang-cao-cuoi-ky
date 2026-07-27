@@ -3,10 +3,10 @@
  * Functions nhận injected repository từ caller, không wrap service.
  */
 import { Repository } from 'typeorm';
-import { Notification } from '../../entities/notification.entity.js';
-import { Employee } from '../../entities/employee.entity.js';
-import { User } from '../../entities/user.entity.js';
-import { ApprovalRequest } from '../../entities/approval-request.entity.js';
+import { Notification } from '../../entities/notification.entity';
+import { Employee } from '../../entities/employee.entity';
+import { User } from '../../entities/user.entity';
+import { ApprovalRequest } from '../../entities/approval-request.entity';
 
 export async function notifyApproversForNextLevel(
   deps: {

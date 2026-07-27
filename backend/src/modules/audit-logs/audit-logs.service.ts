@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Between } from 'typeorm';
-import { SystemAuditLog } from '../../entities/system-audit-log.entity.js';
-import { BusinessException } from '../../common/exceptions/business.exception.js';
+import { SystemAuditLog } from '../../entities/system-audit-log.entity';
+import { BusinessException } from '../../common/exceptions/business.exception';
 
 @Injectable()
 export class AuditLogsService {

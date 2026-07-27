@@ -1,9 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeepPartial, Repository, DataSource } from 'typeorm';
-import { Attendance } from '../../entities/attendance.entity.js';
-import { Employee } from '../../entities/employee.entity.js';
-import { BusinessException } from '../../common/exceptions/business.exception.js';
+import { Attendance } from '../../entities/attendance.entity';
+import { Employee } from '../../entities/employee.entity';
+import { BusinessException } from '../../common/exceptions/business.exception';
 import {
   ATTENDANCE_RULES,
   evaluateAbsenceStatus,
@@ -11,7 +11,7 @@ import {
   evaluateCheckOut,
   toSec,
   fromSec,
-} from './attendance.constants.js';
+} from './attendance.constants';
 
 /**
  * Attendance rules engine — see attendance.constants.ts

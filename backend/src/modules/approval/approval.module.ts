@@ -1,19 +1,19 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ApprovalController } from './approval.controller.js';
-import { ApprovalService } from './approval.service.js';
-import { ApprovalConfig } from '../../entities/approval-config.entity.js';
-import { ApprovalRequest } from '../../entities/approval-request.entity.js';
-import { ApprovalStepHistory } from '../../entities/approval-step-history.entity.js';
-import { Employee } from '../../entities/employee.entity.js';
-import { User } from '../../entities/user.entity.js';
-import { Timesheet } from '../../entities/timesheet.entity.js';
-import { JobHistory } from '../../entities/job-history.entity.js';
-import { SalaryHistory } from '../../entities/salary-history.entity.js';
-import { Salary } from '../../entities/salary.entity.js';
-import { LeaveRequest } from '../../entities/leave-request.entity.js';
-import { OffboardingTask } from '../../entities/offboarding-task.entity.js';
-import { Notification } from '../../entities/notification.entity.js';
+import { ApprovalController } from './approval.controller';
+import { ApprovalService } from './approval.service';
+import { ApprovalConfig } from '../../entities/approval-config.entity';
+import { ApprovalRequest } from '../../entities/approval-request.entity';
+import { ApprovalStepHistory } from '../../entities/approval-step-history.entity';
+import { Employee } from '../../entities/employee.entity';
+import { User } from '../../entities/user.entity';
+import { Timesheet } from '../../entities/timesheet.entity';
+import { JobHistory } from '../../entities/job-history.entity';
+import { SalaryHistory } from '../../entities/salary-history.entity';
+import { Salary } from '../../entities/salary.entity';
+import { LeaveRequest } from '../../entities/leave-request.entity';
+import { OffboardingTask } from '../../entities/offboarding-task.entity';
+import { Notification } from '../../entities/notification.entity';
 
 @Module({
   imports: [
