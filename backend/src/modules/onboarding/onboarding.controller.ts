@@ -1,14 +1,14 @@
 import {
   Controller, Get, Post, Patch, Param, Body, UseGuards,
 } from '@nestjs/common';
-import { OnboardingService } from './onboarding.service.js';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
-import { RolesGuard } from '../auth/guards/roles.guard.js';
-import { Roles } from '../auth/decorators/roles.decorator.js';
-import { CurrentUser } from '../auth/decorators/current-user.decorator.js';
-import { UserRole } from '../../common/enums/business-values.js';
-import { User } from '../../entities/user.entity.js';
-import { InitiateOnboardingDto } from './dto/initiate-onboarding.dto.js';
+import { OnboardingService } from './onboarding.service';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { UserRole } from '../../common/enums/business-values';
+import { User } from '../../entities/user.entity';
+import { InitiateOnboardingDto } from './dto/initiate-onboarding.dto';
 
 @Controller('onboarding')
 @UseGuards(JwtAuthGuard, RolesGuard)

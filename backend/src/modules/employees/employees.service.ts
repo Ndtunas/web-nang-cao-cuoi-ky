@@ -2,20 +2,20 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { Employee } from '../../entities/employee.entity.js';
-import { User } from '../../entities/user.entity.js';
-import { Department } from '../../entities/department.entity.js';
-import { Position } from '../../entities/position.entity.js';
-import { JobHistory } from '../../entities/job-history.entity.js';
-import { SalaryHistory } from '../../entities/salary-history.entity.js';
-import { ApprovalRequest } from '../../entities/approval-request.entity.js';
-import { ApprovalConfig } from '../../entities/approval-config.entity.js';
+import { Employee } from '../../entities/employee.entity';
+import { User } from '../../entities/user.entity';
+import { Department } from '../../entities/department.entity';
+import { Position } from '../../entities/position.entity';
+import { JobHistory } from '../../entities/job-history.entity';
+import { SalaryHistory } from '../../entities/salary-history.entity';
+import { ApprovalRequest } from '../../entities/approval-request.entity';
+import { ApprovalConfig } from '../../entities/approval-config.entity';
 import {
   TransactionType,
   EmployeeStatus,
   UserRole,
-} from '../../common/enums/business-values.js';
-import { BusinessException } from '../../common/exceptions/business.exception.js';
+} from '../../common/enums/business-values';
+import { BusinessException } from '../../common/exceptions/business.exception';
 
 @Injectable()
 export class EmployeesService {
