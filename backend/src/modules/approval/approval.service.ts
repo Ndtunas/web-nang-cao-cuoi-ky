@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ApprovalRequest } from '../../entities/approval-request.entity';
@@ -36,6 +36,8 @@ import {
  */
 @Injectable()
 export class ApprovalService {
+  private readonly logger = new Logger(ApprovalService.name);
+
   constructor(
     @InjectRepository(ApprovalRequest)
     private readonly approvalRequestRepository: Repository<ApprovalRequest>,
