@@ -6,6 +6,7 @@ import dayjs from 'dayjs';
 import { useAuth } from '../contexts/AuthContext.jsx';
 import { canDo } from '../constants/roles.js';
 import { exportsService } from '../services/exports.service.js';
+import { labelFor } from '../utils/labelMapping.js';
 
 // Custom swap icon
 const SwapOutlined = () => <span className="anticon"><svg viewBox="0 0 1024 1024" width="1em" height="1em" fill="currentColor"><path d="M847.9 592H152c-4.4 0-8 3.6-8 8v60c0 4.4 3.6 8 8 8h605.2L612.9 812c-3.1 3.1-3.1 8.2 0 11.3l42.4 42.4c3.1 3.1 8.2 3.1 11.3 0L882 650.3c1.5-1.5 2.3-3.5 2.3-5.6v-15.3c0-2-0.8-4-2.3-5.5L666.6 408.4c-3.1-3.1-8.2-3.1-11.3 0l-42.4 42.4c-3.1 3.1-3.1 8.2 0 11.3L847.9 592zM176 364h695.9c4.4 0 8-3.6 8-8v-60c0-4.4-3.6-8-8-8H266.7l144.3-144.3c3.1-3.1 3.1-8.2 0-11.3l-42.4-42.4c-3.1-3.1-8.2-3.1-11.3 0L142 305.7c-1.5 1.5-2.3 3.5-2.3 5.6v15.3c0 2 0.8 4 2.3 5.5l215.4 215.4c3.1 3.1 8.2 3.1 11.3 0l42.4-42.4c3.1-3.1 3.1-8.2 0-11.3L176 364z"/></svg></span>;
@@ -154,9 +155,11 @@ export default function EmployeeDirectory({
                     render: (status) => {
                       let color = 'green';
                       if (status === 'ONBOARDING') color = 'blue';
+                      if (status === 'PROBATION') color = 'cyan';
+                      if (status === 'SUSPENDED') color = 'gold';
                       if (status === 'NOTICE_PERIOD') color = 'orange';
                       if (status === 'TERMINATED') color = 'red';
-                      return <Tag color={color}>{status}</Tag>;
+                      return <Tag color={color}>{labelFor(t, 'employeeStatus', status)}</Tag>;
                     }
                   },
                   {
@@ -213,7 +216,16 @@ export default function EmployeeDirectory({
               dataSource={employees.filter(e => e.status === 'TERMINATED' || e.status === 'NOTICE_PERIOD')}
               columns={[
                 { title: t('employeeTable.name'), dataIndex: 'fullName', key: 'fullName' },
-                { title: t('employeeTable.status'), dataIndex: 'status', key: 'status' },
+                {
+                  title: t('employeeTable.status'),
+                  dataIndex: 'status',
+                  key: 'status',
+                  render: (status) => (
+                    <Tag color={status === 'TERMINATED' ? 'red' : 'orange'}>
+                      {labelFor(t, 'employeeStatus', status)}
+                    </Tag>
+                  )
+                },
                 {
                   title: t('directory.offboardingCols.assets'),
                   key: 'assets',
@@ -316,10 +328,10 @@ export default function EmployeeDirectory({
             <Col xs={24} md={12}>
               <Form.Item label={t('modal.fields.status')} name="status" initialValue="ONBOARDING">
                 <Select>
-                  <Select.Option value="ONBOARDING">ONBOARDING</Select.Option>
-                  <Select.Option value="ACTIVE">ACTIVE</Select.Option>
-                  <Select.Option value="NOTICE_PERIOD">NOTICE_PERIOD</Select.Option>
-                  <Select.Option value="TERMINATED">TERMINATED</Select.Option>
+                  <Select.Option value="ONBOARDING">{labelFor(t, 'employeeStatus', 'ONBOARDING')}</Select.Option>
+                  <Select.Option value="ACTIVE">{labelFor(t, 'employeeStatus', 'OFFICIAL')}</Select.Option>
+                  <Select.Option value="NOTICE_PERIOD">{labelFor(t, 'employeeStatus', 'NOTICE_PERIOD')}</Select.Option>
+                  <Select.Option value="TERMINATED">{labelFor(t, 'employeeStatus', 'TERMINATED')}</Select.Option>
                 </Select>
               </Form.Item>
             </Col>
@@ -415,8 +427,8 @@ export default function EmployeeDirectory({
 
           <Form.Item label={t('directory.modals.disciplineType')} name="type" rules={[{ required: true, message: 'Chọn phân loại' }]}>
             <Select>
-              <Select.Option value="REWARD">{t('directory.modals.reward')}</Select.Option>
-              <Select.Option value="DISCIPLINE">{t('directory.modals.discipline')}</Select.Option>
+              <Select.Option value="REWARD">{labelFor(t, 'disciplineType', 'REWARD')}</Select.Option>
+              <Select.Option value="DISCIPLINE">{labelFor(t, 'disciplineType', 'DISCIPLINE')}</Select.Option>
             </Select>
           </Form.Item>
 

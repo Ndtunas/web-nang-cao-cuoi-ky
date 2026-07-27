@@ -41,7 +41,15 @@
     "onLeave": "On Leave",
     "terminated": "Terminated",
     "edit": "Edit",
-    "delete": "Delete"
+    "delete": "Delete",
+    "statusLabels": {
+      "ONBOARDING": "Onboarding",
+      "PROBATION": "Probation",
+      "OFFICIAL": "Official",
+      "SUSPENDED": "Suspended",
+      "NOTICE_PERIOD": "Notice Period",
+      "TERMINATED": "Terminated"
+    }
   },
   "modal": {
     "titleAdd": "Add New Employee",
@@ -324,7 +332,11 @@
       "amount": "Fine/Reward Value (VND)",
       "reason": "Detailed Reason",
       "reward": "REWARD",
-      "discipline": "DISCIPLINE"
+      "discipline": "DISCIPLINE",
+      "disciplineTypeLabels": {
+        "REWARD": "Reward",
+        "DISCIPLINE": "Discipline"
+      }
     }
   },
   "timesheets": {
@@ -427,7 +439,10 @@
     "msgSubmitted": "Leave request submitted for approval!",
     "msgCancelled": "Leave request cancelled.",
     "msgSubmitError": "Error submitting leave request",
-    "msgCancelError": "Error cancelling leave request"
+    "msgCancelError": "Error cancelling leave request",
+    "balance": {
+      "insufficient": "Requested annual leave exceeds remaining balance"
+    }
   },
   "approvals": {
     "tabs": {
@@ -498,7 +513,13 @@
     "otPayLabel": "Total Overtime Compensation:",
     "allowanceLabel": "Welfare & Allowance Benefits:",
     "deductionLabel": "Tax Deductions & Insurance:",
-    "netLabel": "NET TRANSFERRED SALARY:"
+    "netLabel": "NET TRANSFERRED SALARY:",
+    "statusLabels": {
+      "DRAFT": "Draft",
+      "PENDING_APPROVAL": "Pending Approval",
+      "APPROVED": "Approved",
+      "PAID": "Paid"
+    }
   },
   "config": {
     "cardTitle": "System Configurations",
@@ -555,10 +576,10 @@
       "estimatedHours": "Estimated Hours"
     },
     "statusLabels": {
-      "PLANNING": "PLANNING",
-      "ACTIVE": "ACTIVE",
-      "COMPLETED": "COMPLETED",
-      "SUSPENDED": "SUSPENDED"
+      "PLANNING": "Planning",
+      "ACTIVE": "Active",
+      "COMPLETED": "Completed",
+      "SUSPENDED": "Suspended"
     },
     "tooltips": {
       "edit": "Edit",
@@ -659,9 +680,16 @@
       "submit": "Confirm Settlement"
     }
   },
-  "leave": {
-    "balance": {
-      "insufficient": "Requested annual leave exceeds remaining balance"
+  "onbOffb": {
+    "taskStatusLabels": {
+      "PENDING": "Pending",
+      "IN_PROGRESS": "In Progress",
+      "COMPLETED": "Completed"
+    },
+    "taskDepartments": {
+      "HR": "Human Resources",
+      "IT": "Information Technology",
+      "ADMIN": "Administration"
     }
   }
 }

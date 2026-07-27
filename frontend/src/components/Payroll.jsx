@@ -5,6 +5,7 @@ import { CalculatorOutlined, EyeOutlined, DownloadOutlined } from '@ant-design/i
 import { useAuth } from '../contexts/AuthContext.jsx';
 import { canDo } from '../constants/roles.js';
 import { exportsService } from '../services/exports.service.js';
+import { labelFor } from '../utils/labelMapping.js';
 
 const { Text, Title } = Typography;
 
@@ -66,7 +67,10 @@ export default function Payroll({
           { title: t('payroll.cols.baseSalary'), dataIndex: 'baseSalary', key: 'baseSalary', render: (v) => `${Number(v).toLocaleString()} VND` },
           { title: t('payroll.cols.workDays'), dataIndex: 'workDays', key: 'workDays' },
           { title: t('payroll.cols.netSalary'), dataIndex: 'netSalary', key: 'netSalary', render: (v) => <Text strong style={{ color: '#10b981' }}>{`${Number(v).toLocaleString()} VND`}</Text> },
-          { title: t('payroll.cols.status'), dataIndex: 'status', key: 'status', render: (s) => <Tag color={s === 'APPROVED' ? 'green' : 'orange'}>{s}</Tag> },
+          { title: t('payroll.cols.status'), dataIndex: 'status', key: 'status', render: (s) => {
+            const color = s === 'APPROVED' ? 'green' : s === 'PAID' ? 'blue' : s === 'PENDING_APPROVAL' ? 'gold' : 'orange';
+            return <Tag color={color}>{labelFor(t, 'payrollStatus', s)}</Tag>;
+          } },
           {
             title: t('payroll.cols.action'),
             key: 'actions',

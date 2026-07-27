@@ -9,9 +9,11 @@ import {
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import { api } from '../api.js';
+import { labelFor } from '../utils/labelMapping.js';
 
 const STATUS_COLORS = {
   PENDING: 'gold',
+  IN_PROGRESS: 'blue',
   COMPLETED: 'green',
 };
 
@@ -148,7 +150,7 @@ export default function Onboarding({ t, departments = [], positions = [] }) {
       title: t('onb.cols.department'),
       dataIndex: 'targetDepartment',
       key: 'targetDepartment',
-      render: (v) => <Tag color="cyan">{v}</Tag>,
+      render: (v) => <Tag color="cyan">{labelFor(t, 'onboardingTaskDepartment', v)}</Tag>,
     },
     {
       title: t('onb.cols.dueDate'),
@@ -160,7 +162,7 @@ export default function Onboarding({ t, departments = [], positions = [] }) {
       title: t('onb.cols.status'),
       dataIndex: 'status',
       key: 'status',
-      render: (v) => <Tag color={STATUS_COLORS[v] || 'default'}>{v}</Tag>,
+      render: (v) => <Tag color={STATUS_COLORS[v] || 'default'}>{labelFor(t, 'onbOffbTaskStatus', v)}</Tag>,
     },
     {
       title: t('onb.cols.actions'),
@@ -208,13 +210,13 @@ export default function Onboarding({ t, departments = [], positions = [] }) {
         title: t('onb.cols.department'),
         dataIndex: 'targetDepartment',
         key: 'targetDepartment',
-        render: (v) => <Tag color="cyan">{v}</Tag>,
+        render: (v) => <Tag color="cyan">{labelFor(t, 'onboardingTaskDepartment', v)}</Tag>,
       },
       {
         title: t('onb.cols.status'),
         dataIndex: 'status',
         key: 'status',
-        render: (v) => <Tag color={STATUS_COLORS[v] || 'default'}>{v}</Tag>,
+        render: (v) => <Tag color={STATUS_COLORS[v] || 'default'}>{labelFor(t, 'onbOffbTaskStatus', v)}</Tag>,
       },
       {
         title: t('onb.cols.actions'),
@@ -430,7 +432,7 @@ export default function Onboarding({ t, departments = [], positions = [] }) {
         title: t('onb.cols.department'),
         dataIndex: 'targetDepartment',
         key: 'targetDepartment',
-        render: (v) => <Tag color="cyan">{v}</Tag>,
+        render: (v) => <Tag color="cyan">{labelFor(t, 'onboardingTaskDepartment', v)}</Tag>,
       },
       {
         title: t('onb.cols.dueDate'),
@@ -442,7 +444,7 @@ export default function Onboarding({ t, departments = [], positions = [] }) {
         title: t('onb.cols.status'),
         dataIndex: 'status',
         key: 'status',
-        render: (v) => <Tag color={STATUS_COLORS[v] || 'default'}>{v}</Tag>,
+        render: (v) => <Tag color={STATUS_COLORS[v] || 'default'}>{labelFor(t, 'onbOffbTaskStatus', v)}</Tag>,
       },
       {
         title: t('onb.cols.actions'),
@@ -468,8 +470,8 @@ export default function Onboarding({ t, departments = [], positions = [] }) {
           column={2}
           size="small"
           extra={
-            <Tag color={detailEmployee.status === 'ONBOARDING' ? 'processing' : 'warning'}>
-              {detailEmployee.status}
+            <Tag color={detailEmployee.status === 'ONBOARDING' ? 'processing' : detailEmployee.status === 'PROBATION' ? 'cyan' : 'warning'}>
+              {labelFor(t, 'employeeStatus', detailEmployee.status)}
             </Tag>
           }
           style={{ marginBottom: 16, background: '#f8fafc', padding: 12, borderRadius: 8 }}

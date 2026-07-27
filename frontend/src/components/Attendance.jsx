@@ -5,6 +5,7 @@ import {
 import { LoginOutlined, LogoutOutlined, ReloadOutlined, ClockCircleOutlined, WarningOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import { api } from '../api.js';
+import { labelFor } from '../utils/labelMapping.js';
 
 const STATUS_COLORS = {
   PRESENT: 'green',
@@ -116,7 +117,7 @@ export default function Attendance({ t, isAdminView = false }) {
       key: 'status',
       render: (v) => (
         <Tag color={STATUS_COLORS[v] || 'default'}>
-          {t(`att.statusLabels.${v}`) || v}
+          {labelFor(t, 'attendanceStatus', v)}
         </Tag>
       ),
     },
@@ -159,7 +160,7 @@ export default function Attendance({ t, isAdminView = false }) {
               <Statistic
                 title={t('att.today')}
                 prefix={<ClockCircleOutlined />}
-                value={todayStatus ? todayStatus.status : (today?.status ?? '-')}
+                value={todayStatus ? labelFor(t, 'attendanceStatus', todayStatus.status) : labelFor(t, 'attendanceStatus', today?.status) || '-'}
                 valueStyle={{ fontSize: 16 }}
               />
               {today && (
@@ -176,21 +177,21 @@ export default function Attendance({ t, isAdminView = false }) {
             <Col xs={12} md={4}>
               <Card style={{ background: 'rgba(15, 23, 42, 0.6)', height: '100%' }} bodyStyle={{ height: '100%' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
-                  <Statistic title="PRESENT" value={stats.present} valueStyle={{ color: '#10b981' }} />
+                  <Statistic title={labelFor(t, 'attendanceStatus', 'PRESENT')} value={stats.present} valueStyle={{ color: '#10b981' }} />
                 </div>
               </Card>
             </Col>
             <Col xs={12} md={4}>
               <Card style={{ background: 'rgba(15, 23, 42, 0.6)', height: '100%' }} bodyStyle={{ height: '100%' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
-                  <Statistic title="LATE" value={stats.late} valueStyle={{ color: '#f59e0b' }} />
+                  <Statistic title={labelFor(t, 'attendanceStatus', 'LATE')} value={stats.late} valueStyle={{ color: '#f59e0b' }} />
                 </div>
               </Card>
             </Col>
             <Col xs={12} md={4}>
               <Card style={{ background: 'rgba(15, 23, 42, 0.6)', height: '100%' }} bodyStyle={{ height: '100%' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
-                  <Statistic title="OT" value={stats.overtime || 0} valueStyle={{ color: '#a78bfa' }} />
+                  <Statistic title={labelFor(t, 'attendanceStatus', 'OVERTIME')} value={stats.overtime || 0} valueStyle={{ color: '#a78bfa' }} />
                 </div>
               </Card>
             </Col>

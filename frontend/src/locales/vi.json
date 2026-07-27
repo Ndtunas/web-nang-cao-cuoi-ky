@@ -41,7 +41,15 @@
     "onLeave": "Nghỉ phép",
     "terminated": "Đã nghỉ việc",
     "edit": "Sửa",
-    "delete": "Xóa"
+    "delete": "Xóa",
+    "statusLabels": {
+      "ONBOARDING": "Đang onboarding",
+      "PROBATION": "Thử việc",
+      "OFFICIAL": "Chính thức",
+      "SUSPENDED": "Tạm hoãn HĐLĐ",
+      "NOTICE_PERIOD": "Báo trước nghỉ việc",
+      "TERMINATED": "Đã thôi việc"
+    }
   },
   "modal": {
     "titleAdd": "Thêm Nhân Viên Mới",
@@ -324,7 +332,11 @@
       "amount": "Giá trị số tiền phạt/thưởng (VND)",
       "reason": "Lý do chi tiết",
       "reward": "KHEN THƯỞNG (REWARD)",
-      "discipline": "KỶ LUẬT (DISCIPLINE)"
+      "discipline": "KỶ LUẬT (DISCIPLINE)",
+      "disciplineTypeLabels": {
+        "REWARD": "Khen thưởng",
+        "DISCIPLINE": "Kỷ luật"
+      }
     }
   },
   "timesheets": {
@@ -427,7 +439,10 @@
     "msgSubmitted": "Đã gửi đơn nghỉ phép lên ma trận duyệt!",
     "msgCancelled": "Đã hủy đơn nghỉ phép.",
     "msgSubmitError": "Lỗi khi nộp đơn nghỉ phép",
-    "msgCancelError": "Lỗi khi hủy đơn nghỉ phép"
+    "msgCancelError": "Lỗi khi hủy đơn nghỉ phép",
+    "balance": {
+      "insufficient": "Số ngày nghỉ phép năm vượt quá số dư hiện tại"
+    }
   },
   "approvals": {
     "tabs": {
@@ -498,7 +513,13 @@
     "otPayLabel": "Tổng tiền làm thêm giờ (Overtime):",
     "allowanceLabel": "Các khoản phụ cấp phúc lợi:",
     "deductionLabel": "Các khoản khấu trừ & BHXH:",
-    "netLabel": "THỰC LĨNH CHUYỂN KHOẢN (NET):"
+    "netLabel": "THỰC LĨNH CHUYỂN KHOẢN (NET):",
+    "statusLabels": {
+      "DRAFT": "Bảng nháp",
+      "PENDING_APPROVAL": "Chờ duyệt",
+      "APPROVED": "Đã duyệt",
+      "PAID": "Đã chi trả"
+    }
   },
   "config": {
     "cardTitle": "Cấu hình hệ thống",
@@ -555,10 +576,10 @@
       "estimatedHours": "Giờ ước lượng"
     },
     "statusLabels": {
-      "PLANNING": "LÊN KẾ HOẠCH",
-      "ACTIVE": "ĐANG CHẠY",
-      "COMPLETED": "HOÀN THÀNH",
-      "SUSPENDED": "TẠM DỪNG"
+      "PLANNING": "Đang lên kế hoạch",
+      "ACTIVE": "Đang triển khai",
+      "COMPLETED": "Đã hoàn thành",
+      "SUSPENDED": "Tạm dừng"
     },
     "tooltips": {
       "edit": "Sửa",
@@ -659,9 +680,16 @@
       "submit": "Xác nhận quyết toán"
     }
   },
-  "leave": {
-    "balance": {
-      "insufficient": "Số ngày nghỉ phép năm vượt quá số dư hiện tại"
+  "onbOffb": {
+    "taskStatusLabels": {
+      "PENDING": "Chờ xử lý",
+      "IN_PROGRESS": "Đang thực hiện",
+      "COMPLETED": "Hoàn tất"
+    },
+    "taskDepartments": {
+      "HR": "Nhân sự",
+      "IT": "Công nghệ thông tin",
+      "ADMIN": "Hành chính"
     }
   }
 }

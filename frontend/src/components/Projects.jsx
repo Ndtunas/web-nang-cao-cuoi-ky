@@ -38,6 +38,7 @@ import dayjs from 'dayjs';
 import { projectsService, employeesService } from '../services/index.js';
 import { useAuth } from '../contexts/AuthContext.jsx';
 import { ROLES, canDo } from '../constants/roles.js';
+import { labelFor } from '../utils/labelMapping.js';
 
 const STATUS_META = {
   PLANNING: { color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.12)' },
@@ -253,7 +254,7 @@ export default function Projects({ t }) {
         const meta = STATUS_META[status] || STATUS_META.ACTIVE;
         return (
           <Tag style={{ color: meta.color, background: meta.bg, border: `1px solid ${meta.color}40`, fontWeight: 600 }}>
-            {t(`projects.statusLabels.${status}`)}
+            {labelFor(t, 'projectStatus', status)}
           </Tag>
         );
       },

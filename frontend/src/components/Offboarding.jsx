@@ -5,9 +5,11 @@ import {
 import AppModal from './AppModal.jsx';
 import { LogoutOutlined, ReloadOutlined, CheckOutlined } from '@ant-design/icons';
 import { api } from '../api.js';
+import { labelFor } from '../utils/labelMapping.js';
 
 const STATUS_COLORS = {
   PENDING: 'gold',
+  IN_PROGRESS: 'blue',
   COMPLETED: 'green',
 };
 
@@ -85,13 +87,13 @@ export default function Offboarding({ t, role }) {
       title: t('offb.cols.department'),
       dataIndex: 'targetDepartment',
       key: 'targetDepartment',
-      render: (v) => <Tag color="purple">{v}</Tag>,
+      render: (v) => <Tag color="purple">{labelFor(t, 'onboardingTaskDepartment', v)}</Tag>,
     },
     {
       title: t('offb.cols.status'),
       dataIndex: 'status',
       key: 'status',
-      render: (v) => <Tag color={STATUS_COLORS[v] || 'default'}>{v}</Tag>,
+      render: (v) => <Tag color={STATUS_COLORS[v] || 'default'}>{labelFor(t, 'onbOffbTaskStatus', v)}</Tag>,
     },
     {
       title: t('offb.cols.actions'),
