@@ -98,6 +98,18 @@ describe('AuthService', () => {
       await expect(service.login({ username: 'johndoe', password: 'pass' }))
         .rejects.toMatchObject({ errorCode: 'ERR_AUTH_001' });
     });
+
+    it('should throw ERR_AUTH_001 when password is invalid', async () => {
+      (bcrypt.compare as jest.Mock).mockResolvedValueOnce(false as never);
+      const mockUser = createUser({ id: 'user-1', username: 'johndoe', status: 'ACTIVE' });
+      mockUser.passwordHash = '$2b$10$hashedpassword';
+      userRepo.add(mockUser);
+
+      await expect(service.login({ username: 'johndoe', password: 'wrong' }))
+        .rejects.toMatchObject({ errorCode: 'ERR_AUTH_001' });
+      // verify: compare chỉ với password thuần, không ghép empCode/dob
+      expect(bcrypt.compare).toHaveBeenCalledWith('wrong', mockUser.passwordHash);
+    });
   });
 
   // -------------------------------------------------------------------------
@@ -108,7 +120,7 @@ describe('AuthService', () => {
       const mockUser = createUser({ id: 'user-1' });
       mockUser.passwordHash = '$2b$10$oldhash';
       userRepo.add(mockUser);
-      employeeRepo.add(createEmployee({ id: 'emp-1', userId: 'user-1', empCode: 'EMP001', dob: '1990-01-01' }));
+      const oldHash = mockUser.passwordHash;
 
       const result = await service.changePassword('user-1', {
         oldPassword: 'OldPass123!',
@@ -116,6 +128,10 @@ describe('AuthService', () => {
       });
 
       expect(result.success).toBe(true);
+      // compare chỉ với password thuần (không ghép empCode/dob)
+      expect(bcrypt.compare).toHaveBeenCalledWith('OldPass123!', oldHash);
+      // hash mới cũng chỉ từ password thuần
+      expect(bcrypt.hash).toHaveBeenCalledWith('NewPass123!', 10);
     });
 
     it('should throw ERR_AUTH_001 when user not found', async () => {
@@ -145,6 +161,8 @@ describe('AuthService', () => {
       });
 
       expect(result.success).toBe(true);
+      // hash mới chỉ từ password thuần
+      expect(bcrypt.hash).toHaveBeenCalledWith('NewPass123!', 10);
     });
 
     it('should create approval request when HR DEPT_LEAD requests reset', async () => {

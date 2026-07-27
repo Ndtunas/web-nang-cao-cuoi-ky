@@ -64,6 +64,29 @@ DB_USERNAME="${DB_USERNAME:-fcvn}"
 DB_PASSWORD="${DB_PASSWORD}"
 DB_DATABASE="${DB_DATABASE:-hrm_system}"
 
+# ==================== INSTALL NPM DEPENDENCIES ====================
+echo ""
+echo -e "${BLUE}================================================${NC}"
+echo -e "${BLUE}  Installing Backend Dependencies...${NC}"
+echo -e "${BLUE}================================================${NC}"
+
+cd "$BACKEND_DIR"
+npm install -f || {
+    echo -e "${RED}[ERROR]${NC} Failed to install backend dependencies"
+    exit 1
+}
+
+echo ""
+echo -e "${BLUE}================================================${NC}"
+echo -e "${BLUE}  Installing Frontend Dependencies...${NC}"
+echo -e "${BLUE}================================================${NC}"
+
+cd "$FRONTEND_DIR"
+npm install -f || {
+    echo -e "${RED}[ERROR]${NC} Failed to install frontend dependencies"
+    exit 1
+}
+
 # ==================== CHECK DATABASE CONNECTION ====================
 echo ""
 echo -e "${BLUE}================================================${NC}"
@@ -95,29 +118,6 @@ if [ $? -ne 0 ]; then
 fi
 
 echo -e "${GREEN}[OK]${NC} Database connection verified"
-
-# ==================== INSTALL NPM DEPENDENCIES ====================
-echo ""
-echo -e "${BLUE}================================================${NC}"
-echo -e "${BLUE}  Installing Backend Dependencies...${NC}"
-echo -e "${BLUE}================================================${NC}"
-
-cd "$BACKEND_DIR"
-npm install || {
-    echo -e "${RED}[ERROR]${NC} Failed to install backend dependencies"
-    exit 1
-}
-
-echo ""
-echo -e "${BLUE}================================================${NC}"
-echo -e "${BLUE}  Installing Frontend Dependencies...${NC}"
-echo -e "${BLUE}================================================${NC}"
-
-cd "$FRONTEND_DIR"
-npm install || {
-    echo -e "${RED}[ERROR]${NC} Failed to install frontend dependencies"
-    exit 1
-}
 
 # ==================== SEED DATABASE ====================
 echo ""
@@ -159,19 +159,19 @@ Role       : ADMIN
 Department : BOD
 
 Username    : director
-Password    : DocLM + Password@123 + 1980-05-15
+Password    : Admin@123
 Role       : DIRECTOR
 Department : BOD
 
 IT DEPARTMENT:
 --------------------------------
 Username    : deptlead
-Password    : Password@123
+Password    : Admin@123
 Role       : DEPT_LEAD
 Department : IT
 
 Username    : employee
-Password    : Password@123
+Password    : Admin@123
 Role       : EMPLOYEE
 Department : IT
 

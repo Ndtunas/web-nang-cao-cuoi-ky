@@ -189,6 +189,12 @@ describe('OnboardingService', () => {
       const taskTitles = result.tasks.map((t: any) => t.taskTitle);
       expect(taskTitles.some((t: string) => t.includes('Hồ sơ') || t.includes('HĐLĐ'))).toBe(true);
       expect(taskTitles.some((t: string) => t.includes('máy tính') || t.includes('Email'))).toBe(true);
+      // Hash password thuần: `<username>@Temp` (không ghép empCode/dob)
+      const hashCalls = (bcrypt.hash as jest.Mock).mock.calls;
+      expect(hashCalls.length).toBeGreaterThan(0);
+      const [hashedPassword, rounds] = hashCalls[0];
+      expect(hashedPassword).toMatch(/.+@Temp$/);
+      expect(rounds).toBe(10);
     });
 
     it('success — uses existing employee when dto.employeeId provided', async () => {

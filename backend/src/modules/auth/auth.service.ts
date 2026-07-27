@@ -43,11 +43,8 @@ export class AuthService {
       throw new BusinessException('ERR_AUTH_001'); // Đăng nhập thất bại
     }
 
-    // 2. Lấy chuỗi băm tổ hợp theo rule
-    const plainText = await this.getPlaintextBlockForUser(user, password);
-
-    // 3. So sánh mật khẩu
-    const isPasswordValid = await bcrypt.compare(plainText, user.passwordHash);
+    // 3. So sánh mật khẩu (hash trực tiếp từ password thuần, không ghép empCode/dob)
+    const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
     if (!isPasswordValid) {
       throw new BusinessException('ERR_AUTH_001');
     }
@@ -85,17 +82,15 @@ export class AuthService {
       throw new BusinessException('ERR_AUTH_001');
     }
 
-    const oldPlainText = await this.getPlaintextBlockForUser(user, oldPassword);
     const isOldPasswordValid = await bcrypt.compare(
-      oldPlainText,
+      oldPassword,
       user.passwordHash,
     );
     if (!isOldPasswordValid) {
       throw new BusinessException('ERR_AUTH_001'); // Mật khẩu cũ không đúng
     }
 
-    const newPlainText = await this.getPlaintextBlockForUser(user, newPassword);
-    user.passwordHash = await bcrypt.hash(newPlainText, 10);
+    user.passwordHash = await bcrypt.hash(newPassword, 10);
     await this.userRepository.save(user);
 
     return { success: true };
@@ -115,12 +110,8 @@ export class AuthService {
       throw new BusinessException('ERR_AUTH_003');
     }
 
-    // Tính toán password hash mới
-    const targetPlainText = await this.getPlaintextBlockForUser(
-      targetUser,
-      resetDto.newPassword,
-    );
-    const newPasswordHash = await bcrypt.hash(targetPlainText, 10);
+    // Tính toán password hash mới (hash trực tiếp từ password thuần)
+    const newPasswordHash = await bcrypt.hash(resetDto.newPassword, 10);
 
     // TH 1: Admin reset trực tiếp
     if (requestingUser.role === UserRole.ADMIN) {
@@ -229,37 +220,6 @@ export class AuthService {
       success: true,
       message: 'Đã phê duyệt yêu cầu reset mật khẩu thành công',
     };
-  }
-
-  /**
-   * Sinh chuỗi tổ hợp plaintext password cho User tương ứng
-   */
-  private async getPlaintextBlockForUser(
-    user: User,
-    password: string,
-  ): Promise<string> {
-    const employee = await this.employeeRepository.findOne({
-      where: { userId: user.id },
-    });
-    if (employee && employee.empCode && employee.dob) {
-      const dobStr = this.formatDate(employee.dob);
-      return `${employee.empCode}${password}${dobStr}`;
-    }
-    // Fallback cho tài khoản hệ thống (admin)
-    return `${user.username}${password}`;
-  }
-
-  /**
-   * Định dạng date sang YYYY-MM-DD
-   */
-  private formatDate(date: Date | string): string {
-    if (!date) return '';
-    const d = typeof date === 'string' ? new Date(date) : date;
-    if (isNaN(d.getTime())) return '';
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
   }
 
   /**

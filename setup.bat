@@ -62,6 +62,30 @@ echo   DB_USERNAME = %DB_USERNAME%
 echo   DB_DATABASE = %DB_DATABASE%
 echo.
 
+:: ==================== INSTALL NPM DEPENDENCIES ====================
+echo ================================================
+echo   Installing Backend Dependencies...
+echo ================================================
+cd /d "%BACKEND_DIR%"
+call npm install -f
+if errorlevel 1 (
+    echo [ERROR] Failed to install backend dependencies
+    pause
+    exit /b 1
+)
+
+echo.
+echo ================================================
+echo   Installing Frontend Dependencies...
+echo ================================================
+cd /d "%FRONTEND_DIR%"
+call npm install -f
+if errorlevel 1 (
+    echo [ERROR] Failed to install frontend dependencies
+    pause
+    exit /b 1
+)
+
 :: ==================== CHECK DATABASE CONNECTION ====================
 echo ================================================
 echo   Testing Database Connection...
@@ -88,30 +112,6 @@ if errorlevel 1 (
 echo [OK] Database connection verified
 echo.
 
-:: ==================== INSTALL NPM DEPENDENCIES ====================
-echo ================================================
-echo   Installing Backend Dependencies...
-echo ================================================
-cd /d "%BACKEND_DIR%"
-call npm install
-if errorlevel 1 (
-    echo [ERROR] Failed to install backend dependencies
-    pause
-    exit /b 1
-)
-
-echo.
-echo ================================================
-echo   Installing Frontend Dependencies...
-echo ================================================
-cd /d "%FRONTEND_DIR%"
-call npm install
-if errorlevel 1 (
-    echo [ERROR] Failed to install frontend dependencies
-    pause
-    exit /b 1
-)
-
 :: ==================== SEED DATABASE ====================
 echo.
 echo ================================================
@@ -119,17 +119,64 @@ echo   Seeding Database with Sample Data...
 echo ================================================
 cd /d "%BACKEND_DIR%"
 
-echo Creating test users for all departments...
-call node scripts/create-test-users.mjs
+:: Run database/04_seed.sql via psql to seed positions, departments, users, employees.
+:: The script is idempotent: it TRUNCATEs users/employees first, then inserts
+:: 4 standard accounts (admin/director/deptlead/employee) with hashes generated
+:: from the empCode that the DB trigger fn_trg_employees_auto_code produces.
+where psql >nul 2>&1
 if errorlevel 1 (
-    echo [WARNING] Some user creation may have failed, continuing...
-)
-
-echo.
-echo Fixing test user passwords...
-call node scripts/fix-test-passwords.mjs
-if errorlevel 1 (
-    echo [WARNING] Some password fixes may have failed, continuing...
+    echo [WARNING] psql not found in PATH. Falling back to node seed scripts.
+    echo Creating test users for all departments...
+    call node scripts/create-test-users.mjs
+    if errorlevel 1 (
+        echo [WARNING] Some user creation may have failed, continuing...
+    )
+    echo.
+    echo Fixing test user passwords...
+    call node scripts/fix-test-passwords.mjs
+    if errorlevel 1 (
+        echo [WARNING] Some password fixes may have failed, continuing...
+    )
+) else (
+    echo Running database/03_schema.sql via psql...
+    pushd "%PROJECT_ROOT%"
+    psql -h %DB_HOST% -p %DB_PORT% -U %DB_USERNAME% -d %DB_DATABASE% -v ON_ERROR_STOP=1 -f "database\03_schema.sql"
+    set PSQL_EXIT=%errorlevel%
+    popd
+    if not "%PSQL_EXIT%"=="0" (
+        echo.
+        echo [ERROR] psql seed failed with exit code %PSQL_EXIT%.
+        echo Check DB connection settings in backend\.env and PostgreSQL logs.
+        pause
+        exit /b 1
+    )
+    echo [OK] Database seeded from database/03_schema.sql
+    echo Running database/04_seed.sql via psql...
+    pushd "%PROJECT_ROOT%"
+    psql -h %DB_HOST% -p %DB_PORT% -U %DB_USERNAME% -d %DB_DATABASE% -v ON_ERROR_STOP=1 -f "database\04_seed.sql"
+    set PSQL_EXIT=%errorlevel%
+    popd
+    if not "%PSQL_EXIT%"=="0" (
+        echo.
+        echo [ERROR] psql seed failed with exit code %PSQL_EXIT%.
+        echo Check DB connection settings in backend\.env and PostgreSQL logs.
+        pause
+        exit /b 1
+    )
+    echo [OK] Database seeded from database/04_seed.sql
+    echo Running database/05_migration_annual_leave.sql via psql...
+    pushd "%PROJECT_ROOT%"
+    psql -h %DB_HOST% -p %DB_PORT% -U %DB_USERNAME% -d %DB_DATABASE% -v ON_ERROR_STOP=1 -f "database\05_migration_annual_leave.sql"
+    set PSQL_EXIT=%errorlevel%
+    popd
+    if not "%PSQL_EXIT%"=="0" (
+        echo.
+        echo [ERROR] psql seed failed with exit code %PSQL_EXIT%.
+        echo Check DB connection settings in backend\.env and PostgreSQL logs.
+        pause
+        exit /b 1
+    )
+    echo [OK] Database seeded from database/05_migration_annual_leave.sql
 )
 
 :: ==================== CREATE ACCOUNTS FILE ====================
@@ -138,10 +185,15 @@ echo ================================================
 echo   Creating Accounts File...
 echo ================================================
 
+:: Hash chỉ từ password thuần (bcrypt) — không ghép empCode/dob.
 > "%ACCOUNTS_FILE%" (
     echo ===============================================
     echo   HRM System - Test Accounts
     echo   Generated: %date% %time%
+    echo ===============================================
+    echo.
+    echo Password hashing: bcrypt^(password^) - không có empCode/dob prefix.
+    echo.
     echo ===============================================
     echo.
     echo SYSTEM ACCOUNTS:
@@ -152,50 +204,25 @@ echo ================================================
     echo Department  : BOD
     echo.
     echo Username    : director
-    echo Password    : Password@123
+    echo Password    : Admin@123
     echo Role        : DIRECTOR
     echo Department  : BOD
     echo.
     echo IT DEPARTMENT:
     echo --------------------------------
     echo Username    : deptlead
-    echo Password    : Password@123
+    echo Password    : Admin@123
     echo Role        : DEPT_LEAD
     echo Department  : IT
     echo.
     echo Username    : employee
-    echo Password    : Password@123
+    echo Password    : Admin@123
     echo Role        : EMPLOYEE
     echo Department  : IT
-    echo.
-    echo Username    : it_support
-    echo Password    : Temp@ItPVT
-    echo Role        : EMPLOYEE
-    echo Department  : IT
-    echo.
-    echo HR DEPARTMENT:
-    echo --------------------------------
-    echo Username    : hr_lead
-    echo Password    : Temp@HrTTH
-    echo Role        : DEPT_LEAD
-    echo Department  : HR
-    echo.
-    echo Username    : hr_staff
-    echo Password    : Temp@HrNVM
-    echo Role        : EMPLOYEE
-    echo Department  : HR
-    echo.
-    echo ADMIN DEPARTMENT:
-    echo --------------------------------
-    echo Username    : admin_staff
-    echo Password    : Temp@AdminLTM
-    echo Role        : EMPLOYEE
-    echo Department  : ADMIN
     echo.
     echo ===============================================
-    echo   PASSWORD FORMAT: empCode + password + dob
-    echo   System stores hash of ^(empCode + password + dob^)
-    echo   Login only requires the "password" portion
+    echo   PASSWORD FORMAT: hash^(password^)
+    echo   User chỉ cần nhập đúng password như trên là login được.
     echo ===============================================
 )
 

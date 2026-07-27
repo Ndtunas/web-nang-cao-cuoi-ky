@@ -1,4 +1,4 @@
-// Final verify: tất cả hashes trong seed.sql với format mới (director dùng Password@123)
+// Verify: tất cả hashes trong seed.sql với cơ chế đơn giản (hash trực tiếp password thuần)
 import bcrypt from 'bcrypt';
 import fs from 'node:fs';
 
@@ -8,10 +8,10 @@ const seedSql = fs.readFileSync('../database/04_seed.sql', 'utf8');
 const inserts = [...seedSql.matchAll(/VALUES \('(\w+)', '(\$2b\$[^']+)'/g)];
 
 const expected = {
-  admin:    'adminAdmin@123',
-  director: 'DocLMPassword@1231980-05-15',
-  deptlead: 'PhongNVTPassword@1231988-08-20',
-  employee: 'VienTTNPassword@1231995-11-30',
+  admin:    'Admin@123',
+  director: 'Password@123',
+  deptlead: 'Password@123',
+  employee: 'Password@123',
 };
 
 let pass = 0, total = 0;

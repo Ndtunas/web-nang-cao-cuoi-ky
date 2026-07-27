@@ -30,6 +30,7 @@ import { ApprovalRequest } from '../../entities/approval-request.entity';
 import { ApprovalConfig } from '../../entities/approval-config.entity';
 import { BusinessException } from '../../common/exceptions/business.exception';
 import { TransactionType, EmployeeStatus } from '../../common/enums/business-values';
+import * as bcrypt from 'bcrypt';
 
 describe('EmployeesService', () => {
   let service: EmployeesService;
@@ -166,6 +167,8 @@ describe('EmployeesService', () => {
       expect(result.empCode).toBe('EMP-001');
       expect(userRepo.getAll().length).toBe(1);
       expect(employeeRepo.getAll().length).toBe(1);
+      // hash chỉ từ password thuần: username + "@Temp" (không ghép empCode/dob)
+      expect(bcrypt.hash).toHaveBeenCalledWith('jane@Temp', 10);
     });
 
     it('duplicate email — throws ERR_EMP_001', async () => {

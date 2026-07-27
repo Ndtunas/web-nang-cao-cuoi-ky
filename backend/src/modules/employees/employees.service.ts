@@ -143,14 +143,9 @@ export class EmployeesService {
       counter++;
     }
 
-    // Create password hash: theo spec 05_business_values.md mục 6
-    // Plaintext block = empCode + password + dob
-    // - empCode sẽ được DB sinh tự động (trigger), nhưng đã có sẵn nếu gọi từ flow create
-    // - password mặc định cho nhân viên mới: dùng DOB làm password tạm để user tự đổi
-    // - dob: format YYYY-MM-DD
-    const dobStr = dto.dob ? this.formatDob(dto.dob) : '19950101';
-    // Tạm thời hash trước với placeholder username, sẽ update lại sau khi có empCode
-    const tempRawPass = `${username}@Temp${dobStr}`;
+    // Create password hash: hash trực tiếp từ password thuần (không ghép empCode/dob).
+    // Mật khẩu mặc định ban đầu cho nhân viên mới: username + "@Temp" (user sẽ phải đổi khi login lần đầu).
+    const tempRawPass = `${username}@Temp`;
     const passwordHash = await bcrypt.hash(tempRawPass, 10);
 
     const user = this.userRepository.create({
@@ -187,30 +182,7 @@ export class EmployeesService {
     });
     if (!foundEmp) throw new BusinessException('ERR_UNKNOWN');
 
-    // Re-hash password theo đúng spec 05_business_values.md mục 6
-    // Plaintext block = empCode + password + dob (YYYY-MM-DD)
-    // Mật khẩu mặc định ban đầu = "Temp@" + empCode (user sẽ phải đổi khi login lần đầu)
-    if (savedUser && foundEmp.empCode) {
-      const defaultPassword = `Temp@${foundEmp.empCode}`;
-      const properPlaintext = `${foundEmp.empCode}${defaultPassword}${dobStr}`;
-      savedUser.passwordHash = await bcrypt.hash(properPlaintext, 10);
-      await this.userRepository.save(savedUser);
-    }
-
     return foundEmp;
-  }
-
-  /**
-   * Format dob sang YYYY-MM-DD (theo spec 05_business_values.md mục 6)
-   */
-  private formatDob(dob: string | Date): string {
-    if (!dob) return '';
-    const d = typeof dob === 'string' ? new Date(dob) : dob;
-    if (isNaN(d.getTime())) return '';
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
   }
 
   async updatePersonalInfo(id: string, dto: any): Promise<Employee> {

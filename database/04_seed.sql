@@ -73,22 +73,27 @@ BEGIN
   INSERT INTO departments (dept_code, name, description) 
   VALUES ('HR', 'Phòng Nhân sự', 'Phòng hành chính và quản lý tài nguyên nhân sự') RETURNING id INTO v_dept_hr_id;
 
--- 3.3 Insert Users (Bcrypt hashes adhering to spec 05 §6: empCode/username + password + dob)
--- IMPORTANT: Nếu DB đã có data, chạy thêm các UPDATE statements ở cuối file để fix hashes.
+-- 3.3 Insert Users (Bcrypt hashes theo cơ chế đơn giản: hash trực tiếp từ password thuần)
+-- Format: password_hash = bcrypt(password)
+--   admin    : "Admin@123"
+--   director : "Password@123"
+--   deptlead : "Password@123"
+--   employee : "Password@123"
+-- Nếu muốn regenerate, chạy: cd backend && node scripts/hash-seed.mjs
 INSERT INTO users (username, password_hash, role, status)
-VALUES ('admin', '$2b$10$ErSesCEqYkhhIuI1JVQqo.tAflxKFwAp1yIn1TNH8xXPJojT7ULGm', 'ADMIN', 'ACTIVE')
+VALUES ('admin', '$2b$10$zDctzQH4.5HwGTjAggP9YeIQSJRPB6WL8pEVJG05g1jcAS90VsXC6', 'ADMIN', 'ACTIVE')
 RETURNING id INTO v_user_admin_id;
 
 INSERT INTO users (username, password_hash, role, status)
-VALUES ('director', '$2b$10$TRyhGGWpwASL9rSH7Puj9O6oGBdUBMUp/xPMG2EZsFtNDYpLpaPMG', 'DIRECTOR', 'ACTIVE')
+VALUES ('director', '$2b$10$n2Is1gvjBM9GFxZf8BTjd.dxsYsItFkjzadmq23A7FMzMDho3Qjqq', 'DIRECTOR', 'ACTIVE')
 RETURNING id INTO v_user_director_id;
 
 INSERT INTO users (username, password_hash, role, status)
-VALUES ('deptlead', '$2b$10$doIItN6SZ06Rwrtuz0TPvu9vD7xN7XAEpss6sGv9XkboKLYSBrS/m', 'DEPT_LEAD', 'ACTIVE')
+VALUES ('deptlead', '$2b$10$uuvthcM55ROt0W2HVptig.PxS3f1OmRkDvzOfgcyYJNdzNnclJXHq', 'DEPT_LEAD', 'ACTIVE')
 RETURNING id INTO v_user_lead_id;
 
 INSERT INTO users (username, password_hash, role, status)
-VALUES ('employee', '$2b$10$rO0xCUnTKi7rYHs/CnUrdeiQAf2gpXJf8ILBvHtwThJx4V5lLYu2S', 'EMPLOYEE', 'ACTIVE')
+VALUES ('employee', '$2b$10$9w69b67QNSFmLrG0H8Zw9OjcTv03iQqe8CMg0wM2ZaXCR4yZNpru6', 'EMPLOYEE', 'ACTIVE')
 RETURNING id INTO v_user_emp_id;
 
   -- 3.4 Insert Employees (Trigger tự động sinh emp_code theo full_name)
@@ -134,15 +139,15 @@ INSERT INTO work_rate_configs (config_key, config_name, value_multiplier, status
 
 -- ====================================================================
 -- 4. FIX PASSWORD HASHES (Idempotent - chạy an toàn nhiều lần)
--- Mục đích: Nếu DB đã được seed từ version cũ, update password_hash để
--- khớp với format mới theo spec 05 §6:
---   admin:    plaintext = "admin" + "Admin@123"
---   director: plaintext = "DocLM" + "Password@123" + "1980-05-15"
---   deptlead: plaintext = "PhongNVT" + "Password@123" + "1988-08-20"
---   employee: plaintext = "VienTTN" + "Password@123" + "1995-11-30"
+-- Cơ chế đơn giản: hash trực tiếp từ password thuần.
+--   admin:    "Admin@123"
+--   director: "Admin@123"
+--   deptlead: "Admin@123"
+--   employee: "Admin@123"
+-- Tất cả 4 user dùng cùng hash (hash của "Admin@123").
 -- Nếu muốn generate lại hash mới, chạy: cd backend && node scripts/hash-seed.mjs
 -- ====================================================================
-UPDATE users SET password_hash = '$2b$10$ErSesCEqYkhhIuI1JVQqo.tAflxKFwAp1yIn1TNH8xXPJojT7ULGm' WHERE username = 'admin';
-UPDATE users SET password_hash = '$2b$10$TRyhGGWpwASL9rSH7Puj9O6oGBdUBMUp/xPMG2EZsFtNDYpLpaPMG' WHERE username = 'director';
-UPDATE users SET password_hash = '$2b$10$doIItN6SZ06Rwrtuz0TPvu9vD7xN7XAEpss6sGv9XkboKLYSBrS/m' WHERE username = 'deptlead';
-UPDATE users SET password_hash = '$2b$10$rO0xCUnTKi7rYHs/CnUrdeiQAf2gpXJf8ILBvHtwThJx4V5lLYu2S' WHERE username = 'employee';
+UPDATE users SET password_hash = '$2b$10$mb3MIld6wfeadkoFUA0d7utssBQHLTe9y0HZfoeBnSesa8uM3MTIq' WHERE username = 'admin';
+UPDATE users SET password_hash = '$2b$10$mb3MIld6wfeadkoFUA0d7utssBQHLTe9y0HZfoeBnSesa8uM3MTIq' WHERE username = 'director';
+UPDATE users SET password_hash = '$2b$10$mb3MIld6wfeadkoFUA0d7utssBQHLTe9y0HZfoeBnSesa8uM3MTIq' WHERE username = 'deptlead';
+UPDATE users SET password_hash = '$2b$10$mb3MIld6wfeadkoFUA0d7utssBQHLTe9y0HZfoeBnSesa8uM3MTIq' WHERE username = 'employee';

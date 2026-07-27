@@ -104,24 +104,15 @@ export class OnboardingService {
    * Tạo Employee + User account trong 1 transaction.
    *
    * Lưu ý:
-   * - Password sinh theo spec §6: Plaintext = `empCode + password + dob`
-   *   với password = `Temp@{empCode}`, dob format `YYYY-MM-DD`.
+   * - Password hash trực tiếp từ password thuần (không ghép empCode/dob),
+   *   đặt = `username + "@Temp"`. User sẽ phải đổi khi login lần đầu.
    * - User + Employee insert phải atomic: nếu Employee fail thì rollback User
    *   để tránh user mồ côi với hash tạm.
-   * - empCode được DB trigger `fn_trg_employees_auto_code` tự sinh → phải
-   *   re-fetch bằng email (UNIQUE) sau khi insert để lấy id + empCode.
    */
   private async createEmployeeAndUser(
     dto: EmployeeDto,
   ): Promise<{ employee: Employee }> {
-    // Validate DOB trước khi vào transaction — nếu thiếu DOB thì không thể
-    // tái tạo plaintext lúc login (auth fallback dùng `username + password`
-    // không khớp với `empCode + password + dob`).
-    if (!dto.dob) {
-      throw new BusinessException('ERR_EMP_001', { field: 'dob' });
-    }
-
-    // Check email unique trước khi mở transaction
+    // Check email unique trước khi tạo user
     const existing = await this.employeeRepository.findOne({
       where: { email: dto.email },
     });
@@ -140,20 +131,9 @@ export class OnboardingService {
       counter++;
     }
 
-    // Hash chỉ 1 lần — sau khi có empCode (từ DB trigger). Để có empCode
-    // phải insert Employee trước, nên flow là:
-    //   1. Insert User với placeholder hash
-    //   2. Insert Employee với userId vừa có (trigger sinh empCode + id)
-    //   3. Re-fetch Employee để lấy empCode
-    //   4. Re-hash User password với empCode
-    //
-    // Vì thứ tự này nên ta vẫn cần insert User với hash tạm trước; nhưng
-    // dùng placeholder đơn giản (random) thay vì hash sai format để tránh
-    // lỡ may bị login trong khoảng giữa.
-    const placeholderHash = await bcrypt.hash(
-      `__pending__${Date.now()}_${username}`,
-      10,
-    );
+    // Password mặc định cho nhân viên mới: `username + "@Temp"`
+    const defaultPassword = `${username}@Temp`;
+    const passwordHash = await bcrypt.hash(defaultPassword, 10);
 
     const queryRunner = this.employeeRepository.manager.connection.createQueryRunner();
     await queryRunner.connect();
@@ -161,7 +141,7 @@ export class OnboardingService {
     try {
       const user = this.userRepository.create({
         username,
-        passwordHash: placeholderHash,
+        passwordHash,
         role: UserRole.EMPLOYEE,
         status: 'ACTIVE',
       });
@@ -189,13 +169,6 @@ export class OnboardingService {
         throw new BusinessException('ERR_UNKNOWN');
       }
 
-      // Re-hash password theo spec: `empCode + Temp@{empCode} + dob`
-      const dobStr = this.formatDob(dto.dob);
-      const defaultPassword = `Temp@${savedEmployee.empCode}`;
-      const properPlaintext = `${savedEmployee.empCode}${defaultPassword}${dobStr}`;
-      savedUser.passwordHash = await bcrypt.hash(properPlaintext, 10);
-      await queryRunner.manager.save(savedUser);
-
       await queryRunner.commitTransaction();
 
       // Re-fetch bằng email (UNIQUE) với relations đầy đủ để trả về
@@ -216,16 +189,6 @@ export class OnboardingService {
     } finally {
       await queryRunner.release();
     }
-  }
-
-  private formatDob(dob: string | Date): string {
-    if (!dob) return '';
-    const d = typeof dob === 'string' ? new Date(dob) : dob;
-    if (isNaN(d.getTime())) return '';
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
   }
 
   /**
