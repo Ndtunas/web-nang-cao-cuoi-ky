@@ -1,9 +1,11 @@
-# Class Diagram - HRM System Entity Model
+# Sơ đồ Lớp (Class Diagram) - HRM System Entity Model
 
-Below is the Mermaid Class Diagram representing the entities, their properties, and their relationships (such as inheritance, association, and composition) as defined in the database schema.
+Tài liệu này cung cấp **Sơ đồ Lớp (Class Diagram)** mô tả các thực thể (Entities), thuộc tính và mối quan hệ giữa chúng trong hệ thống quản lý nhân sự HRM, được thiết kế theo cấu trúc chiều dọc (`direction TB`) để hiển thị tối ưu trên trang báo cáo A4.
 
 ```mermaid
 classDiagram
+    direction TB
+
     class User {
         +bigint id
         +string username
@@ -70,8 +72,9 @@ classDiagram
         +bigint projectId
         +bigint taskId
         +date date
-        +decimal normalHours
-        +decimal otHours
+        +decimal hoursSpent
+        +string workType
+        +decimal appliedRate
         +string description
     }
 
@@ -87,6 +90,8 @@ classDiagram
         +decimal otWeekendHours
         +decimal otHolidayHours
         +decimal otPayAmount
+        +decimal nightShiftHours
+        +decimal nightShiftBonus
         +decimal allowance
         +decimal deduction
         +decimal netSalary
@@ -110,7 +115,7 @@ classDiagram
         +bigint id
         +string requestCode
         +string transactionType
-        +bigint referenceEntityId
+        +string referenceEntityId
         +bigint requesterId
         +int currentLevel
         +int totalLevels
@@ -119,12 +124,13 @@ classDiagram
 
     class ApprovalStepHistory {
         +bigint id
-        +bigint approvalRequestId
-        +int stepNumber
+        +bigint requestId
+        +int stepLevel
+        +string approverRole
         +bigint approverId
         +string action
         +string comment
-        +datetime actionDate
+        +datetime actionAt
     }
 
     class LeaveRequest {
@@ -133,7 +139,6 @@ classDiagram
         +string leaveType
         +date startDate
         +date endDate
-        +decimal totalDays
         +string reason
         +string status
         +bigint approvalRequestId

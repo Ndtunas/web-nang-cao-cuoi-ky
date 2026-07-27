@@ -51,11 +51,11 @@
 - [x] **Class Diagram (Sơ đồ cấu trúc lớp - Ít nhất 01 sơ đồ):**
   - [x] Vẽ sơ đồ tổng quan thể hiện các Entity, Attribute, Method và Relationship (Inheritance, Association, Aggregation, Composition). (Đã khởi tạo tại diagrams/class_diagram.md)
 - [x] **Sequence / Activity Diagrams (Sơ đồ tuần tự / Sơ đồ hoạt động - Ít nhất 05 sơ đồ):**
-  - [x] Sơ đồ 1: Luồng Đăng nhập & Xác thực JWT. (Đã khởi tạo tại diagrams/seq_login_auth.md)
-  - [x] Sơ đồ 2: Luồng Xem & Tìm kiếm danh sách dữ liệu. (Đã khởi tạo tại diagrams/seq_view_search.md)
-  - [x] Sơ đồ 3: Luồng Tạo mới / Đăng ký đối tượng. (Đã khởi tạo tại diagrams/seq_create_entity.md)
-  - [x] Sơ đồ 4: Luồng Cập nhật & Kiểm tra ràng buộc dữ liệu. (Đã khởi tạo tại diagrams/seq_update_constraints.md)
-  - [x] Sơ đồ 5: Luồng Xóa đối tượng & Xử lý quan hệ dữ liệu liên quan. (Đã khởi tạo tại diagrams/seq_delete_cascade.md)
+  - [x] Sơ đồ 1: Quy trình Đăng nhập & Xác thực Tài khoản. (Đã khởi tạo tại diagrams/seq_dang_nhap_xac_thuc.md)
+  - [x] Sơ đồ 2: Quy trình Tìm kiếm & Phân trang danh sách Nhân viên. (Đã khởi tạo tại diagrams/seq_tim_kiem_phan_trang_nhan_vien.md)
+  - [x] Sơ đồ 3: Quy trình Khai báo & Nộp phê duyệt Timesheet tuần. (Đã khởi tạo tại diagrams/seq_nop_phe_duyet_timesheet.md)
+  - [x] Sơ đồ 4: Quy trình Đăng ký Nghỉ phép & Kiểm tra Số dư phép. (Đã khởi tạo tại diagrams/seq_dang_ky_nghi_phep.md)
+  - [x] Sơ đồ 5: Quy trình Xóa Phòng ban & Ràng buộc nhân sự. (Đã khởi tạo tại diagrams/seq_xoa_phong_ban.md)
 
 ---
 
