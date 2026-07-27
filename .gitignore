@@ -38,3 +38,7 @@ target/
 .gradle/
 build/
 backend/pnpm-workspace.yaml
+
+# Local-only credentials & debug artifacts (DO NOT COMMIT)
+accounts.txt
+backend/test-output.txt
