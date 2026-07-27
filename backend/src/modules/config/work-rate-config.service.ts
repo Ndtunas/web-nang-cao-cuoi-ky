@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { WorkRateConfig } from '../../entities/work-rate-config.entity.js';
-import { UpdateWorkRateDto } from './dto/update-work-rate.dto.js';
+import { WorkRateConfig } from '../../entities/work-rate-config.entity';
+import { UpdateWorkRateDto } from './dto/update-work-rate.dto';
 
 @Injectable()
 export class WorkRateConfigService {

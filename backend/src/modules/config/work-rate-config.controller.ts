@@ -1,12 +1,12 @@
 import { Controller, Get, Put, Body, Param, UseGuards } from '@nestjs/common';
-import { WorkRateConfigService } from './work-rate-config.service.js';
-import { UpdateWorkRateDto } from './dto/update-work-rate.dto.js';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
-import { RolesGuard } from '../auth/guards/roles.guard.js';
-import { Roles } from '../auth/decorators/roles.decorator.js';
-import { CurrentUser } from '../auth/decorators/current-user.decorator.js';
-import { User } from '../../entities/user.entity.js';
-import { UserRole } from '../../common/enums/business-values.js';
+import { WorkRateConfigService } from './work-rate-config.service';
+import { UpdateWorkRateDto } from './dto/update-work-rate.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { User } from '../../entities/user.entity';
+import { UserRole } from '../../common/enums/business-values';
 
 @Controller('config/work-rates')
 export class WorkRateConfigController {

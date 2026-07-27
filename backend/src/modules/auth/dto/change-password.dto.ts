@@ -2,7 +2,7 @@ import { IsNotEmpty, IsString, Matches } from 'class-validator';
 import {
   PASSWORD_REGEX,
   PASSWORD_MESSAGE,
-} from '../../../common/validators/validation-rules.js';
+} from '../../../common/validators/validation-rules';
 
 export class ChangePasswordDto {
   @IsNotEmpty({ message: 'Mật khẩu cũ không được để trống' })

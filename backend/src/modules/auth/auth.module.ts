@@ -3,13 +3,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { AuthController } from './auth.controller.js';
-import { AuthService } from './auth.service.js';
-import { User } from '../../entities/user.entity.js';
-import { Employee } from '../../entities/employee.entity.js';
-import { ApprovalRequest } from '../../entities/approval-request.entity.js';
-import { ApprovalStepHistory } from '../../entities/approval-step-history.entity.js';
-import { JwtStrategy } from './strategies/jwt.strategy.js';
+import { AuthController } from './auth.controller';
+import { AuthService } from './auth.service';
+import { User } from '../../entities/user.entity';
+import { Employee } from '../../entities/employee.entity';
+import { ApprovalRequest } from '../../entities/approval-request.entity';
+import { ApprovalStepHistory } from '../../entities/approval-step-history.entity';
+import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Module({
   imports: [

@@ -7,17 +7,17 @@ import {
   Param,
   Patch,
 } from '@nestjs/common';
-import { AuthService } from './auth.service.js';
-import { LoginDto } from './dto/login.dto.js';
-import { ChangePasswordDto } from './dto/change-password.dto.js';
-import { ResetPasswordRequestDto } from './dto/reset-password-request.dto.js';
-import { RefreshTokenDto } from './dto/refresh-token.dto.js';
-import { JwtAuthGuard } from './guards/jwt-auth.guard.js';
-import { RolesGuard } from './guards/roles.guard.js';
-import { Roles } from './decorators/roles.decorator.js';
-import { CurrentUser } from './decorators/current-user.decorator.js';
-import { User } from '../../entities/user.entity.js';
-import { UserRole } from '../../common/enums/business-values.js';
+import { AuthService } from './auth.service';
+import { LoginDto } from './dto/login.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
+import { ResetPasswordRequestDto } from './dto/reset-password-request.dto';
+import { RefreshTokenDto } from './dto/refresh-token.dto';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { RolesGuard } from './guards/roles.guard';
+import { Roles } from './decorators/roles.decorator';
+import { CurrentUser } from './decorators/current-user.decorator';
+import { User } from '../../entities/user.entity';
+import { UserRole } from '../../common/enums/business-values';
 
 @Controller('auth')
 export class AuthController {

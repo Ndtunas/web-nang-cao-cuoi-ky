@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ExportsController } from './exports.controller.js';
-import { ExportsService } from './exports.service.js';
-import { Employee } from '../../entities/employee.entity.js';
-import { Salary } from '../../entities/salary.entity.js';
-import { Timesheet } from '../../entities/timesheet.entity.js';
-import { TimesheetEntry } from '../../entities/timesheet-entry.entity.js';
-import { LeaveRequest } from '../../entities/leave-request.entity.js';
-import { AuditLogsModule } from '../audit-logs/audit-logs.module.js';
+import { ExportsController } from './exports.controller';
+import { ExportsService } from './exports.service';
+import { Employee } from '../../entities/employee.entity';
+import { Salary } from '../../entities/salary.entity';
+import { Timesheet } from '../../entities/timesheet.entity';
+import { TimesheetEntry } from '../../entities/timesheet-entry.entity';
+import { LeaveRequest } from '../../entities/leave-request.entity';
+import { AuditLogsModule } from '../audit-logs/audit-logs.module';
 
 @Module({
   imports: [

@@ -2,12 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import ExcelJS from 'exceljs';
-import { Employee } from '../../entities/employee.entity.js';
-import { Salary } from '../../entities/salary.entity.js';
-import { Timesheet } from '../../entities/timesheet.entity.js';
-import { TimesheetEntry } from '../../entities/timesheet-entry.entity.js';
-import { LeaveRequest } from '../../entities/leave-request.entity.js';
-import { AuditLogsService } from '../audit-logs/audit-logs.service.js';
+import { Employee } from '../../entities/employee.entity';
+import { Salary } from '../../entities/salary.entity';
+import { Timesheet } from '../../entities/timesheet.entity';
+import { TimesheetEntry } from '../../entities/timesheet-entry.entity';
+import { LeaveRequest } from '../../entities/leave-request.entity';
+import { AuditLogsService } from '../audit-logs/audit-logs.service';
 
 @Injectable()
 export class ExportsService {

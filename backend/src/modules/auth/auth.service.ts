@@ -3,15 +3,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { User } from '../../entities/user.entity.js';
-import { Employee } from '../../entities/employee.entity.js';
-import { ApprovalRequest } from '../../entities/approval-request.entity.js';
-import { ApprovalStepHistory } from '../../entities/approval-step-history.entity.js';
-import { LoginDto } from './dto/login.dto.js';
-import { ChangePasswordDto } from './dto/change-password.dto.js';
-import { ResetPasswordRequestDto } from './dto/reset-password-request.dto.js';
-import { BusinessException } from '../../common/exceptions/business.exception.js';
-import { UserRole } from '../../common/enums/business-values.js';
+import { User } from '../../entities/user.entity';
+import { Employee } from '../../entities/employee.entity';
+import { ApprovalRequest } from '../../entities/approval-request.entity';
+import { ApprovalStepHistory } from '../../entities/approval-step-history.entity';
+import { LoginDto } from './dto/login.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
+import { ResetPasswordRequestDto } from './dto/reset-password-request.dto';
+import { BusinessException } from '../../common/exceptions/business.exception';
+import { UserRole } from '../../common/enums/business-values';
 
 @Injectable()
 export class AuthService {

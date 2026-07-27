@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { WorkRateConfigController } from './work-rate-config.controller.js';
-import { WorkRateConfigService } from './work-rate-config.service.js';
-import { WorkRateConfig } from '../../entities/work-rate-config.entity.js';
-import { AuthModule } from '../auth/auth.module.js';
+import { WorkRateConfigController } from './work-rate-config.controller';
+import { WorkRateConfigService } from './work-rate-config.service';
+import { WorkRateConfig } from '../../entities/work-rate-config.entity';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [TypeOrmModule.forFeature([WorkRateConfig]), AuthModule],
