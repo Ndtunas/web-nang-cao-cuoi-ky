@@ -1,6 +1,6 @@
-# Sequence Diagram 5 - Delete Entity & Cascading Flow
+# Sơ đồ Tuần tự 5 - Quy trình Xóa Phòng ban & Ràng buộc nhân sự
 
-This diagram details the deletion of a Department, illustrating how NestJS checks for existing employees, executes the delete query, and how foreign keys or soft associations handle cascading relationships.
+Sơ đồ tuần tự mô tả chi tiết quy trình Admin thực hiện xóa một phòng ban, hệ thống backend kiểm tra điều kiện ràng buộc về số lượng nhân viên còn trực thuộc phòng ban đó để đưa ra cảnh báo hoặc ngăn chặn nhằm đảm bảo tính toàn vẹn dữ liệu lịch sử nhân sự.
 
 ```mermaid
 sequenceDiagram

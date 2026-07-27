@@ -1,6 +1,6 @@
-# Sequence Diagram 3 - Create / Register Entity Flow (Timesheet Submission)
+# Sơ đồ Tuần tự 3 - Quy trình Khai báo & Nộp phê duyệt Timesheet tuần
 
-This diagram outlines the submission workflow of a weekly timesheet by an employee, showcasing the generation of an `ApprovalRequest` entity in the backend, the linking of their IDs, and the database transaction.
+Sơ đồ tuần tự mô tả các bước nhân viên thực hiện nộp bảng chấm công tuần (Timesheet) dự án, hệ thống backend xử lý kiểm tra trạng thái hợp lệ, tự động khởi tạo phiếu yêu cầu phê duyệt đa cấp (`ApprovalRequest`) tương ứng và liên kết các thực thể trong cơ sở dữ liệu.
 
 ```mermaid
 sequenceDiagram

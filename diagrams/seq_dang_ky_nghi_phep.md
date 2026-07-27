@@ -1,6 +1,6 @@
-# Sequence Diagram 4 - Update & Check Data Constraints Flow (Leave Balance Validation)
+# Sơ đồ Tuần tự 4 - Quy trình Đăng ký Nghỉ phép & Kiểm tra Số dư phép
 
-This diagram shows how a Leave Request submission checks the employee's remaining annual leave balance constraint before creating the record or updating the database.
+Sơ đồ tuần tự mô tả chi tiết các bước nhân viên tạo yêu cầu đăng ký nghỉ phép, hệ thống tự động kiểm tra điều kiện ràng buộc số ngày xin nghỉ thực tế so với số dư phép năm còn lại của nhân sự (`annual_leave_balance`) trước khi thực hiện ghi nhận.
 
 ```mermaid
 sequenceDiagram

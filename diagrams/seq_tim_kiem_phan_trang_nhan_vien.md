@@ -1,6 +1,6 @@
-# Sequence Diagram 2 - View & Search List Data Flow
+# Sơ đồ Tuần tự 2 - Quy trình Tìm kiếm & Phân trang danh sách Nhân viên
 
-This diagram describes how the client queries a paginated list of employees with search and filter queries, how NestJS parses these arguments, and how TypeORM compiles the SQL query and returns paginated data back to the client.
+Sơ đồ tuần tự mô tả chi tiết quy trình người dùng tìm kiếm, lọc dữ liệu nhân sự (theo tên, phòng ban) và chuyển trang trên giao diện hiển thị, cách backend xử lý các tham số truy vấn và biên dịch câu lệnh SQL để truy xuất dữ liệu từ cơ sở dữ liệu.
 
 ```mermaid
 sequenceDiagram

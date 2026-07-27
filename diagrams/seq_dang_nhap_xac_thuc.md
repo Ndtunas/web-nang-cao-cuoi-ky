@@ -1,6 +1,6 @@
-# Sequence Diagram 1 - Login & JWT Authentication Flow
+# Sơ đồ Tuần tự 1 - Quy trình Đăng nhập & Xác thực Tài khoản
 
-This diagram details the flow where a user provides credentials to log in, the system validates the credentials, returns a JWT token pair (Access Token & Refresh Token), and how the Client application includes the JWT in subsequent requests.
+Sơ đồ này mô tả chi tiết quy trình người dùng đăng nhập vào hệ thống, hệ thống xác thực thông tin tài khoản và trả về cặp mã token JWT (Access Token & Refresh Token) để sử dụng cho các yêu cầu nghiệp vụ tiếp theo.
 
 ```mermaid
 sequenceDiagram
